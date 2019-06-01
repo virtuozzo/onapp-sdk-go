@@ -137,10 +137,7 @@ type IPAddress struct {
 
 // VirtualMachineCreateRequest represents a request to create a VirtualMachine.
 type VirtualMachineCreateRequest struct {
-  // location_group_id
-  // type_of_format
   // network_id
-  // initial_root_password_encryption_key
   // custom_variables_attributes
         // [
         //   enabled - true, if the variable is enabled, otherwise false
@@ -150,40 +147,42 @@ type VirtualMachineCreateRequest struct {
         // ]
   // service_addon_ids
 
-  AccelerationAllowed             bool      `json:"acceleration_allowed,bool,omitempty"`
-  AdminNote                       string    `json:"admin_note,omitempty"`
-  CPUShares                       int       `json:"cpu_shares,omitempty"`
-  CPUSockets                      string    `json:"cpu_sockets,omitempty"`
-  Cpus                            int       `json:"cpus,omitempty"`
-  Domain                          string    `json:"domain,omitempty"`
-  DataStoreGroupPrimaryID         int       `json:"data_store_group_primary_id,omitempty"`
-  DataStoreGroupSwapID            int       `json:"data_store_group_swap_id,omitempty"`
-  EnableAutoscale                 int       `json:"enable_autoscale,omitempty"`
-  Hostname                        string    `json:"hostname,omitempty"`
-  HypervisorGroupID               int       `json:"hypervisor_group_id,omitempty"`
-  HypervisorID                    int       `json:"hypervisor_id,omitempty"`
-  InitialRootPassword             string    `json:"initial_root_password,omitempty"`
-  InstancePackageID               string    `json:"instance_package_id,omitempty"`
-  Label                           string    `json:"label,omitempty"`
-  LicensingKey                    string    `json:"licensing_key,omitempty"`
-  LicensingServerID               int       `json:"licensing_server_id,omitempty"`
-  LicensingType                   string    `json:"licensing_type,omitempty"`
-  LocationGroupID                 int       `json:"location_group_id,omitempty"`
-  Memory                          int       `json:"memory,omitempty"`
-  PrimaryDiskMinIops              int       `json:"primary_disk_min_iops,omitempty"`
-  PrimaryDiskSize                 int       `json:"primary_disk_size,omitempty"`
-  PrimaryNetworkGroupID           int       `json:"primary_network_group_id,omitempty"`
-  RateLimit                       int       `json:"rate_limit,omitempty"`
-  RecipeJoinsAttributes           []string  `json:"recipe_joins_attributes,omitempty"`
-  RequiredAutomaticBackup         int       `json:"required_automatic_backup,omitempty"`
-  RequiredIPAddressAssignment     int       `json:"required_ip_address_assignment,omitempty"`
-  RequiredVirtualMachineBuild     int       `json:"required_virtual_machine_build,omitempty"`
-  RequiredVirtualMachineStartup   int       `json:"required_virtual_machine_startup,omitempty"`
-  SelectedIPAddress               string    `json:"selected_ip_address,omitempty"`
-  SwapDiskMinIops                 int       `json:"swap_disk_min_iops,omitempty"`
-  SwapDiskSize                    int       `json:"swap_disk_size,omitempty"`
-  TemplateID                      int       `json:"template_id,omitempty"`
-  TimeZone                        string    `json:"time_zone,omitempty"`
+  AccelerationAllowed               bool      `json:"acceleration_allowed,bool,omitempty"`
+  AdminNote                         string    `json:"admin_note,omitempty"`
+  CPUShares                         int       `json:"cpu_shares,omitempty"`
+  CPUSockets                        string    `json:"cpu_sockets,omitempty"`
+  Cpus                              int       `json:"cpus,omitempty"`
+  Domain                            string    `json:"domain,omitempty"`
+  DataStoreGroupPrimaryID           int       `json:"data_store_group_primary_id,omitempty"`
+  DataStoreGroupSwapID              int       `json:"data_store_group_swap_id,omitempty"`
+  EnableAutoscale                   int       `json:"enable_autoscale,omitempty"`
+  Hostname                          string    `json:"hostname,omitempty"`
+  HypervisorGroupID                 int       `json:"hypervisor_group_id,omitempty"`
+  HypervisorID                      int       `json:"hypervisor_id,omitempty"`
+  InitialRootPassword               string    `json:"initial_root_password,omitempty"`
+  InitialRootPasswordEncryptionKey  string    `json:"initial_root_password_encryption_key,omitempty"`
+  InstancePackageID                 string    `json:"instance_package_id,omitempty"`
+  Label                             string    `json:"label,omitempty"`
+  LicensingKey                      string    `json:"licensing_key,omitempty"`
+  LicensingServerID                 int       `json:"licensing_server_id,omitempty"`
+  LicensingType                     string    `json:"licensing_type,omitempty"`
+  LocationGroupID                   int       `json:"location_group_id,omitempty"`
+  Memory                            int       `json:"memory,omitempty"`
+  PrimaryDiskMinIops                int       `json:"primary_disk_min_iops,omitempty"`
+  PrimaryDiskSize                   int       `json:"primary_disk_size,omitempty"`
+  PrimaryNetworkGroupID             int       `json:"primary_network_group_id,omitempty"`
+  RateLimit                         int       `json:"rate_limit,omitempty"`
+  RecipeJoinsAttributes             []string  `json:"recipe_joins_attributes,omitempty"`
+  RequiredAutomaticBackup           int       `json:"required_automatic_backup,omitempty"`
+  RequiredIPAddressAssignment       int       `json:"required_ip_address_assignment,omitempty"`
+  RequiredVirtualMachineBuild       int       `json:"required_virtual_machine_build,omitempty"`
+  RequiredVirtualMachineStartup     int       `json:"required_virtual_machine_startup,omitempty"`
+  SelectedIPAddress                 string    `json:"selected_ip_address,omitempty"`
+  SwapDiskMinIops                   int       `json:"swap_disk_min_iops,omitempty"`
+  SwapDiskSize                      int       `json:"swap_disk_size,omitempty"`
+  TemplateID                        int       `json:"template_id,omitempty"`
+  TimeZone                          string    `json:"time_zone,omitempty"`
+  TypeOfFormat                      string    `json:"type_of_format,omitempty"`
 }
 
 // VirtualMachineMultiCreateRequest is a request to create multiple VirtualMachine.
