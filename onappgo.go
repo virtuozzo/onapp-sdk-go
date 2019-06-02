@@ -10,11 +10,11 @@ import (
   "net/http"
   "net/url"
   "reflect"
-  strconv "strconv"
-  "time"
+  // strconv "strconv"
+  // "time"
 
   "github.com/google/go-querystring/query"
-  "github.com/digitalocean/godo"
+  // "github.com/digitalocean/godo"
 )
 
 const (
@@ -23,12 +23,12 @@ const (
   userAgent      = "onapp_sdk_go/" + libraryVersion
   mediaType      = "application/json"
 
-  headerRateLimit     = "RateLimit-Limit"
-  headerRateRemaining = "RateLimit-Remaining"
-  headerRateReset     = "RateLimit-Reset"
+  // headerRateLimit     = "RateLimit-Limit"
+  // headerRateRemaining = "RateLimit-Remaining"
+  // headerRateReset     = "RateLimit-Reset"
 
-  user     = "taras.brodovych@onapp.com"
-  password = "2471fa41a9728f4c7e7ec437648b3a729d05dae3"
+  // user     = "taras.brodovych@onapp.com"
+  // password = "2471fa41a9728f4c7e7ec437648b3a729d05dae3"
 )
 
 // Client manages communication with OnApp API.
@@ -42,9 +42,12 @@ type Client struct {
   // User agent for client
   UserAgent string
 
+  apiUser string
+  apiPassword string
+
   // Rate contains the current rate limit for the client as determined by the most recent
   // API call.
-  Rate Rate
+  // Rate Rate
 
   // Services used for communicating with the API
   // Account           AccountService
@@ -100,7 +103,7 @@ type Response struct {
   // Monitoring URI
   // Monitor string
 
-  Rate
+  // Rate
 }
 
 // An ErrorResponse reports the error caused by an API request
@@ -112,20 +115,20 @@ type ErrorResponse struct {
   Message string `json:"message"`
 
   // RequestID returned from the API, useful to contact support.
-  RequestID string `json:"request_id"`
+  // RequestID string `json:"request_id"`
 }
 
 // Rate contains the rate limit for the current client.
-type Rate struct {
-  // The number of request per hour the client is currently limited to.
-  Limit int `json:"limit"`
+// type Rate struct {
+//   // The number of request per hour the client is currently limited to.
+//   Limit int `json:"limit"`
 
-  // The number of remaining requests the client can make this hour.
-  Remaining int `json:"remaining"`
+//   // The number of remaining requests the client can make this hour.
+//   Remaining int `json:"remaining"`
 
-  // The time at which the current rate limit will reset.
-  Reset godo.Timestamp `json:"reset"`
-}
+//   // The time at which the current rate limit will reset.
+//   Reset godo.Timestamp `json:"reset"`
+// }
 
 func addOptions(s string, opt interface{}) (string, error) {
   v := reflect.ValueOf(opt)
@@ -228,6 +231,15 @@ func SetUserAgent(ua string) ClientOpt {
   }
 }
 
+// SetBasicAuth is a client option for setting the user and password for API call.
+func SetBasicAuth(user, password string) ClientOpt {
+  return func(c *Client) error {
+    c.apiUser = user
+    c.apiPassword = password
+    return nil
+  }
+}
+
 // NewRequest creates an API request. A relative URL can be provided in urlStr, which will be resolved to the
 // BaseURL of the Client. Relative URLS should always be specified without a preceding slash. If specified, the
 // value pointed to by body is JSON encoded and included in as the request body.
@@ -256,7 +268,7 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body int
   req.Header.Add("Accept", mediaType)
   req.Header.Add("User-Agent", c.UserAgent)
 
-  req.SetBasicAuth(user, password)
+  req.SetBasicAuth(c.apiUser, c.apiPassword)
 
   return req, nil
 }
@@ -269,25 +281,25 @@ func (c *Client) OnRequestCompleted(rc RequestCompletionCallback) {
 // newResponse creates a new Response for the provided http.Response
 func newResponse(r *http.Response) *Response {
   response := Response{Response: r}
-  response.populateRate()
+  // response.populateRate()
 
   return &response
 }
 
 // populateRate parses the rate related headers and populates the response Rate.
-func (r *Response) populateRate() {
-  if limit := r.Header.Get(headerRateLimit); limit != "" {
-    r.Rate.Limit, _ = strconv.Atoi(limit)
-  }
-  if remaining := r.Header.Get(headerRateRemaining); remaining != "" {
-    r.Rate.Remaining, _ = strconv.Atoi(remaining)
-  }
-  if reset := r.Header.Get(headerRateReset); reset != "" {
-    if v, _ := strconv.ParseInt(reset, 10, 64); v != 0 {
-      r.Rate.Reset = godo.Timestamp{time.Unix(v, 0)}
-    }
-  }
-}
+// func (r *Response) populateRate() {
+//   if limit := r.Header.Get(headerRateLimit); limit != "" {
+//     r.Rate.Limit, _ = strconv.Atoi(limit)
+//   }
+//   if remaining := r.Header.Get(headerRateRemaining); remaining != "" {
+//     r.Rate.Remaining, _ = strconv.Atoi(remaining)
+//   }
+//   if reset := r.Header.Get(headerRateReset); reset != "" {
+//     if v, _ := strconv.ParseInt(reset, 10, 64); v != 0 {
+//       r.Rate.Reset = godo.Timestamp{time.Unix(v, 0)}
+//     }
+//   }
+// }
 
 // Do sends an API request and returns the API response. The API response is JSON decoded and stored in the value
 // pointed to by v, or returned as an error if an API error has occurred. If v implements the io.Writer interface,
@@ -308,7 +320,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
   }()
 
   response := newResponse(resp)
-  c.Rate = response.Rate
+  // c.Rate = response.Rate
 
   err = CheckResponse(resp)
   if err != nil {
@@ -344,10 +356,10 @@ func DoRequestWithClient(ctx context.Context, client *http.Client, req *http.Req
 }
 
 func (r *ErrorResponse) Error() string {
-  if r.RequestID != "" {
-    return fmt.Sprintf("%v %v: %d (request %q) %v",
-      r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, r.RequestID, r.Message)
-  }
+  // if r.RequestID != "" {
+  //   return fmt.Sprintf("%v %v: %d (request %q) %v",
+  //     r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, r.RequestID, r.Message)
+  // }
   return fmt.Sprintf("%v %v: %d %v",
     r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, r.Message)
 }
@@ -372,9 +384,9 @@ func CheckResponse(r *http.Response) error {
   return errorResponse
 }
 
-func (r Rate) String() string {
-  return godo.Stringify(r)
-}
+// func (r Rate) String() string {
+//   return godo.Stringify(r)
+// }
 
 // String is a helper routine that allocates a new string value
 // to store v and returns a pointer to it.
