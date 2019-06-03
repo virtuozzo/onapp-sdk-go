@@ -5,6 +5,7 @@ import (
   "errors"
   "net/http"
   "fmt"
+  // "encoding/json"
 
   "github.com/digitalocean/godo"
 )
@@ -77,7 +78,8 @@ type VirtualMachine struct {
   InitialRootPassword           string                  `json:"initial_root_password,omitempty"`
   InitialRootPasswordEncrypted  bool                    `json:"initial_root_password_encrypted,bool,omitempty"`
   InstancePackageID             string                  `json:"instance_package_id,omitempty"`
-  IPAddressesRaw                []map[string]IPAddress  `json:"ip_addresses,omitempty"`
+  // IPAddressesRaw                []map[string]IPAddress  `json:"ip_addresses,omitempty"`
+  IPAddresses                   []IPAddress             `json:"ip_addresses,omitempty"`
   IsoID                         string                  `json:"iso_id,omitempty"`
   Label                         string                  `json:"label,omitempty"`
   LocalRemoteAccessIPAddress    string                  `json:"local_remote_access_ip_address,omitempty"`
@@ -93,7 +95,7 @@ type VirtualMachine struct {
   // PreferredHVS                  []HVS                   `json:"preferred_hvs"`
   PricePerHour                  float32                 `json:"price_per_hour,omitempty"`
   PricePerHourPoweredOff        float32                 `json:"price_per_hour_powered_off,omitempty"`
-  // Properties                    []string                `json:"properties"`
+  // Properties                    Propertie               `json:"properties"`
   RecoveryMode                  bool                    `json:"recovery_mode,bool,omitempty"`
   RemoteAccessPassword          string                  `json:"remote_access_password,omitempty"`
   ServicePassword               string                  `json:"service_password,omitempty"`
@@ -148,6 +150,7 @@ type VirtualMachineCreateRequest struct {
 
   AccelerationAllowed               bool      `json:"acceleration_allowed,bool,omitempty"`
   AdminNote                         string    `json:"admin_note,omitempty"`
+  // *
   CPUShares                         int       `json:"cpu_shares,omitempty"`
   CPUSockets                        string    `json:"cpu_sockets,omitempty"`
   // *
@@ -185,7 +188,7 @@ type VirtualMachineCreateRequest struct {
   RequiredIPAddressAssignment       bool      `json:"required_ip_address_assignment,bool,omitempty"`
   // *
   RequiredVirtualMachineBuild       bool      `json:"required_virtual_machine_build,bool,omitempty"`
-  RequiredVirtualMachineStartup     int       `json:"required_virtual_machine_startup,omitempty"`
+  RequiredVirtualMachineStartup     bool      `json:"required_virtual_machine_startup,bool,omitempty"`
   SelectedIPAddress                 string    `json:"selected_ip_address,omitempty"`
   SwapDiskMinIops                   int       `json:"swap_disk_min_iops,omitempty"`
   // * in gigabytes 5, 10
@@ -199,6 +202,14 @@ type VirtualMachineCreateRequest struct {
 // VirtualMachineMultiCreateRequest is a request to create multiple VirtualMachine.
 // type VirtualMachineMultiCreateRequest struct {
 // }
+
+type virtualMachineRoot struct {
+  VirtualMachine  *VirtualMachine  `json:"virtual_machine"`
+}
+
+type virtualMachinesRoot struct {
+  VirtualMachines  []VirtualMachine  `json:"virtual_machine"`
+}
 
 func (d VirtualMachineCreateRequest) String() string {
   return godo.Stringify(d)
@@ -215,18 +226,13 @@ func (s *VirtualMachinesServiceOp) list(ctx context.Context, path string) ([]Vir
     return nil, nil, err
   }
 
-  var out []map[string]VirtualMachine
-  resp, err := s.client.Do(ctx, req, &out)
+  root := new(virtualMachinesRoot)
+  resp, err := s.client.Do(ctx, req, root)
   if err != nil {
     return nil, resp, err
   }
 
-  vms := make([]VirtualMachine, len(out))
-  for i := range vms {
-    vms[i] = out[i]["virtual_machine"]
-  }
-
-  return vms, resp, err
+  return root.VirtualMachines, resp, err
 }
 
 // List all VirtualMachines.
@@ -253,17 +259,13 @@ func (s *VirtualMachinesServiceOp) Get(ctx context.Context, VirtualMachineID str
     return nil, nil, err
   }
 
-  fmt.Println("\nreq: ", req)
-
-  var out map[string]VirtualMachine
-  resp, err := s.client.Do(ctx, req, &out)
+  root := new(virtualMachineRoot)
+  resp, err := s.client.Do(ctx, req, root)
   if err != nil {
     return nil, resp, err
   }
 
-  vm := out["virtual_machine"]
-
-  return &vm, resp, err
+  return root.VirtualMachine, resp, err
 }
 
 // Create VirtualMachine.
@@ -279,17 +281,15 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
     return nil, nil, err
   }
 
-  fmt.Println("[Create] req: ", req)
+  fmt.Println("\n[Create]  req: ", req)
 
-	var out map[string]VirtualMachine
-  resp, err := s.client.Do(ctx, req, &out)
+  root := new(virtualMachineRoot)
+  resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-   return nil, resp, err
+    return nil, nil, err
   }
 
-	vm := out["virtual_machine"]
-
-	return &vm, resp, err
+  return root.VirtualMachine, resp, err
 }
 
 // CreateMultiple - creates multiple VirtualMachines.
