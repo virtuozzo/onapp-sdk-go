@@ -36,7 +36,7 @@ type VirtualMachinesServiceOp struct {
   client *Client
 }
 
-// var _ VirtualMachinesService = &VirtualMachinesServiceOp{}
+var _ VirtualMachinesService = &VirtualMachinesServiceOp{}
 
 // VirtualMachine represent VirtualServer from OnApp API
 type VirtualMachine struct {
