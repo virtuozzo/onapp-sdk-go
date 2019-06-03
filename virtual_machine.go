@@ -137,8 +137,8 @@ type IPAddress struct {
   UserID          string    `json:"user_id,omitempty"`
 }
 
-// VirtualMachineCreateRequest represents a request to create a VirtualMachine.
-type VirtualMachineCreateRequest struct {
+// VMCR - VirtualMachineCreateRequest represents a request to create a VirtualMachine - main stucture
+type VMCR struct {
   // custom_variables_attributes
       // [
       //   enabled - true, if the variable is enabled, otherwise false
@@ -197,6 +197,11 @@ type VirtualMachineCreateRequest struct {
   TemplateID                        int       `json:"template_id,omitempty"`
   TimeZone                          string    `json:"time_zone,omitempty"`
   TypeOfFormat                      string    `json:"type_of_format,omitempty"`
+}
+
+// VirtualMachineCreateRequest represents a request to create a VirtualMachine - proxy
+type VirtualMachineCreateRequest struct {
+  VMCR  *VMCR  `json:"virtual_machine"`
 }
 
 // VirtualMachineMultiCreateRequest is a request to create multiple VirtualMachine.
