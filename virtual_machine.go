@@ -137,8 +137,8 @@ type IPAddress struct {
   UserID          string    `json:"user_id,omitempty"`
 }
 
-// VMCR - VirtualMachineCreateRequest represents a request to create a VirtualMachine - main stucture
-type VMCR struct {
+// VirtualMachineCreateRequest represents a request to create a VirtualMachine
+type VirtualMachineCreateRequest struct {
   // custom_variables_attributes
       // [
       //   enabled - true, if the variable is enabled, otherwise false
@@ -199,9 +199,8 @@ type VMCR struct {
   TypeOfFormat                      string    `json:"type_of_format,omitempty"`
 }
 
-// VirtualMachineCreateRequest represents a request to create a VirtualMachine - proxy
-type VirtualMachineCreateRequest struct {
-  VMCR  *VMCR  `json:"virtual_machine"`
+type virtualMachineCreateRequestRoot struct {
+  VirtualMachineCreateRequest  *VirtualMachineCreateRequest  `json:"virtual_machine"`
 }
 
 // VirtualMachineMultiCreateRequest is a request to create multiple VirtualMachine.
@@ -281,7 +280,11 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
 
   path := virtualMachineBasePath + ".json"
 
-  req, err := s.client.NewRequest(ctx, http.MethodPost, path, createRequest)
+  rootRequest := &virtualMachineCreateRequestRoot{
+    VirtualMachineCreateRequest : createRequest,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
   if err != nil {
     return nil, nil, err
   }
