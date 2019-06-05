@@ -23,7 +23,7 @@ type VirtualMachinesService interface {
   Get(context.Context, string) (*VirtualMachine, *Response, error)
   Create(context.Context, *VirtualMachineCreateRequest) (*VirtualMachine, *Response, error)
   // CreateMultiple(context.Context, *VirtualMachineMultiCreateRequest) ([]VirtualMachine, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
+  Delete(context.Context, int) (*Response, error)
   // DeleteByTag(context.Context, string) (*Response, error)
   // Snapshots(context.Context, int, *ListOptions) ([]Image, *Response, error)
   // Backups(context.Context, int, *ListOptions) ([]Image, *Response, error)
@@ -251,12 +251,12 @@ func (s *VirtualMachinesServiceOp) List(ctx context.Context, opt *ListOptions) (
 }
 
 // Get individual VirtualMachine.
-func (s *VirtualMachinesServiceOp) Get(ctx context.Context, VirtualMachineID string) (*VirtualMachine, *Response, error) {
-  if len(VirtualMachineID) < 1 {
-    return nil, nil, godo.NewArgError("VirtualMachineID", "cannot be empty")
+func (s *VirtualMachinesServiceOp) Get(ctx context.Context, virtualMachineID string) (*VirtualMachine, *Response, error) {
+  if len(virtualMachineID) < 1 {
+    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be empty")
   }
 
-  path := fmt.Sprintf("%s/%s", virtualMachineBasePath, VirtualMachineID)
+  path := fmt.Sprintf("%s/%s", virtualMachineBasePath, virtualMachineID)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -323,3 +323,26 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
 //   // return out, resp, err
 //   return nil, nil, err
 // }
+
+// Performs a delete request given a path
+func (s *VirtualMachinesServiceOp) delete(ctx context.Context, path string) (*Response, error) {
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+  if err != nil {
+    return nil, err
+  }
+
+  resp, err := s.client.Do(ctx, req, nil)
+
+  return resp, err
+}
+
+// Delete VirtualMachine.
+func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID int) (*Response, error) {
+  if virtualMachineID < 1 {
+    return nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf("%s/%d.json", virtualMachineBasePath, virtualMachineID)
+
+  return s.delete(ctx, path)
+}
