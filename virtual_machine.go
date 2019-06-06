@@ -251,12 +251,12 @@ func (s *VirtualMachinesServiceOp) List(ctx context.Context, opt *ListOptions) (
 }
 
 // Get individual VirtualMachine.
-func (s *VirtualMachinesServiceOp) Get(ctx context.Context, virtualMachineID string) (*VirtualMachine, *Response, error) {
-  if len(virtualMachineID) < 1 {
-    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be empty")
+func (s *VirtualMachinesServiceOp) Get(ctx context.Context, vmIdentifier string) (*VirtualMachine, *Response, error) {
+  if len(vmIdentifier) < 1 {
+    return nil, nil, godo.NewArgError("vmIdentifier", "cannot be empty")
   }
 
-  path := fmt.Sprintf("%s/%s", virtualMachineBasePath, virtualMachineID)
+  path := fmt.Sprintf("%s/%s", virtualMachineBasePath, vmIdentifier)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {

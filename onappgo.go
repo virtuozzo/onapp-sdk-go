@@ -10,8 +10,6 @@ import (
   "net/http"
   "net/url"
   "reflect"
-  // strconv "strconv"
-  // "time"
 
   "github.com/google/go-querystring/query"
   // "github.com/digitalocean/godo"
@@ -26,9 +24,6 @@ const (
   // headerRateLimit     = "RateLimit-Limit"
   // headerRateRemaining = "RateLimit-Remaining"
   // headerRateReset     = "RateLimit-Reset"
-
-  // user     = "taras.brodovych@onapp.com"
-  // password = "2471fa41a9728f4c7e7ec437648b3a729d05dae3"
 )
 
 // Client manages communication with OnApp API.
