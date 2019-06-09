@@ -5,7 +5,7 @@ import (
   "errors"
   "net/http"
   "fmt"
-  // "encoding/json"
+  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -47,7 +47,7 @@ type VirtualMachine struct {
   AddToMarketplace              string                  `json:"add_to_marketplace,omitempty"`
   AdminNote                     string                  `json:"admin_note,omitempty"`
   AllowedHotMigrate             bool                    `json:"allowed_hot_migrate,bool,omitempty"`
-  AllowedSwap                   bool                    `json:"allowed_swap,bool,omitempty,bool,omitempty"`
+  AllowedSwap                   bool                    `json:"allowed_swap,bool,omitempty"`
   AutoscaleService              string                  `json:"autoscale_service,omitempty"`
   Booted                        bool                    `json:"booted,bool,omitempty"`
   Built                         bool                    `json:"built,bool,omitempty"`
@@ -60,8 +60,8 @@ type VirtualMachine struct {
   CPUSockets                    string                  `json:"cpu_sockets,omitempty"`
   CPUUnits                      int                     `json:"cpu_units,omitempty"`
   Cpus                          int                     `json:"cpus,omitempty"`
-  CreatedAt                     string                  `json:"created_at,omitempty"`
-  DeletedAt                     string                  `json:"deleted_at,omitempty"`
+  CreatedAt                     time.Time               `json:"created_at,omitempty"`
+  DeletedAt                     time.Time               `json:"deleted_at,omitempty"`
   Domain                        string                  `json:"domain,omitempty"`
   DraasKeys                     []string                `json:"draas_keys,omitempty"`
   DraasMode                     int                     `json:"draas_mode,omitempty"`
@@ -78,7 +78,6 @@ type VirtualMachine struct {
   InitialRootPassword           string                  `json:"initial_root_password,omitempty"`
   InitialRootPasswordEncrypted  bool                    `json:"initial_root_password_encrypted,bool,omitempty"`
   InstancePackageID             string                  `json:"instance_package_id,omitempty"`
-  // IPAddressesRaw                []map[string]IPAddress  `json:"ip_addresses,omitempty"`
   IPAddresses                   []IPAddress             `json:"ip_addresses,omitempty"`
   IsoID                         string                  `json:"iso_id,omitempty"`
   Label                         string                  `json:"label,omitempty"`
@@ -109,7 +108,7 @@ type VirtualMachine struct {
   TemplateVersion               string                  `json:"template_version,omitempty"`
   TimeZone                      string                  `json:"time_zone,omitempty"`
   TotalDiskSize                 int                     `json:"total_disk_size,omitempty"`
-  UpdatedAt                     string                  `json:"updated_at,omitempty"`
+  UpdatedAt                     time.Time               `json:"updated_at,omitempty"`
   UserID                        int                     `json:"user_id,omitempty"`
   VappID                        string                  `json:"vapp_id,omitempty"`
   VcenterClusterID              string                  `json:"vcenter_cluster_id,omitempty"`
@@ -122,19 +121,19 @@ type VirtualMachine struct {
 
 // IPAddress - represents an ip address of VirtualMachine
 type IPAddress struct {
-  Address         string    `json:"address,omitempty"`
-  Broadcast       string    `json:"broadcast,omitempty"`
-  CreatedAt       string    `json:"created_at,omitempty"`
-  Free            bool      `json:"free,bool,omitempty"`
-  Gateway         string    `json:"gateway,omitempty"`
-  HypervisorID    string    `json:"hypervisor_id,omitempty"`
-  ID              int       `json:"id,omitempty"`
-  IPRangeID       int       `json:"ip_range_id,omitempty"`
-  Netmask         string    `json:"netmask,omitempty"`
-  NetworkAddress  string    `json:"network_address,omitempty"`
-  Pxe             bool      `json:"pxe,bool,omitempty"`
-  UpdatedAt       string    `json:"updated_at,omitempty"`
-  UserID          string    `json:"user_id,omitempty"`
+  Address         string      `json:"address,omitempty"`
+  Broadcast       string      `json:"broadcast,omitempty"`
+  CreatedAt       time.Time   `json:"created_at,omitempty"`
+  Free            bool        `json:"free,bool,omitempty"`
+  Gateway         string      `json:"gateway,omitempty"`
+  HypervisorID    string      `json:"hypervisor_id,omitempty"`
+  ID              int         `json:"id,omitempty"`
+  IPRangeID       int         `json:"ip_range_id,omitempty"`
+  Netmask         string      `json:"netmask,omitempty"`
+  NetworkAddress  string      `json:"network_address,omitempty"`
+  Pxe             bool        `json:"pxe,bool,omitempty"`
+  UpdatedAt       time.Time   `json:"updated_at,omitempty"`
+  UserID          string      `json:"user_id,omitempty"`
 }
 
 // VirtualMachineCreateRequest represents a request to create a VirtualMachine
@@ -230,13 +229,22 @@ func (s *VirtualMachinesServiceOp) list(ctx context.Context, path string) ([]Vir
     return nil, nil, err
   }
 
-  root := new(virtualMachinesRoot)
-  resp, err := s.client.Do(ctx, req, root)
+	var out []map[string]VirtualMachine
+  resp, err := s.client.Do(ctx, req, &out)
+	
+  // root := new(virtualMachinesRoot)
+  // resp, err := s.client.Do(ctx, req, root)
   if err != nil {
     return nil, resp, err
   }
 
-  return root.VirtualMachines, resp, err
+	vms := make([]VirtualMachine, len(out))
+	for i := range vms {
+	  vms[i] = out[i]["virtual_machine"]
+	}
+
+	return vms, resp, err
+  // return root.VirtualMachines, resp, err
 }
 
 // List all VirtualMachines.
@@ -278,7 +286,7 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
     return nil, nil, godo.NewArgError("createRequest", "cannot be nil")
   }
 
-  path := virtualMachineBasePath + ".json"
+  path := virtualMachineBasePath + apiFormat
 
   rootRequest := &virtualMachineCreateRequestRoot{
     VirtualMachineCreateRequest : createRequest,
@@ -342,7 +350,7 @@ func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID 
     return nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d.json", virtualMachineBasePath, virtualMachineID)
+  path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, virtualMachineID, apiFormat)
 
   return s.delete(ctx, path)
 }
