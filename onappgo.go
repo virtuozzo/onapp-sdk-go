@@ -16,14 +16,11 @@ import (
 )
 
 const (
-  libraryVersion = "1.0.0"
-  defaultBaseURL = "http://69.168.237.17/"
-  userAgent      = "onapp_sdk_go/" + libraryVersion
-  mediaType      = "application/json"
-
-  // headerRateLimit     = "RateLimit-Limit"
-  // headerRateRemaining = "RateLimit-Remaining"
-  // headerRateReset     = "RateLimit-Reset"
+  libraryVersion  = "1.0.0"
+  defaultBaseURL  = "http://69.168.237.17/"
+  userAgent       = "onapp_sdk_go/" + libraryVersion
+  mediaType       = "application/json"
+  apiFormat       = ".json"
 )
 
 // Client manages communication with OnApp API.
@@ -40,13 +37,9 @@ type Client struct {
   apiUser string
   apiPassword string
 
-  // Rate contains the current rate limit for the client as determined by the most recent
-  // API call.
-  // Rate Rate
-
   // Services used for communicating with the API
   // Account           AccountService
-  // Actions           ActionsService
+  Transactions      TransactionsService
   // CDNs              CDNService
   // Domains           DomainsService
   VirtualMachines   VirtualMachinesService
@@ -90,15 +83,6 @@ type ListOptions struct {
 // Response is a DigitalOcean response. This wraps the standard http.Response returned from DigitalOcean.
 type Response struct {
   *http.Response
-
-  // Links that were returned with the response. These are parsed from
-  // request body and not the header.
-  // Links *Links
-
-  // Monitoring URI
-  // Monitor string
-
-  // Rate
 }
 
 // An ErrorResponse reports the error caused by an API request
@@ -106,24 +90,9 @@ type ErrorResponse struct {
   // HTTP response that caused this error
   Response *http.Response
 
-  // Error message
-  Message string `json:"message"`
-
-  // RequestID returned from the API, useful to contact support.
-  // RequestID string `json:"request_id"`
+  // Error messages
+  Errors map[string][]string `json:"errors,omitempty"`
 }
-
-// Rate contains the rate limit for the current client.
-// type Rate struct {
-//   // The number of request per hour the client is currently limited to.
-//   Limit int `json:"limit"`
-
-//   // The number of remaining requests the client can make this hour.
-//   Remaining int `json:"remaining"`
-
-//   // The time at which the current rate limit will reset.
-//   Reset godo.Timestamp `json:"reset"`
-// }
 
 func addOptions(s string, opt interface{}) (string, error) {
   v := reflect.ValueOf(opt)
@@ -163,7 +132,7 @@ func NewClient(httpClient *http.Client) *Client {
   c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: userAgent}
 
   // c.Account = &AccountServiceOp{client: c}
-  // c.Actions = &ActionsServiceOp{client: c}
+  c.Transactions = &TransactionsServiceOp{client: c}
   // c.CDNs = &CDNServiceOp{client: c}
   // c.Certificates = &CertificatesServiceOp{client: c}
   // c.Domains = &DomainsServiceOp{client: c}
@@ -276,25 +245,9 @@ func (c *Client) OnRequestCompleted(rc RequestCompletionCallback) {
 // newResponse creates a new Response for the provided http.Response
 func newResponse(r *http.Response) *Response {
   response := Response{Response: r}
-  // response.populateRate()
 
   return &response
 }
-
-// populateRate parses the rate related headers and populates the response Rate.
-// func (r *Response) populateRate() {
-//   if limit := r.Header.Get(headerRateLimit); limit != "" {
-//     r.Rate.Limit, _ = strconv.Atoi(limit)
-//   }
-//   if remaining := r.Header.Get(headerRateRemaining); remaining != "" {
-//     r.Rate.Remaining, _ = strconv.Atoi(remaining)
-//   }
-//   if reset := r.Header.Get(headerRateReset); reset != "" {
-//     if v, _ := strconv.ParseInt(reset, 10, 64); v != 0 {
-//       r.Rate.Reset = godo.Timestamp{time.Unix(v, 0)}
-//     }
-//   }
-// }
 
 // Do sends an API request and returns the API response. The API response is JSON decoded and stored in the value
 // pointed to by v, or returned as an error if an API error has occurred. If v implements the io.Writer interface,
@@ -315,7 +268,6 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
   }()
 
   response := newResponse(resp)
-  // c.Rate = response.Rate
 
   err = CheckResponse(resp)
   if err != nil {
@@ -351,12 +303,9 @@ func DoRequestWithClient(ctx context.Context, client *http.Client, req *http.Req
 }
 
 func (r *ErrorResponse) Error() string {
-  // if r.RequestID != "" {
-  //   return fmt.Sprintf("%v %v: %d (request %q) %v",
-  //     r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, r.RequestID, r.Message)
-  // }
-  return fmt.Sprintf("%v %v: %d %v",
-    r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, r.Message)
+  return fmt.Sprintf("%v %v: %d %s",
+    r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, r.String())
+    // r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, godo.Stringify(r))
 }
 
 // CheckResponse checks the API response for errors, and returns them if present. A response is considered an
@@ -370,18 +319,22 @@ func CheckResponse(r *http.Response) error {
   errorResponse := &ErrorResponse{Response: r}
   data, err := ioutil.ReadAll(r.Body)
   if err == nil && len(data) > 0 {
-    err := json.Unmarshal(data, errorResponse)
-    if err != nil {
-      errorResponse.Message = string(data)
-    }
+    json.Unmarshal(data, errorResponse)
   }
 
   return errorResponse
 }
 
-// func (r Rate) String() string {
-//   return godo.Stringify(r)
-// }
+// String - convert ErrorResponse to the string
+func (r *ErrorResponse) String() string {
+  var str string
+
+  for name, message := range r.Errors {
+    str = str + fmt.Sprintf("\n%s %s", name, message)
+  }
+
+  return str
+}
 
 // String is a helper routine that allocates a new string value
 // to store v and returns a pointer to it.
