@@ -229,21 +229,21 @@ func (s *VirtualMachinesServiceOp) list(ctx context.Context, path string) ([]Vir
     return nil, nil, err
   }
 
-	var out []map[string]VirtualMachine
+  var out []map[string]VirtualMachine
   resp, err := s.client.Do(ctx, req, &out)
-	
+
   // root := new(virtualMachinesRoot)
   // resp, err := s.client.Do(ctx, req, root)
   if err != nil {
     return nil, resp, err
   }
 
-	vms := make([]VirtualMachine, len(out))
-	for i := range vms {
-	  vms[i] = out[i]["virtual_machine"]
-	}
+  vms := make([]VirtualMachine, len(out))
+  for i := range vms {
+    vms[i] = out[i]["virtual_machine"]
+  }
 
-	return vms, resp, err
+  return vms, resp, err
   // return root.VirtualMachines, resp, err
 }
 
