@@ -2,7 +2,6 @@ package onappgo
 
 import (
   "context"
-  "errors"
   "net/http"
   "fmt"
   "time"
@@ -12,23 +11,18 @@ import (
 
 const virtualMachineBasePath = "virtual_machines"
 
-var errNoNetworks = errors.New("no networks have been defined")
-
 // VirtualMachinesService is an interface for interfacing with the VirtualMachine
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/virtual-servers/get-list-of-vss
 type VirtualMachinesService interface {
   List(context.Context, *ListOptions) ([]VirtualMachine, *Response, error)
-  // ListByTag(context.Context, string, *ListOptions) ([]VirtualMachine, *Response, error)
-  Get(context.Context, string) (*VirtualMachine, *Response, error)
+  Get(context.Context, int) (*VirtualMachine, *Response, error)
   Create(context.Context, *VirtualMachineCreateRequest) (*VirtualMachine, *Response, error)
-  // CreateMultiple(context.Context, *VirtualMachineMultiCreateRequest) ([]VirtualMachine, *Response, error)
-  Delete(context.Context, int) (*Response, error)
-  // DeleteByTag(context.Context, string) (*Response, error)
+  // Delete(context.Context, int) (*Response, error)
+  Delete(context.Context, int, interface{}) (*Response, error)
   // Snapshots(context.Context, int, *ListOptions) ([]Image, *Response, error)
-  // Backups(context.Context, int, *ListOptions) ([]Image, *Response, error)
-  // Actions(context.Context, int, *ListOptions) ([]Action, *Response, error)
-  // Neighbors(context.Context, int) ([]VirtualMachine, *Response, error)
+  Backups(context.Context, int, *ListOptions) ([]Backup, *Response, error)
+  Transactions(context.Context, int, *ListOptions) ([]Transaction, *Response, error)
 }
 
 // VirtualMachinesServiceOp handles communication with the VirtualMachine related methods of the
@@ -202,25 +196,13 @@ type virtualMachineCreateRequestRoot struct {
   VirtualMachineCreateRequest  *VirtualMachineCreateRequest  `json:"virtual_machine"`
 }
 
-// VirtualMachineMultiCreateRequest is a request to create multiple VirtualMachine.
-// type VirtualMachineMultiCreateRequest struct {
-// }
-
 type virtualMachineRoot struct {
   VirtualMachine  *VirtualMachine  `json:"virtual_machine"`
-}
-
-type virtualMachinesRoot struct {
-  VirtualMachines  []VirtualMachine  `json:"virtual_machine"`
 }
 
 func (d VirtualMachineCreateRequest) String() string {
   return godo.Stringify(d)
 }
-
-// func (d VirtualMachineMultiCreateRequest) String() string {
-//   return godo.Stringify(d)
-// }
 
 // Performs a list request given a path.
 func (s *VirtualMachinesServiceOp) list(ctx context.Context, path string) ([]VirtualMachine, *Response, error) {
@@ -232,8 +214,6 @@ func (s *VirtualMachinesServiceOp) list(ctx context.Context, path string) ([]Vir
   var out []map[string]VirtualMachine
   resp, err := s.client.Do(ctx, req, &out)
 
-  // root := new(virtualMachinesRoot)
-  // resp, err := s.client.Do(ctx, req, root)
   if err != nil {
     return nil, resp, err
   }
@@ -244,7 +224,6 @@ func (s *VirtualMachinesServiceOp) list(ctx context.Context, path string) ([]Vir
   }
 
   return vms, resp, err
-  // return root.VirtualMachines, resp, err
 }
 
 // List all VirtualMachines.
@@ -259,12 +238,12 @@ func (s *VirtualMachinesServiceOp) List(ctx context.Context, opt *ListOptions) (
 }
 
 // Get individual VirtualMachine.
-func (s *VirtualMachinesServiceOp) Get(ctx context.Context, vmIdentifier string) (*VirtualMachine, *Response, error) {
-  if len(vmIdentifier) < 1 {
-    return nil, nil, godo.NewArgError("vmIdentifier", "cannot be empty")
+func (s *VirtualMachinesServiceOp) Get(ctx context.Context, vmID int) (*VirtualMachine, *Response, error) {
+  if vmID < 1 {
+    return nil, nil, godo.NewArgError("vmID", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%s", virtualMachineBasePath, vmIdentifier)
+  path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, vmID, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -308,28 +287,27 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
   return root.VirtualMachine, resp, err
 }
 
-// CreateMultiple - creates multiple VirtualMachines.
-// func (s *VirtualMachinesServiceOp) CreateMultiple(ctx context.Context, createRequest *VirtualMachineMultiCreateRequest) ([]VirtualMachine, *Response, error) {
-//   if createRequest == nil {
-//     return nil, nil, godo.NewArgError("createRequest", "cannot be nil")
-//   }
-
-//   path := virtualMachineBasePath
-
-//   req, err := s.client.NewRequest(ctx, http.MethodPost, path, createRequest)
+// Performs a delete request given a path
+// func (s *VirtualMachinesServiceOp) delete(ctx context.Context, path string) (*Response, error) {
+//   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
 //   if err != nil {
-//     return nil, nil, err
+//     return nil, err
 //   }
 
-//   fmt.Println("[CreateMultiple] req: ", req)
+//   resp, err := s.client.Do(ctx, req, nil)
 
-//   // out := new(virtualMachinesRoot)
-//   // resp, err := s.client.Do(ctx, req, out)
-//   // if err != nil {
-//   //  return nil, resp, err
+//   return resp, err
+// }
 
-//   // return out, resp, err
-//   return nil, nil, err
+// Delete VirtualMachine.
+// func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID int) (*Response, error) {
+//   if virtualMachineID < 1 {
+//     return nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+//   }
+
+//   path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, virtualMachineID, apiFormat)
+
+//   return s.delete(ctx, path)
 // }
 
 // Performs a delete request given a path
@@ -339,18 +317,85 @@ func (s *VirtualMachinesServiceOp) delete(ctx context.Context, path string) (*Re
     return nil, err
   }
 
+  fmt.Printf("delete.req: %s\n",  req.URL)
   resp, err := s.client.Do(ctx, req, nil)
 
   return resp, err
 }
 
 // Delete VirtualMachine.
-func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID int) (*Response, error) {
+func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID int, meta interface{}) (*Response, error) {
   if virtualMachineID < 1 {
     return nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
   }
 
   path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, virtualMachineID, apiFormat)
+  path, err := addOptions(path, meta)
+  if err != nil {
+    return nil, err
+  }
 
   return s.delete(ctx, path)
+}
+
+// Backups lists the backups for a VirtualMachine
+func (s *VirtualMachinesServiceOp) Backups(ctx context.Context, virtualMachineID int, opt *ListOptions) ([]Backup, *Response, error) {
+  if virtualMachineID < 1 {
+    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf("%s/%d/backups%s", virtualMachineBasePath, virtualMachineID, apiFormat)
+  path, err := addOptions(path, opt)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]Backup
+  resp, err := s.client.Do(ctx, req, &out)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  backups := make([]Backup, len(out))
+  for i := range backups {
+    backups[i] = out[i]["backup"]
+  }
+
+  return backups, resp, err
+}
+
+// Transactions lists the transactions for a VirtualMachine.
+func (s *VirtualMachinesServiceOp) Transactions(ctx context.Context, virtualMachineID int, opt *ListOptions) ([]Transaction, *Response, error) {
+  if virtualMachineID < 1 {
+    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf("%s/%d/transactions%s", virtualMachineBasePath, virtualMachineID, apiFormat)
+  path, err := addOptions(path, opt)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]Transaction
+  resp, err := s.client.Do(ctx, req, &out)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  transactions := make([]Transaction, len(out))
+  for i := range transactions {
+    transactions[i] = out[i]["transaction"]
+  }
+
+  return transactions, resp, err
 }
