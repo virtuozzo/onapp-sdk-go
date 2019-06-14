@@ -20,9 +20,9 @@ type VirtualMachinesService interface {
   Create(context.Context, *VirtualMachineCreateRequest) (*VirtualMachine, *Response, error)
   // Delete(context.Context, int) (*Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Snapshots(context.Context, int, *ListOptions) ([]Image, *Response, error)
   Backups(context.Context, int, *ListOptions) ([]Backup, *Response, error)
   Transactions(context.Context, int, *ListOptions) ([]Transaction, *Response, error)
+  Disks(context.Context, int, *ListOptions) ([]Disk, *Response, error)
 }
 
 // VirtualMachinesServiceOp handles communication with the VirtualMachine related methods of the
@@ -347,7 +347,8 @@ func (s *VirtualMachinesServiceOp) Backups(ctx context.Context, virtualMachineID
     return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d/backups%s", virtualMachineBasePath, virtualMachineID, apiFormat)
+  resourceType := "backup"
+  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, virtualMachineID, resourceType+"s", apiFormat)
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -366,7 +367,7 @@ func (s *VirtualMachinesServiceOp) Backups(ctx context.Context, virtualMachineID
 
   backups := make([]Backup, len(out))
   for i := range backups {
-    backups[i] = out[i]["backup"]
+    backups[i] = out[i][resourceType]
   }
 
   return backups, resp, err
@@ -378,7 +379,8 @@ func (s *VirtualMachinesServiceOp) Transactions(ctx context.Context, virtualMach
     return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d/transactions%s", virtualMachineBasePath, virtualMachineID, apiFormat)
+  resourceType := "transaction"
+  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, virtualMachineID, resourceType+"s", apiFormat)
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -397,8 +399,40 @@ func (s *VirtualMachinesServiceOp) Transactions(ctx context.Context, virtualMach
 
   transactions := make([]Transaction, len(out))
   for i := range transactions {
-    transactions[i] = out[i]["transaction"]
+    transactions[i] = out[i][resourceType]
   }
 
   return transactions, resp, err
+}
+
+// Disks lists the disk for a VirtualMachine.
+func (s *VirtualMachinesServiceOp) Disks(ctx context.Context, virtualMachineID int, opt *ListOptions) ([]Disk, *Response, error) {
+  if virtualMachineID < 1 {
+    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+  }
+
+  resourceType := "disk"
+  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, virtualMachineID, resourceType+"s", apiFormat)
+  path, err := addOptions(path, opt)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]Disk
+  resp, err := s.client.Do(ctx, req, &out)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  disks := make([]Disk, len(out))
+  for i := range disks {
+    disks[i] = out[i][resourceType]
+  }
+
+  return disks, resp, err
 }
