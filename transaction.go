@@ -23,7 +23,7 @@ const (
 // OnApp API: https://docs.onapp.com/apim/latest/transactions
 type TransactionsService interface {
   List(context.Context, *ListOptions) ([]Transaction, *Response, error)
-  // Get(context.Context, int) (*Transaction, *Response, error)
+  Get(context.Context, int) (*Transaction, *Response, error)
 }
 
 // TransactionsServiceOp handles communition with the image action related methods of the
@@ -70,11 +70,7 @@ type Transaction struct {
 }
 
 type transactionRoot struct {
-  Event *Transaction `json:"transaction"`
-}
-
-type transactionsRoot struct {
-  Transactions []Transaction `json:"transaction"`
+  Transaction *Transaction `json:"transaction"`
 }
 
 // List all transactions
@@ -90,21 +86,12 @@ func (s *TransactionsServiceOp) List(ctx context.Context, opt *ListOptions) ([]T
     return nil, nil, err
   }
 
-  // root := new(transactionsRoot)
-  // resp, err := s.client.Do(ctx, req, root)
-  // if err != nil {
-  //   return nil, resp, err
-  // }
-
-  // return root.Transactions, resp, err
-
   var out []map[string]Transaction
   resp, err := s.client.Do(ctx, req, &out)
   if err != nil {
     return nil, resp, err
   }
 
-  fmt.Printf("out: %#v\n", out)
   txs := make([]Transaction, len(out))
   for i := range txs {
     txs[i] = out[i]["transaction"]
@@ -114,25 +101,25 @@ func (s *TransactionsServiceOp) List(ctx context.Context, opt *ListOptions) ([]T
 }
 
 // Get an transaction by ID.
-// func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, *Response, error) {
-//   if id < 1 {
-//     return nil, nil, NewArgError("id", "cannot be less than 1")
-//   }
+func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+  }
 
-//   path := fmt.Sprintf("%s/%d%s", transActionsBasePath, id, apiFormat)
-//   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
-//   if err != nil {
-//     return nil, nil, err
-//   }
+  path := fmt.Sprintf("%s/%d%s", transActionsBasePath, id, apiFormat)
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
 
-//   root := new(transactionRoot)
-//   resp, err := s.client.Do(ctx, req, root)
-//   if err != nil {
-//     return nil, resp, err
-//   }
+  root := new(transactionRoot)
+  resp, err := s.client.Do(ctx, req, root)
+  if err != nil {
+    return nil, resp, err
+  }
 
-//   return root.Event, resp, err
-// }
+  return root.Transaction, resp, err
+}
 
 func (a Transaction) String() string {
   return godo.Stringify(a)
