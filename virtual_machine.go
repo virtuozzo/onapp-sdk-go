@@ -72,7 +72,7 @@ type VirtualMachine struct {
   InitialRootPassword           string                  `json:"initial_root_password,omitempty"`
   InitialRootPasswordEncrypted  bool                    `json:"initial_root_password_encrypted,bool,omitempty"`
   InstancePackageID             string                  `json:"instance_package_id,omitempty"`
-  IPAddresses                   []IPAddress             `json:"ip_addresses,omitempty"`
+  IPAddresses                   []map[string]IPAddress  `json:"ip_addresses,omitempty"`
   IsoID                         string                  `json:"iso_id,omitempty"`
   Label                         string                  `json:"label,omitempty"`
   LocalRemoteAccessIPAddress    string                  `json:"local_remote_access_ip_address,omitempty"`
@@ -123,9 +123,12 @@ type IPAddress struct {
   HypervisorID    string      `json:"hypervisor_id,omitempty"`
   ID              int         `json:"id,omitempty"`
   IPRangeID       int         `json:"ip_range_id,omitempty"`
+  IPv4            bool        `json:"ipv4,bool,omitempty"`
+  LockVersion     int         `json:"lock_version,omitempty"`
   Netmask         string      `json:"netmask,omitempty"`
   NetworkAddress  string      `json:"network_address,omitempty"`
   Pxe             bool        `json:"pxe,bool,omitempty"`
+  Prefix          int         `json:"prefix,omitempty"`
   UpdatedAt       time.Time   `json:"updated_at,omitempty"`
   UserID          string      `json:"user_id,omitempty"`
 }
