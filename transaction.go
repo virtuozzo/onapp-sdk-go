@@ -10,13 +10,16 @@ import (
 )
 
 const (
-  transActionsBasePath = "transactions"
+  transactionsBasePath = "transactions"
 
-  // TransActionInProgress is an in progress action status
-  TransActionInProgress = "in-progress"
+  // TransactionRunning is a running transaction status
+  TransactionRunning = "running"
 
-  // TransActionCompleted is a completed action status
-  TransActionCompleted = "completed"
+  // TransactionCompleted is a completed transaction status
+  TransactionCompleted = "complete"
+
+  // TransactionPending is a pending transaction status
+  TransactionPending = "pending"
 )
 
 // TransactionsService handles communction with action related methods of the
@@ -76,7 +79,7 @@ type transactionRoot struct {
 
 // List all transactions
 func (s *TransactionsServiceOp) List(ctx context.Context, opt *ListOptions) ([]Transaction, *Response, error) {
-  path := transActionsBasePath + apiFormat
+  path := transactionsBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -107,7 +110,7 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, 
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", transActionsBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", transactionsBasePath, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -126,7 +129,22 @@ func (trx Transaction) String() string {
   return godo.Stringify(trx)
 }
 
-// Debug - print formatted structure
+// Running check if transaction state is 'runing'
+func (trx Transaction) Running() bool {
+  return trx.Status == TransactionRunning
+}
+
+// Completed check if transaction state is 'complete'
+func (trx Transaction) Completed() bool {
+  return trx.Status == TransactionCompleted
+}
+
+// Pending check if transaction state is 'pending'
+func (trx Transaction) Pending() bool {
+  return trx.Status == TransactionPending
+}
+
+// Debug - print formatted Transaction structure
 func (trx Transaction) Debug() {
   fmt.Printf("                      ID: %d\n",  trx.ID)
   fmt.Printf("              Identifier: %s\n",  trx.Identifier)
