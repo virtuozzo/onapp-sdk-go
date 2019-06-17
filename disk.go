@@ -1,6 +1,7 @@
 package onappgo
 
 import (
+  "fmt"
   "time"
 )
 
@@ -47,4 +48,18 @@ type Disk struct {
   UpdatedAt                      time.Time                      `json:"updated_at,omitempty"`
   VirtualMachineID               int                            `json:"virtual_machine_id,omitempty"`
   VolumeID                       int                            `json:"volume_id,omitempty"`
+}
+
+// Debug - print formatted structure
+func (d Disk) Debug() {
+  fmt.Printf("                   ID: %d\n", d.ID)
+  fmt.Printf("           Identifier: %s\n", d.Identifier)
+  fmt.Printf("     VirtualMachineID: %d\n", d.VirtualMachineID)
+  fmt.Printf("                Label: %s\n", d.Label)
+  fmt.Printf("           FileSystem: %s\n", d.FileSystem)
+  fmt.Printf("            CreatedAt: %s\n", d.CreatedAt)
+  fmt.Printf("               Locked: %t\n", d.Locked)
+  fmt.Printf("             DiskSize: %d\n", d.DiskSize)
+  fmt.Printf("           MountPoint: %s\n", d.MountPoint)
+  fmt.Printf("             VolumeID: %d\n", d.VolumeID)
 }

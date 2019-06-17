@@ -122,6 +122,22 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, 
   return root.Transaction, resp, err
 }
 
-func (a Transaction) String() string {
-  return godo.Stringify(a)
+func (trx Transaction) String() string {
+  return godo.Stringify(trx)
+}
+
+// Debug - print formatted structure
+func (trx Transaction) Debug() {
+  fmt.Printf("                      ID: %d\n",  trx.ID)
+  fmt.Printf("              Identifier: %s\n",  trx.Identifier)
+  fmt.Printf("                  Action: %s\n",  trx.Action)
+  fmt.Printf("      AssociatedObjectID: %d\n",  trx.AssociatedObjectID)
+  fmt.Printf("    AssociatedObjectType: %s\n",  trx.AssociatedObjectType)
+  fmt.Printf("                  Status: %s\n",  trx.Status)
+  fmt.Printf("               CreatedAt: %s\n",  trx.CreatedAt)
+  fmt.Printf("              ParentType: %s\n",  trx.ParentType)
+  fmt.Printf("                 ChainID: %d\n",  trx.ChainID)
+  fmt.Printf("  DependentTransactionID: %d\n",  trx.DependentTransactionID)
+  fmt.Printf("                  Params: %#v\n", trx.Params)
+  fmt.Printf("     Params.ShutdownType: %s\n",  trx.Params.ShutdownType)
 }

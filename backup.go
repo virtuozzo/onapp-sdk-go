@@ -1,6 +1,7 @@
 package onappgo
 
 import (
+  "fmt"
   "time"
 )
 
@@ -34,4 +35,19 @@ type Backup struct {
   UpdatedAt                time.Time   `json:"updated_at,omitempty"`
   UserID                   int         `json:"user_id,omitempty"`
   VolumeID                 int         `json:"volume_id,omitempty"`
+}
+
+// Debug - print formatted structure
+func (bak Backup) Debug() {
+  fmt.Printf("                   ID: %d\n",   bak.ID)
+  fmt.Printf("               UserID: %d\n",   bak.UserID)
+  fmt.Printf("           Identifier: %s\n",   bak.Identifier)
+  fmt.Printf("          MinDiskSize: %dGB\n", bak.MinDiskSize)
+  fmt.Printf("      OperatingSystem: %s\n",   bak.OperatingSystem)
+  fmt.Printf("OperatingSystemDistro: %s\n",   bak.OperatingSystemDistro)
+  fmt.Printf("            CreatedAt: %s\n",   bak.CreatedAt)
+  fmt.Printf("           TemplateID: %d\n",   bak.TemplateID)
+  fmt.Printf("        DataStoreType: %s\n",   bak.DataStoreType)
+  fmt.Printf("           BackupSize: %d\n",   bak.BackupSize)
+  fmt.Printf("            Initiated: %s\n",   bak.Initiated)
 }

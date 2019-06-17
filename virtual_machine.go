@@ -20,6 +20,8 @@ type VirtualMachinesService interface {
   Create(context.Context, *VirtualMachineCreateRequest) (*VirtualMachine, *Response, error)
   // Delete(context.Context, int) (*Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
+  // Edit(context.Context, int, *ListOptions) ([]VirtualMachine, *Response, error)
+
   Backups(context.Context, int, *ListOptions) ([]Backup, *Response, error)
   Transactions(context.Context, int, *ListOptions) ([]Transaction, *Response, error)
   Disks(context.Context, int, *ListOptions) ([]Disk, *Response, error)
@@ -435,4 +437,36 @@ func (s *VirtualMachinesServiceOp) Disks(ctx context.Context, virtualMachineID i
   }
 
   return disks, resp, err
+}
+
+// Debug - print formatted structure
+func (vm VirtualMachine) Debug() {
+  fmt.Println("[                  ID]: ", vm.ID)
+  fmt.Println("[          Identifier]: ", vm.Identifier)
+  fmt.Println("[               Label]: ", vm.Label)
+  fmt.Println("[ InitialRootPassword]: ", vm.InitialRootPassword)
+  fmt.Println("[       TemplateLabel]: ", vm.TemplateLabel)
+  fmt.Println("[           CreatedAt]: ", vm.CreatedAt)
+
+  for i := range vm.IPAddresses {
+    ip := vm.IPAddresses[i]["ip_address"]
+    fmt.Printf("\t   IPAddresses: [%d]\n", i)
+    ip.Debug()
+    fmt.Println("")
+  }
+}
+
+// Debug - print formatted structure
+func (ip IPAddress) Debug() {
+  fmt.Printf("\t            ID: %d\n",  ip.ID)
+  fmt.Printf("\t       Address: %s\n",  ip.Address)
+  fmt.Printf("\t     Broadcast: %s\n",  ip.Broadcast)
+  fmt.Printf("\t       Gateway: %s\n",  ip.Gateway)
+  fmt.Printf("\t       Netmask: %s\n",  ip.Netmask)
+  fmt.Printf("\tNetworkAddress: %s\n",  ip.NetworkAddress)
+  fmt.Printf("\t        UserID: %s\n",  ip.UserID)
+  fmt.Printf("\t     IPRangeID: %d\n",  ip.IPRangeID)
+  fmt.Printf("\t          Free: %t\n",  ip.Free)
+  fmt.Printf("\t  HypervisorID: %s\n",  ip.HypervisorID)
+  fmt.Printf("\t   LockVersion: %d\n",  ip.LockVersion)
 }
