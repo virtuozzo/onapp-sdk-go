@@ -439,7 +439,7 @@ func (s *VirtualMachinesServiceOp) Disks(ctx context.Context, virtualMachineID i
   return disks, resp, err
 }
 
-// Debug - print formatted structure
+// Debug - print formatted VirtualMachine structure
 func (vm VirtualMachine) Debug() {
   fmt.Println("[                  ID]: ", vm.ID)
   fmt.Println("[          Identifier]: ", vm.Identifier)
@@ -456,7 +456,7 @@ func (vm VirtualMachine) Debug() {
   }
 }
 
-// Debug - print formatted structure
+// Debug - print formatted IPAddress structure
 func (ip IPAddress) Debug() {
   fmt.Printf("\t            ID: %d\n",  ip.ID)
   fmt.Printf("\t       Address: %s\n",  ip.Address)

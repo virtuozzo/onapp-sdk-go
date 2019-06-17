@@ -37,7 +37,7 @@ type Backup struct {
   VolumeID                 int         `json:"volume_id,omitempty"`
 }
 
-// Debug - print formatted structure
+// Debug - print formatted Backup structure
 func (bak Backup) Debug() {
   fmt.Printf("                   ID: %d\n",   bak.ID)
   fmt.Printf("               UserID: %d\n",   bak.UserID)

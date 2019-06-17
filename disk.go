@@ -50,7 +50,7 @@ type Disk struct {
   VolumeID                       int                            `json:"volume_id,omitempty"`
 }
 
-// Debug - print formatted structure
+// Debug - print formatted Disk structure
 func (d Disk) Debug() {
   fmt.Printf("                   ID: %d\n", d.ID)
   fmt.Printf("           Identifier: %s\n", d.Identifier)
