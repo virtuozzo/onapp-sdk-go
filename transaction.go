@@ -41,6 +41,7 @@ type Params struct {
   RealUserID       int      `json:"real_user_id,omitempty"`
   RemoteIP         string   `json:"remote_ip,omitempty"`
   SkipNotification bool     `json:"skip_notification,bool,omitempty"`
+  ShutdownType     string   `json:"shutdown_type,omitempty"`
 }
 
 // Transaction represents a OnApp Transaction
