@@ -39,11 +39,11 @@ type Client struct {
 
   // Services used for communicating with the API
   // Account           AccountService
-  Transactions      TransactionsService
+  Transactions            TransactionsService
   // CDNs              CDNService
   // Domains           DomainsService
-  VirtualMachines   VirtualMachinesService
-  // DropletActions    DropletActionsService
+  VirtualMachines         VirtualMachinesService
+  VirtualMachinesActions  VirtualMachineActionsService
   // Images            ImagesService
   // ImageActions      ImageActionsService
   // Keys              KeysService
@@ -137,7 +137,7 @@ func NewClient(httpClient *http.Client) *Client {
   // c.Certificates = &CertificatesServiceOp{client: c}
   // c.Domains = &DomainsServiceOp{client: c}
   c.VirtualMachines = &VirtualMachinesServiceOp{client: c}
-  // c.DropletActions = &DropletActionsServiceOp{client: c}
+  c.VirtualMachinesActions = &VirtualMachineActionsServiceOp{client: c}
   // c.Firewalls = &FirewallsServiceOp{client: c}
   // c.FloatingIPs = &FloatingIPsServiceOp{client: c}
   // c.FloatingIPActions = &FloatingIPActionsServiceOp{client: c}
