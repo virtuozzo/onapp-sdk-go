@@ -5,6 +5,7 @@ import (
   "fmt"
   "net/http"
   "time"
+  "reflect"
 
   "github.com/digitalocean/godo"
 )
@@ -20,6 +21,9 @@ const (
 
   // TransactionPending is a pending transaction status
   TransactionPending = "pending"
+
+  // TransactionFailed is a failed transaction status
+  TransactionFailed = "failed"
 )
 
 // TransactionsService handles communction with action related methods of the
@@ -27,6 +31,8 @@ const (
 type TransactionsService interface {
   List(context.Context, *ListOptions) ([]Transaction, *Response, error)
   Get(context.Context, int) (*Transaction, *Response, error)
+
+  GetByFilter(context.Context, int, interface{}, *ListOptions) (*Transaction, *Response, error)
 }
 
 // TransactionsServiceOp handles communition with the image action related methods of the
@@ -125,6 +131,70 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, 
   return root.Transaction, resp, err
 }
 
+// GetByFilter find transaction with specified fields for virtual machine by ID.
+func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, vmID int, filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
+  if vmID < 1 {
+    return nil, nil, godo.NewArgError("vmID", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf("%s%s", transactionsBasePath, apiFormat)
+  path, err := addOptions(path, opt)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]Transaction
+  resp, err := s.client.Do(ctx, req, &out)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  var root *Transaction
+  for i := range out {
+    trx := out[i]["transaction"]
+
+    root = &trx
+    if root.equal(filter) {
+      break
+    } else {
+      root = nil
+    }
+  }
+
+  if root != nil {
+    return root, resp, err
+  }
+
+  return nil, nil, fmt.Errorf("Transaction not found or wrong filter [%+v].\n", filter)
+}
+
+func (trx *Transaction) equal(filter interface{}) bool {
+  val := reflect.ValueOf(filter)
+  filterFields := reflect.Indirect(reflect.ValueOf(trx))
+
+  // fmt.Printf("        equal.filterFields: %#v\n", filterFields)
+  for i := 0; i < val.NumField(); i++ {
+    typeField := val.Type().Field(i)
+    value := val.Field(i)
+    filterValue := filterFields.FieldByName(typeField.Name)
+
+    // fmt.Printf("%s: %s[%#v] -> %s[%#v]\n", typeField.Name, value.Type(), value, filterValue.Type(), filterValue)
+
+    if value.Interface() != filterValue.Interface() {
+      // fmt.Printf("[false] return on filed [%s]\n\n", typeField.Name)
+      return false
+    }
+  }
+
+  // fmt.Printf("[true] transaction found with id[%d]\n\n", trx.ID)
+  return true
+}
+
 func (trx Transaction) String() string {
   return godo.Stringify(trx)
 }
@@ -139,9 +209,20 @@ func (trx Transaction) Completed() bool {
   return trx.Status == TransactionCompleted
 }
 
+// NotCompleted check if transaction state is
+// not 'running' or 'pending' or 'failed'
+func (trx Transaction) NotCompleted() bool {
+  return trx.Running() || trx.Pending() || trx.Failed()
+}
+
 // Pending check if transaction state is 'pending'
 func (trx Transaction) Pending() bool {
   return trx.Status == TransactionPending
+}
+
+// Failed check if transaction state is 'failed'
+func (trx Transaction) Failed() bool {
+  return trx.Status == TransactionFailed
 }
 
 // Debug - print formatted Transaction structure
