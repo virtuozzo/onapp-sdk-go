@@ -243,6 +243,7 @@ func (trx Transaction) Debug() {
   fmt.Printf("    AssociatedObjectType: %s\n",  trx.AssociatedObjectType)
   fmt.Printf("                  Status: %s\n",  trx.Status)
   fmt.Printf("               CreatedAt: %s\n",  trx.CreatedAt)
+  fmt.Printf("                ParentID: %d\n",  trx.ParentID)
   fmt.Printf("              ParentType: %s\n",  trx.ParentType)
   fmt.Printf("                 ChainID: %d\n",  trx.ChainID)
   fmt.Printf("  DependentTransactionID: %d\n",  trx.DependentTransactionID)

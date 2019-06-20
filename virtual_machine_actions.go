@@ -73,7 +73,7 @@ func (s *VirtualMachineActionsServiceOp) Suspend(ctx context.Context, id int) (*
 // Unsuspend a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Unsuspend(ctx context.Context, id int) (*Transaction, *Response, error) {
   request := &ActionRequest{
-    "method" : http.MethodPost, 
+    "method" : http.MethodPost,
     "type"   : "unsuspend",
     "path"   : "suspend",
     "action" : "stop_virtual_machine",
@@ -134,19 +134,22 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
     return nil, nil, godo.NewArgError("request", "request can't be nil")
   }
 
-  path := virtualMachineActionPath(id, request)
+  path, err := virtualMachineActionPath(id, request)
+  if err != nil {
+    return nil, nil, err
+  }
 
   // req, err := s.client.NewRequest(ctx, http.MethodPost, path, request, nil)
   if (*request)["method"] == nil {
     return nil, nil, godo.NewArgError("method", "must be specified")
   }
-
   httpMethod := (*request)["method"].(string)
+
   req, err := s.client.NewRequest(ctx, httpMethod, path, jsonParams)
   if err != nil {
     return nil, nil, err
   }
-  // fmt.Printf("   doAction.req: [%+v]\n", req)
+  // fmt.Printf(" doAction.req: [%+v]\n", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
@@ -157,6 +160,9 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
     PerPage : searchTransactions,
   }
 
+  if (*request)["action"] == nil {
+    return nil, nil, godo.NewArgError("action", "must be specified")
+  }
   action := (*request)["action"].(string)
   // fmt.Printf("doAction.action: [%s]\n", action)
 
@@ -181,12 +187,16 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
   return trxVM, resp, err
 }
 
-func virtualMachineActionPath(virtualMachineID int, request *ActionRequest) string {
+func virtualMachineActionPath(virtualMachineID int, request *ActionRequest) (string, error) {
+  if (*request)["type"] == nil {
+    return "", godo.NewArgError("type", "must be specified")
+  }
+
   path := (*request)["type"].(string)
 
   if (*request)["path"] != nil {
     path = (*request)["path"].(string)
   }
 
-  return fmt.Sprintf("virtual_machines/%d/%s%s", virtualMachineID, path, apiFormat)
+  return fmt.Sprintf("virtual_machines/%d/%s%s", virtualMachineID, path, apiFormat), nil
 }
