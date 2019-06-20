@@ -21,6 +21,9 @@ type VirtualMachineActionsService interface {
   Reboot(context.Context, int) (*Transaction, *Response, error)
   Suspend(context.Context, int) (*Transaction, *Response, error)
   Unsuspend(context.Context, int) (*Transaction, *Response, error)
+
+  ResetPassword(context.Context, int, string, string) (*Transaction, *Response, error)
+  FQDN(context.Context, int, string, string) (*Transaction, *Response, error)
 }
 
 // VirtualMachineActionsServiceOp handles communication with the VirtualMachine action related
@@ -33,50 +36,96 @@ var _ VirtualMachineActionsService = &VirtualMachineActionsServiceOp{}
 
 // Shutdown a VirtualMachine gracefully
 func (s *VirtualMachineActionsServiceOp) Shutdown(ctx context.Context, id int) (*Transaction, *Response, error) {
-  request := &ActionRequest{"type": "shutdown"}
-  return s.doAction(ctx, id, request)
+  request := &ActionRequest{"method": http.MethodPost, "type": "shutdown", "action": "stop_virtual_machine"}
+  return s.doAction(ctx, id, request, nil)
 }
 
 // Stop a VirtualMachine forcefully
 func (s *VirtualMachineActionsServiceOp) Stop(ctx context.Context, id int) (*Transaction, *Response, error) {
-  request := &ActionRequest{"type": "stop"}
-  return s.doAction(ctx, id, request)
+  request := &ActionRequest{"method": http.MethodPost, "type": "stop", "action": "stop_virtual_machine"}
+  return s.doAction(ctx, id, request, nil)
 }
 
 // Startup a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Startup(ctx context.Context, id int) (*Transaction, *Response, error) {
-  request := &ActionRequest{"type": "startup"}
-  return s.doAction(ctx, id, request)
+  request := &ActionRequest{"method": http.MethodPost, "type": "startup", "action": "startup_virtual_machine"}
+  return s.doAction(ctx, id, request, nil)
 }
 
 // Unlock a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Unlock(ctx context.Context, id int) (*Transaction, *Response, error) {
-  request := &ActionRequest{"type": "unlock"}
-  return s.doAction(ctx, id, request)
+  request := &ActionRequest{"method": http.MethodPost, "type": "unlock", "action": "startup_virtual_machine"}
+  return s.doAction(ctx, id, request, nil)
 }
 
 // Reboot a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Reboot(ctx context.Context, id int) (*Transaction, *Response, error) {
-  request := &ActionRequest{"type": "reboot"}
-  return s.doAction(ctx, id, request)
+  request := &ActionRequest{"method": http.MethodPost, "type": "reboot", "action": "reboot_virtual_machine"}
+  return s.doAction(ctx, id, request, nil)
 }
 
 // Suspend a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Suspend(ctx context.Context, id int) (*Transaction, *Response, error) {
-  request := &ActionRequest{"type": "suspend"}
-  return s.doAction(ctx, id, request)
+  request := &ActionRequest{"method": http.MethodPost, "type": "suspend", "action": "stop_virtual_machine"}
+  return s.doAction(ctx, id, request, nil)
 }
 
 // Unsuspend a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Unsuspend(ctx context.Context, id int) (*Transaction, *Response, error) {
   request := &ActionRequest{
-    "type": "unsuspend",
-    "path": "suspend",
+    "method" : http.MethodPost, 
+    "type"   : "unsuspend",
+    "path"   : "suspend",
+    "action" : "stop_virtual_machine",
   }
-  return s.doAction(ctx, id, request)
+  return s.doAction(ctx, id, request, nil)
 }
 
-func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, request *ActionRequest) (*Transaction, *Response, error) {
+type resetPassword  struct {
+  InitialRootPassword               string  `json:"initial_root_password,omitempty"`
+  InitialRootPasswordEncryptionKey  string  `json:"initial_root_password_encryption_key,omitempty"`
+}
+
+type rootResetPassword struct {
+  ResetPassword *resetPassword `json:"virtual_machine"`
+}
+
+// ResetPassword a VirtualMachine
+func (s *VirtualMachineActionsServiceOp) ResetPassword(ctx context.Context, id int,
+  password string, key string) (*Transaction, *Response, error) {
+  request := &ActionRequest{"method": http.MethodPost, "type": "reset_password", "action": "reset_root_password"}
+
+  vmPassword := &resetPassword{
+    InitialRootPassword : password,
+    InitialRootPasswordEncryptionKey : key,
+  }
+
+  root := &rootResetPassword{
+    ResetPassword : vmPassword,
+  }
+
+  return s.doAction(ctx, id, request, root)
+}
+
+// FQDN a VirtualMachine
+func (s *VirtualMachineActionsServiceOp) FQDN(ctx context.Context, id int,
+  hostname string, domain string) (*Transaction, *Response, error) {
+  request := &ActionRequest{"method": http.MethodPatch, "type": "fqdn", "action": "update_fqdn"}
+
+  vmFQDN := &VirtualMachine{
+    Domain : domain,
+    Hostname : hostname,
+  }
+
+  root := &virtualMachineRoot{
+    VirtualMachine : vmFQDN,
+  }
+
+  return s.doAction(ctx, id, request, root)
+}
+
+func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
+  request *ActionRequest, jsonParams interface{}) (*Transaction, *Response, error) {
   if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -87,10 +136,17 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, r
 
   path := virtualMachineActionPath(id, request)
 
-  req, err := s.client.NewRequest(ctx, http.MethodPost, path, request)
+  // req, err := s.client.NewRequest(ctx, http.MethodPost, path, request, nil)
+  if (*request)["method"] == nil {
+    return nil, nil, godo.NewArgError("method", "must be specified")
+  }
+
+  httpMethod := (*request)["method"].(string)
+  req, err := s.client.NewRequest(ctx, httpMethod, path, jsonParams)
   if err != nil {
     return nil, nil, err
   }
+  // fmt.Printf("   doAction.req: [%+v]\n", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
@@ -101,19 +157,19 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, r
     PerPage : searchTransactions,
   }
 
-  action := (*request)["type"].(string)
-  mapAction := actionToTransaction[action]
-  // fmt.Printf("   doAction.action: [%s]\n", action)
-  // fmt.Printf("doAction.mapAction: [%s]\n", mapAction)
+  action := (*request)["action"].(string)
+  // fmt.Printf("doAction.action: [%s]\n", action)
 
   filter := struct{
     Action                  string
     AssociatedObjectID      int
     AssociatedObjectType    string
+    ParentType              string
   }{
-    Action : mapAction,
+    Action : action,
     AssociatedObjectID : id,
     AssociatedObjectType : "VirtualMachine",
+    ParentType : "VirtualMachine",
   }
 
   trxVM, resp, err := s.client.Transactions.GetByFilter(ctx, id, filter, opt)
