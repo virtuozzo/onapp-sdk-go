@@ -22,9 +22,25 @@ const (
   // TransactionPending is a pending transaction status
   TransactionPending = "pending"
 
+  // TransactionCancelled is a cancelled transaction status
+  TransactionCancelled = "cancelled"
+
   // TransactionFailed is a failed transaction status
   TransactionFailed = "failed"
 )
+
+// ActionToTransaction define map to convert virtual machine action into transaction action
+var actionToTransaction = map[string]string {
+  "shutdown"  : "stop_virtual_machine",
+  "stop"      : "stop_virtual_machine",
+  "startup"   : "startup_virtual_machine",
+  "reboot"    : "reboot_virtual_machine",
+
+  "suspend"   : "stop_virtual_machine",
+  // need check why not unsuspend after suspend
+  "unsuspend" : "stop_virtual_machine",
+  "unlock"    : "startup_virtual_machine",
+}
 
 // TransactionsService handles communction with action related methods of the
 // OnApp API: https://docs.onapp.com/apim/latest/transactions
@@ -210,9 +226,9 @@ func (trx Transaction) Completed() bool {
 }
 
 // NotCompleted check if transaction state is
-// not 'running' or 'pending' or 'failed'
+// 'running' or 'pending' or 'failed' or 'cancelled'
 func (trx Transaction) NotCompleted() bool {
-  return trx.Running() || trx.Pending() || trx.Failed()
+  return trx.Running() || trx.Pending() || trx.Failed() || trx.Cancelled()
 }
 
 // Pending check if transaction state is 'pending'
@@ -223,6 +239,11 @@ func (trx Transaction) Pending() bool {
 // Failed check if transaction state is 'failed'
 func (trx Transaction) Failed() bool {
   return trx.Status == TransactionFailed
+}
+
+// Cancelled check if transaction state is 'cancelled'
+func (trx Transaction) Cancelled() bool {
+  return trx.Status == TransactionCancelled
 }
 
 // Debug - print formatted Transaction structure
