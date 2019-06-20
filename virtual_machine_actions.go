@@ -69,7 +69,10 @@ func (s *VirtualMachineActionsServiceOp) Suspend(ctx context.Context, id int) (*
 
 // Unsuspend a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Unsuspend(ctx context.Context, id int) (*Transaction, *Response, error) {
-  request := &ActionRequest{"type": "unsuspend"}
+  request := &ActionRequest{
+    "type": "unsuspend",
+    "path": "suspend",
+  }
   return s.doAction(ctx, id, request)
 }
 
@@ -89,23 +92,45 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, r
     return nil, nil, err
   }
 
-  // out := new(virtualMachineRoot)
-  // resp, err := s.client.Do(ctx, req, out)
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
     return nil, resp, err
   }
 
-  transactionsVM, resp, err := s.client.VirtualMachines.Transactions(ctx, id, nil)
+  opt := &ListOptions{
+    PerPage : searchTransactions,
+  }
+
+  action := (*request)["type"].(string)
+  mapAction := actionToTransaction[action]
+  // fmt.Printf("   doAction.action: [%s]\n", action)
+  // fmt.Printf("doAction.mapAction: [%s]\n", mapAction)
+
+  filter := struct{
+    Action                  string
+    AssociatedObjectID      int
+    AssociatedObjectType    string
+  }{
+    Action : mapAction,
+    AssociatedObjectID : id,
+    AssociatedObjectType : "VirtualMachine",
+  }
+
+  trxVM, resp, err := s.client.Transactions.GetByFilter(ctx, id, filter, opt)
   if err != nil {
     fmt.Printf("doAction.Transactions: %s\n\n", err)
     return nil, resp, err
   }
 
-  // return out.VirtualMachine, resp, err
-  return &transactionsVM[0], resp, err
+  return trxVM, resp, err
 }
 
 func virtualMachineActionPath(virtualMachineID int, request *ActionRequest) string {
-  return fmt.Sprintf("virtual_machines/%d/%s%s", virtualMachineID, (*request)["type"].(string), apiFormat)
+  path := (*request)["type"].(string)
+
+  if (*request)["path"] != nil {
+    path = (*request)["path"].(string)
+  }
+
+  return fmt.Sprintf("virtual_machines/%d/%s%s", virtualMachineID, path, apiFormat)
 }

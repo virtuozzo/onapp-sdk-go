@@ -21,6 +21,8 @@ const (
   userAgent       = "onapp_sdk_go/" + libraryVersion
   mediaType       = "application/json"
   apiFormat       = ".json"
+
+  searchTransactions = 100
 )
 
 // Client manages communication with OnApp API.
