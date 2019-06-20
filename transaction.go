@@ -29,19 +29,6 @@ const (
   TransactionFailed = "failed"
 )
 
-// ActionToTransaction define map to convert virtual machine action into transaction action
-var actionToTransaction = map[string]string {
-  "shutdown"  : "stop_virtual_machine",
-  "stop"      : "stop_virtual_machine",
-  "startup"   : "startup_virtual_machine",
-  "reboot"    : "reboot_virtual_machine",
-
-  "suspend"   : "stop_virtual_machine",
-  // need check why not unsuspend after suspend
-  "unsuspend" : "stop_virtual_machine",
-  "unlock"    : "startup_virtual_machine",
-}
-
 // TransactionsService handles communction with action related methods of the
 // OnApp API: https://docs.onapp.com/apim/latest/transactions
 type TransactionsService interface {
@@ -60,14 +47,14 @@ type TransactionsServiceOp struct {
 var _ TransactionsService = &TransactionsServiceOp{}
 
 // Params represents a OnApp Transaction params
-type Params struct {
-  DestroyMsg       string   `json:"destroy_msg,omitempty"`
-  InitiatorID      int      `json:"initiator_id,omitempty"`
-  RealUserID       int      `json:"real_user_id,omitempty"`
-  RemoteIP         string   `json:"remote_ip,omitempty"`
-  SkipNotification bool     `json:"skip_notification,bool,omitempty"`
-  ShutdownType     string   `json:"shutdown_type,omitempty"`
-}
+// type Params struct {
+//   DestroyMsg       string   `json:"destroy_msg,omitempty"`
+//   InitiatorID      int      `json:"initiator_id,omitempty"`
+//   RealUserID       int      `json:"real_user_id,omitempty"`
+//   RemoteIP         string   `json:"remote_ip,omitempty"`
+//   SkipNotification bool     `json:"skip_notification,bool,omitempty"`
+//   ShutdownType     string   `json:"shutdown_type,omitempty"`
+// }
 
 // Transaction represents a OnApp Transaction
 type Transaction struct {
@@ -82,7 +69,8 @@ type Transaction struct {
   ID                      int           `json:"id,omitempty"`
   Identifier              string        `json:"identifier,omitempty"`
   LockVersion             int           `json:"lock_version,omitempty"`
-  Params                  Params        `json:"params,omitempty"`
+  // Params                  Params        `json:"params,omitempty"`
+  Params                  interface{}   `json:"params,omitempty"`
   ParentID                int           `json:"parent_id,omitempty"`
   ParentType              string        `json:"parent_type,omitempty"`
   Pid                     int           `json:"pid,omitempty"`
@@ -258,6 +246,6 @@ func (trx Transaction) Debug() {
   fmt.Printf("              ParentType: %s\n",  trx.ParentType)
   fmt.Printf("                 ChainID: %d\n",  trx.ChainID)
   fmt.Printf("  DependentTransactionID: %d\n",  trx.DependentTransactionID)
-  fmt.Printf("                  Params: %#v\n", trx.Params)
-  fmt.Printf("     Params.ShutdownType: %s\n",  trx.Params.ShutdownType)
+  fmt.Printf("                  Params: %+v\n", trx.Params)
+  // fmt.Printf("     Params.ShutdownType: %s\n",  trx.Params.ShutdownType)
 }
