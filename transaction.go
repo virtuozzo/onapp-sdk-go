@@ -6,6 +6,7 @@ import (
   "net/http"
   "time"
   "reflect"
+  "container/list"
 
   "github.com/digitalocean/godo"
 )
@@ -36,6 +37,7 @@ type TransactionsService interface {
   Get(context.Context, int) (*Transaction, *Response, error)
 
   GetByFilter(context.Context, int, interface{}, *ListOptions) (*Transaction, *Response, error)
+  ListByGroup(context.Context, int, string, *ListOptions) (*list.List, *Response, error)
 }
 
 // TransactionsServiceOp handles communition with the image action related methods of the
@@ -106,21 +108,21 @@ func (s *TransactionsServiceOp) List(ctx context.Context, opt *ListOptions) ([]T
     return nil, resp, err
   }
 
-  txs := make([]Transaction, len(out))
-  for i := range txs {
-    txs[i] = out[i]["transaction"]
+  trx := make([]Transaction, len(out))
+  for i := range trx {
+    trx[i] = out[i]["transaction"]
   }
 
-  return txs, resp, err
+  return trx, resp, err
 }
 
 // Get an transaction by ID.
-func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, *Response, error) {
-  if id < 1 {
+func (s *TransactionsServiceOp) Get(ctx context.Context, trxID int) (*Transaction, *Response, error) {
+  if trxID < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", transactionsBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", transactionsBasePath, trxID, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -135,34 +137,70 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, 
   return root.Transaction, resp, err
 }
 
-// GetByFilter find transaction with specified fields for virtual machine by ID.
-func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, vmID int, filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
+// ListByGroup return group of transcations depended by action
+func (s *TransactionsServiceOp) ListByGroup(ctx context.Context,
+  vmID int, objectType string, opt *ListOptions) (*list.List, *Response, error) {
   if vmID < 1 {
     return nil, nil, godo.NewArgError("vmID", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s%s", transactionsBasePath, apiFormat)
-  path, err := addOptions(path, opt)
+  trx, resp, err := s.client.Transactions.List(ctx, opt)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, fmt.Errorf("ListByGroup.trx: %s\n\n", err)
   }
 
-  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
-  if err != nil {
-    return nil, nil, err
+  var next *Transaction
+
+  len := len(trx)
+  groupList := list.New()
+
+  for i := range trx {
+    cur := trx[i]
+    if cur.AssociatedObjectID != vmID &&
+       cur.AssociatedObjectType == objectType {
+      continue
+    }
+
+    if i+1 < len {
+      next = &trx[i+1]
+    }
+
+    if cur.DependentTransactionID == 0 {
+      groupList.PushBack(cur)
+      break
+    }
+
+    if next != nil {
+      if cur.AssociatedObjectID == next.AssociatedObjectID &&
+         cur.AssociatedObjectType == next.AssociatedObjectType &&
+         cur.ChainID == next.ChainID {
+        groupList.PushBack(cur)
+      }
+    }
   }
 
-  var out []map[string]Transaction
-  resp, err := s.client.Do(ctx, req, &out)
+  return groupList, resp, err
+}
+
+// GetByFilter find transaction with specified fields for virtual machine by ID.
+func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, vmID int,
+  filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
+  if vmID < 1 {
+    return nil, nil, godo.NewArgError("vmID", "cannot be less than 1")
+  }
+
+  val := reflect.ValueOf(filter)
+  aot := val.FieldByName("AssociatedObjectType").String()
+
+  trx, resp, err := s.client.Transactions.ListByGroup(ctx, vmID, aot, opt)
   if err != nil {
-    return nil, resp, err
+    return nil, resp, fmt.Errorf("GetByFilter.trx: %s\n\n", err)
   }
 
   var root *Transaction
-  for i := range out {
-    trx := out[i]["transaction"]
-
-    root = &trx
+  for e := trx.Front(); e != nil; e = e.Next() {
+    val := e.Value.(Transaction)
+    root = &val
     if root.equal(filter) {
       break
     } else {
