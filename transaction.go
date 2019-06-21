@@ -16,8 +16,8 @@ const (
   // TransactionRunning is a running transaction status
   TransactionRunning = "running"
 
-  // TransactionCompleted is a completed transaction status
-  TransactionCompleted = "complete"
+  // TransactionComplete is a completed transaction status
+  TransactionComplete = "complete"
 
   // TransactionPending is a pending transaction status
   TransactionPending = "pending"
@@ -208,20 +208,19 @@ func (trx Transaction) Running() bool {
   return trx.Status == TransactionRunning
 }
 
-// Completed check if transaction state is 'complete'
-func (trx Transaction) Completed() bool {
-  return trx.Status == TransactionCompleted
-}
-
-// NotCompleted check if transaction state is
-// 'running' or 'pending' or 'failed' or 'cancelled'
-func (trx Transaction) NotCompleted() bool {
-  return trx.Running() || trx.Pending() || trx.Failed() || trx.Cancelled()
-}
-
 // Pending check if transaction state is 'pending'
 func (trx Transaction) Pending() bool {
   return trx.Status == TransactionPending
+}
+
+// Incomplete check if transaction state is 'running' or 'pending'
+func (trx Transaction) Incomplete() bool {
+  return trx.Running() || trx.Pending()
+}
+
+// Complete check if transaction state is 'complete'
+func (trx Transaction) Complete() bool {
+  return trx.Status == TransactionComplete
 }
 
 // Failed check if transaction state is 'failed'
@@ -232,6 +231,17 @@ func (trx Transaction) Failed() bool {
 // Cancelled check if transaction state is 'cancelled'
 func (trx Transaction) Cancelled() bool {
   return trx.Status == TransactionCancelled
+}
+
+// Unlucky check if transaction state is 'failed' or 'cancelled'
+func (trx Transaction) Unlucky() bool {
+  return trx.Failed() || trx.Cancelled()
+}
+
+// Finished check if transaction state is
+// 'complete' or 'failed' or 'cancelled'
+func (trx Transaction) Finished() bool {
+  return trx.Complete() || trx.Unlucky()
 }
 
 // Debug - print formatted Transaction structure
