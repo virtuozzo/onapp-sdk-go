@@ -19,7 +19,7 @@ type VirtualMachinesService interface {
   Get(context.Context, int) (*VirtualMachine, *Response, error)
   Create(context.Context, *VirtualMachineCreateRequest) (*VirtualMachine, *Response, error)
   // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, interface{}) (*Response, error)
+  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]VirtualMachine, *Response, error)
 
   Backups(context.Context, int, *ListOptions) ([]Backup, *Response, error)
@@ -292,55 +292,40 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
   return root.VirtualMachine, resp, err
 }
 
-// Performs a delete request given a path
-// func (s *VirtualMachinesServiceOp) delete(ctx context.Context, path string) (*Response, error) {
-//   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-//   if err != nil {
-//     return nil, err
-//   }
-
-//   resp, err := s.client.Do(ctx, req, nil)
-
-//   return resp, err
-// }
-
 // Delete VirtualMachine.
-// func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID int) (*Response, error) {
-//   if virtualMachineID < 1 {
-//     return nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
-//   }
-
-//   path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, virtualMachineID, apiFormat)
-
-//   return s.delete(ctx, path)
-// }
-
-// Performs a delete request given a path
-func (s *VirtualMachinesServiceOp) delete(ctx context.Context, path string) (*Response, error) {
-  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  fmt.Printf("delete.req: %s\n",  req.URL)
-  resp, err := s.client.Do(ctx, req, nil)
-
-  return resp, err
-}
-
-// Delete VirtualMachine.
-func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID int, meta interface{}) (*Response, error) {
+func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID int, meta interface{}) (*Transaction, *Response, error) {
   if virtualMachineID < 1 {
-    return nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
   }
 
   path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, virtualMachineID, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
-    return nil, err
+    return nil, nil, err
   }
 
-  return s.delete(ctx, path)
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  resp, err := s.client.Do(ctx, req, nil)
+
+  opt := &ListOptions{
+    PerPage : searchTransactions,
+  }
+
+  trxVM, resp, err := s.client.Transactions.ListByGroup(ctx, virtualMachineID, "VirtualMachine", opt)
+
+  var root *Transaction
+  e := trxVM.Front()
+  if e != nil {
+    val := e.Value.(Transaction)
+    root = &val
+    return root, resp, err
+  }
+
+  return nil, nil, err
 }
 
 // Backups lists the backups for a VirtualMachine
