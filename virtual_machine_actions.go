@@ -139,7 +139,6 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
     return nil, nil, err
   }
 
-  // req, err := s.client.NewRequest(ctx, http.MethodPost, path, request, nil)
   if (*request)["method"] == nil {
     return nil, nil, godo.NewArgError("method", "must be specified")
   }
@@ -160,31 +159,18 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
     PerPage : searchTransactions,
   }
 
-  if (*request)["action"] == nil {
-    return nil, nil, godo.NewArgError("action", "must be specified")
-  }
-  action := (*request)["action"].(string)
-  // fmt.Printf("doAction.action: [%s]\n", action)
+  trxVM, resp, err := s.client.Transactions.ListByGroup(ctx, id, "VirtualMachine", opt)
 
-  filter := struct{
-    Action                  string
-    AssociatedObjectID      int
-    AssociatedObjectType    string
-    ParentType              string
-  }{
-    Action : action,
-    AssociatedObjectID : id,
-    AssociatedObjectType : "VirtualMachine",
-    ParentType : "VirtualMachine",
+  // Return last transaction from list of transactions
+  var root *Transaction
+  e := trxVM.Front()
+  if e != nil {
+    val := e.Value.(Transaction)
+    root = &val
+    return root, resp, err
   }
 
-  trxVM, resp, err := s.client.Transactions.GetByFilter(ctx, id, filter, opt)
-  if err != nil {
-    fmt.Printf("doAction.Transactions: %s\n\n", err)
-    return nil, resp, err
-  }
-
-  return trxVM, resp, err
+  return nil, nil, err
 }
 
 func virtualMachineActionPath(virtualMachineID int, request *ActionRequest) (string, error) {
