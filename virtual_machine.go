@@ -37,19 +37,19 @@ var _ VirtualMachinesService = &VirtualMachinesServiceOp{}
 
 // VirtualMachine represent VirtualServer from OnApp API
 type VirtualMachine struct {
-  Acceleration                  bool                    `json:"acceleration,bool,omitempty"`
-  AccelerationAllowed           bool                    `json:"acceleration_allowed,bool,omitempty"`
+  Acceleration                  bool                    `json:"acceleration,bool"`
+  AccelerationAllowed           bool                    `json:"acceleration_allowed,bool"`
   AccelerationStatus            string                  `json:"acceleration_status,omitempty"`
   AddToMarketplace              string                  `json:"add_to_marketplace,omitempty"`
   AdminNote                     string                  `json:"admin_note,omitempty"`
-  AllowedHotMigrate             bool                    `json:"allowed_hot_migrate,bool,omitempty"`
-  AllowedSwap                   bool                    `json:"allowed_swap,bool,omitempty"`
+  AllowedHotMigrate             bool                    `json:"allowed_hot_migrate,bool"`
+  AllowedSwap                   bool                    `json:"allowed_swap,bool"`
   AutoscaleService              string                  `json:"autoscale_service,omitempty"`
-  Booted                        bool                    `json:"booted,bool,omitempty"`
-  Built                         bool                    `json:"built,bool,omitempty"`
-  BuiltFromIso                  bool                    `json:"built_from_iso,bool,omitempty"`
-  BuiltFromOva                  bool                    `json:"built_from_ova,bool,omitempty"`
-  CDboot                        bool                    `json:"cdboot,bool,omitempty"`
+  Booted                        bool                    `json:"booted,bool"`
+  Built                         bool                    `json:"built,bool"`
+  BuiltFromIso                  bool                    `json:"built_from_iso,bool"`
+  BuiltFromOva                  bool                    `json:"built_from_ova,bool"`
+  CDboot                        bool                    `json:"cdboot,bool"`
   CoresPerSocket                int                     `json:"cores_per_socket,omitempty"`
   CPUPriority                   int                     `json:"cpu_priority,omitempty"`
   CPUShares                     int                     `json:"cpu_shares,omitempty"`
@@ -62,8 +62,8 @@ type VirtualMachine struct {
   DraasKeys                     []string                `json:"draas_keys,omitempty"`
   DraasMode                     int                     `json:"draas_mode,omitempty"`
   EdgeServerType                string                  `json:"edge_server_type,omitempty"`
-  EnableAutoscale               bool                    `json:"enable_autoscale,bool,omitempty"`
-  FirewallNotrack               bool                    `json:"firewall_notrack,bool,omitempty"`
+  EnableAutoscale               bool                    `json:"enable_autoscale,bool"`
+  FirewallNotrack               bool                    `json:"firewall_notrack,bool"`
   Hostname                      string                  `json:"hostname,omitempty"`
   HotAddCPU                     string                  `json:"hot_add_cpu,omitempty"`
   HotAddMemory                  string                  `json:"hot_add_memory,omitempty"`
@@ -72,14 +72,14 @@ type VirtualMachine struct {
   ID                            int                     `json:"id,omitempty"`
   Identifier                    string                  `json:"identifier,omitempty"`
   InitialRootPassword           string                  `json:"initial_root_password,omitempty"`
-  InitialRootPasswordEncrypted  bool                    `json:"initial_root_password_encrypted,bool,omitempty"`
+  InitialRootPasswordEncrypted  bool                    `json:"initial_root_password_encrypted,bool"`
   InstancePackageID             string                  `json:"instance_package_id,omitempty"`
   IPAddresses                   []map[string]IPAddress  `json:"ip_addresses,omitempty"`
   IsoID                         string                  `json:"iso_id,omitempty"`
   Label                         string                  `json:"label,omitempty"`
   LocalRemoteAccessIPAddress    string                  `json:"local_remote_access_ip_address,omitempty"`
   LocalRemoteAccessPort         int                     `json:"local_remote_access_port,omitempty"`
-  Locked                        bool                    `json:"locked,bool,omitempty"`
+  Locked                        bool                    `json:"locked,bool"`
   Memory                        int                     `json:"memory,omitempty"`
   MinDiskSize                   int                     `json:"min_disk_size,omitempty"`
   MonthlyBandwidthUsed          float32                 `json:"monthly_bandwidth_used,omitempty"`
@@ -91,14 +91,14 @@ type VirtualMachine struct {
   PricePerHour                  float32                 `json:"price_per_hour,omitempty"`
   PricePerHourPoweredOff        float32                 `json:"price_per_hour_powered_off,omitempty"`
   // Properties                    Propertie               `json:"properties"`
-  RecoveryMode                  bool                    `json:"recovery_mode,bool,omitempty"`
+  RecoveryMode                  bool                    `json:"recovery_mode,bool"`
   RemoteAccessPassword          string                  `json:"remote_access_password,omitempty"`
   ServicePassword               string                  `json:"service_password,omitempty"`
   State                         string                  `json:"state,omitempty"`
   StorageServerType             string                  `json:"storage_server_type,omitempty"`
   StrictVirtualMachineID        string                  `json:"strict_virtual_machine_id,omitempty"`
-  SupportIncrementalBackups     bool                    `json:"support_incremental_backups,bool,omitempty"`
-  Suspended                     bool                    `json:"suspended,bool,omitempty"`
+  SupportIncrementalBackups     bool                    `json:"support_incremental_backups,bool"`
+  Suspended                     bool                    `json:"suspended,bool"`
   TemplateID                    int                     `json:"template_id,omitempty"`
   TemplateLabel                 string                  `json:"template_label,omitempty"`
   TemplateVersion               string                  `json:"template_version,omitempty"`
@@ -120,16 +120,16 @@ type IPAddress struct {
   Address         string      `json:"address,omitempty"`
   Broadcast       string      `json:"broadcast,omitempty"`
   CreatedAt       time.Time   `json:"created_at,omitempty"`
-  Free            bool        `json:"free,bool,omitempty"`
+  Free            bool        `json:"free,bool"`
   Gateway         string      `json:"gateway,omitempty"`
   HypervisorID    string      `json:"hypervisor_id,omitempty"`
   ID              int         `json:"id,omitempty"`
   IPRangeID       int         `json:"ip_range_id,omitempty"`
-  IPv4            bool        `json:"ipv4,bool,omitempty"`
+  IPv4            bool        `json:"ipv4,bool"`
   LockVersion     int         `json:"lock_version,omitempty"`
   Netmask         string      `json:"netmask,omitempty"`
   NetworkAddress  string      `json:"network_address,omitempty"`
-  Pxe             bool        `json:"pxe,bool,omitempty"`
+  Pxe             bool        `json:"pxe,bool"`
   Prefix          int         `json:"prefix,omitempty"`
   UpdatedAt       time.Time   `json:"updated_at,omitempty"`
   UserID          string      `json:"user_id,omitempty"`
@@ -146,7 +146,7 @@ type VirtualMachineCreateRequest struct {
       // ]
   // service_addon_ids
 
-  AccelerationAllowed               bool      `json:"acceleration_allowed,bool,omitempty"`
+  AccelerationAllowed               bool      `json:"acceleration_allowed,bool"`
   AdminNote                         string    `json:"admin_note,omitempty"`
   // *
   CPUShares                         int       `json:"cpu_shares,omitempty"`
@@ -183,10 +183,10 @@ type VirtualMachineCreateRequest struct {
   RecipeJoinsAttributes             []string  `json:"recipe_joins_attributes,omitempty"`
   RequiredAutomaticBackup           int       `json:"required_automatic_backup,omitempty"`
   // *
-  RequiredIPAddressAssignment       bool      `json:"required_ip_address_assignment,bool,omitempty"`
+  RequiredIPAddressAssignment       bool      `json:"required_ip_address_assignment,bool"`
   // *
-  RequiredVirtualMachineBuild       bool      `json:"required_virtual_machine_build,bool,omitempty"`
-  RequiredVirtualMachineStartup     bool      `json:"required_virtual_machine_startup,bool,omitempty"`
+  RequiredVirtualMachineBuild       bool      `json:"required_virtual_machine_build,bool"`
+  RequiredVirtualMachineStartup     bool      `json:"required_virtual_machine_startup,bool"`
   SelectedIPAddress                 string    `json:"selected_ip_address,omitempty"`
   SwapDiskMinIops                   int       `json:"swap_disk_min_iops,omitempty"`
   // * in gigabytes 5, 10
@@ -209,8 +209,14 @@ func (d VirtualMachineCreateRequest) String() string {
   return godo.Stringify(d)
 }
 
-// Performs a list request given a path.
-func (s *VirtualMachinesServiceOp) list(ctx context.Context, path string) ([]VirtualMachine, *Response, error) {
+// List all VirtualMachines.
+func (s *VirtualMachinesServiceOp) List(ctx context.Context, opt *ListOptions) ([]VirtualMachine, *Response, error) {
+  path := virtualMachineBasePath
+  path, err := addOptions(path, opt)
+  if err != nil {
+    return nil, nil, err
+  }
+
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -229,17 +235,6 @@ func (s *VirtualMachinesServiceOp) list(ctx context.Context, path string) ([]Vir
   }
 
   return vms, resp, err
-}
-
-// List all VirtualMachines.
-func (s *VirtualMachinesServiceOp) List(ctx context.Context, opt *ListOptions) ([]VirtualMachine, *Response, error) {
-  path := virtualMachineBasePath
-  path, err := addOptions(path, opt)
-  if err != nil {
-    return nil, nil, err
-  }
-
-  return s.list(ctx, path)
 }
 
 // Get individual VirtualMachine.
@@ -432,6 +427,9 @@ func (vm VirtualMachine) Debug() {
   fmt.Println("[ InitialRootPassword]: ", vm.InitialRootPassword)
   fmt.Println("[       TemplateLabel]: ", vm.TemplateLabel)
   fmt.Println("[           CreatedAt]: ", vm.CreatedAt)
+  fmt.Println("[               State]: ", vm.State)
+  fmt.Println("[               Built]: ", vm.Built)
+  fmt.Println("[              Booted]: ", vm.Booted)
 
   for i := range vm.IPAddresses {
     ip := vm.IPAddresses[i]["ip_address"]

@@ -54,7 +54,7 @@ var _ TransactionsService = &TransactionsServiceOp{}
 //   InitiatorID      int      `json:"initiator_id,omitempty"`
 //   RealUserID       int      `json:"real_user_id,omitempty"`
 //   RemoteIP         string   `json:"remote_ip,omitempty"`
-//   SkipNotification bool     `json:"skip_notification,bool,omitempty"`
+//   SkipNotification bool     `json:"skip_notification,bool"`
 //   ShutdownType     string   `json:"shutdown_type,omitempty"`
 // }
 
@@ -62,7 +62,7 @@ var _ TransactionsService = &TransactionsServiceOp{}
 type Transaction struct {
   Action                  string        `json:"action,omitempty"`
   Actor                   string        `json:"actor,omitempty"`
-  AllowedCancel           bool          `json:"allowed_cancel,bool,omitempty"`
+  AllowedCancel           bool          `json:"allowed_cancel,bool"`
   AssociatedObjectID      int           `json:"associated_object_id,omitempty"`
   AssociatedObjectType    string        `json:"associated_object_type,omitempty"`
   ChainID                 int           `json:"chain_id,omitempty"`
@@ -77,7 +77,7 @@ type Transaction struct {
   ParentType              string        `json:"parent_type,omitempty"`
   Pid                     int           `json:"pid,omitempty"`
   Priority                int           `json:"priority,omitempty"`
-  Scheduled               bool          `json:"scheduled,bool,omitempty"`
+  Scheduled               bool          `json:"scheduled,bool"`
   StartAfter              time.Time     `json:"start_after,omitempty"`
   StartedAt               time.Time     `json:"started_at,omitempty"`
   Status                  string        `json:"status,omitempty"`
