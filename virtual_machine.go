@@ -211,7 +211,7 @@ func (d VirtualMachineCreateRequest) String() string {
 
 // List all VirtualMachines.
 func (s *VirtualMachinesServiceOp) List(ctx context.Context, opt *ListOptions) ([]VirtualMachine, *Response, error) {
-  path := virtualMachineBasePath
+  path := virtualMachineBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -238,12 +238,12 @@ func (s *VirtualMachinesServiceOp) List(ctx context.Context, opt *ListOptions) (
 }
 
 // Get individual VirtualMachine.
-func (s *VirtualMachinesServiceOp) Get(ctx context.Context, vmID int) (*VirtualMachine, *Response, error) {
-  if vmID < 1 {
-    return nil, nil, godo.NewArgError("vmID", "cannot be less than 1")
+func (s *VirtualMachinesServiceOp) Get(ctx context.Context, id int) (*VirtualMachine, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, vmID, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -288,12 +288,12 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
 }
 
 // Delete VirtualMachine.
-func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID int, meta interface{}) (*Transaction, *Response, error) {
-  if virtualMachineID < 1 {
-    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, virtualMachineID, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, nil, err
@@ -310,7 +310,7 @@ func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID 
     PerPage : searchTransactions,
   }
 
-  trxVM, resp, err := s.client.Transactions.ListByGroup(ctx, virtualMachineID, "VirtualMachine", opt)
+  trxVM, resp, err := s.client.Transactions.ListByGroup(ctx, id, "VirtualMachine", opt)
 
   var root *Transaction
   e := trxVM.Front()
@@ -324,13 +324,13 @@ func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, virtualMachineID 
 }
 
 // Backups lists the backups for a VirtualMachine
-func (s *VirtualMachinesServiceOp) Backups(ctx context.Context, virtualMachineID int, opt *ListOptions) ([]Backup, *Response, error) {
-  if virtualMachineID < 1 {
-    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+func (s *VirtualMachinesServiceOp) Backups(ctx context.Context, id int, opt *ListOptions) ([]Backup, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   resourceType := "backup"
-  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, virtualMachineID, resourceType+"s", apiFormat)
+  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, id, resourceType+"s", apiFormat)
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -356,13 +356,13 @@ func (s *VirtualMachinesServiceOp) Backups(ctx context.Context, virtualMachineID
 }
 
 // Transactions lists the transactions for a VirtualMachine.
-func (s *VirtualMachinesServiceOp) Transactions(ctx context.Context, virtualMachineID int, opt *ListOptions) ([]Transaction, *Response, error) {
-  if virtualMachineID < 1 {
-    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+func (s *VirtualMachinesServiceOp) Transactions(ctx context.Context, id int, opt *ListOptions) ([]Transaction, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   resourceType := "transaction"
-  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, virtualMachineID, resourceType+"s", apiFormat)
+  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, id, resourceType+"s", apiFormat)
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -388,13 +388,13 @@ func (s *VirtualMachinesServiceOp) Transactions(ctx context.Context, virtualMach
 }
 
 // Disks lists the disk for a VirtualMachine.
-func (s *VirtualMachinesServiceOp) Disks(ctx context.Context, virtualMachineID int, opt *ListOptions) ([]Disk, *Response, error) {
-  if virtualMachineID < 1 {
-    return nil, nil, godo.NewArgError("virtualMachineID", "cannot be less than 1")
+func (s *VirtualMachinesServiceOp) Disks(ctx context.Context, id int, opt *ListOptions) ([]Disk, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   resourceType := "disk"
-  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, virtualMachineID, resourceType+"s", apiFormat)
+  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, id, resourceType+"s", apiFormat)
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
