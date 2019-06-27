@@ -23,13 +23,13 @@ type HypervisorGroupsService interface {
   // Edit(context.Context, int, *ListOptions) ([]HypervisorGroup, *Response, error)
 }
 
-// HypervisorZonesServiceOp handles communication with the HypervisorGroup related methods of the
+// HypervisorGroupsServiceOp handles communication with the HypervisorGroup related methods of the
 // OnApp API.
-type HypervisorZonesServiceOp struct {
+type HypervisorGroupsServiceOp struct {
   client *Client
 }
 
-var _ HypervisorGroupsService = &HypervisorZonesServiceOp{}
+var _ HypervisorGroupsService = &HypervisorGroupsServiceOp{}
 
 // HypervisorGroup represent VirtualServer from OnApp API
 type HypervisorGroup struct {
@@ -104,7 +104,7 @@ func (d HypervisorGroupCreateRequest) String() string {
 }
 
 // List all HypervisorGroup.
-func (s *HypervisorZonesServiceOp) List(ctx context.Context, opt *ListOptions) ([]HypervisorGroup, *Response, error) {
+func (s *HypervisorGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([]HypervisorGroup, *Response, error) {
   path := hypervisorGroupBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
@@ -132,7 +132,7 @@ func (s *HypervisorZonesServiceOp) List(ctx context.Context, opt *ListOptions) (
 }
 
 // Get individual HypervisorGroup.
-func (s *HypervisorZonesServiceOp) Get(ctx context.Context, id int) (*HypervisorGroup, *Response, error) {
+func (s *HypervisorGroupsServiceOp) Get(ctx context.Context, id int) (*HypervisorGroup, *Response, error) {
   if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -154,7 +154,7 @@ func (s *HypervisorZonesServiceOp) Get(ctx context.Context, id int) (*Hypervisor
 }
 
 // Create HypervisorGroup.
-func (s *HypervisorZonesServiceOp) Create(ctx context.Context, createRequest *HypervisorGroupCreateRequest) (*HypervisorGroup, *Response, error) {
+func (s *HypervisorGroupsServiceOp) Create(ctx context.Context, createRequest *HypervisorGroupCreateRequest) (*HypervisorGroup, *Response, error) {
   if createRequest == nil {
     return nil, nil, godo.NewArgError("HypervisorZone createRequest", "cannot be nil")
   }
@@ -182,7 +182,7 @@ func (s *HypervisorZonesServiceOp) Create(ctx context.Context, createRequest *Hy
 }
 
 // Delete HypervisorGroup.
-func (s *HypervisorZonesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
+func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
   if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
