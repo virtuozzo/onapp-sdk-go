@@ -117,12 +117,12 @@ func (s *TransactionsServiceOp) List(ctx context.Context, opt *ListOptions) ([]T
 }
 
 // Get an transaction by ID.
-func (s *TransactionsServiceOp) Get(ctx context.Context, trxID int) (*Transaction, *Response, error) {
-  if trxID < 1 {
+func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, *Response, error) {
+  if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", transactionsBasePath, trxID, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", transactionsBasePath, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -138,10 +138,9 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, trxID int) (*Transactio
 }
 
 // ListByGroup return group of transcations depended by action
-func (s *TransactionsServiceOp) ListByGroup(ctx context.Context,
-  vmID int, objectType string, opt *ListOptions) (*list.List, *Response, error) {
-  if vmID < 1 {
-    return nil, nil, godo.NewArgError("vmID", "cannot be less than 1")
+func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, id int, objectType string, opt *ListOptions) (*list.List, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   trx, resp, err := s.client.Transactions.List(ctx, opt)
@@ -156,7 +155,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context,
 
   for i := range trx {
     cur := trx[i]
-    if cur.AssociatedObjectID != vmID &&
+    if cur.AssociatedObjectID != id &&
        cur.AssociatedObjectType == objectType {
       continue
     }
@@ -183,16 +182,15 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context,
 }
 
 // GetByFilter find transaction with specified fields for virtual machine by ID.
-func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, vmID int,
-  filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
-  if vmID < 1 {
-    return nil, nil, godo.NewArgError("vmID", "cannot be less than 1")
+func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, id int, filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   val := reflect.ValueOf(filter)
   aot := val.FieldByName("AssociatedObjectType").String()
 
-  trx, resp, err := s.client.Transactions.ListByGroup(ctx, vmID, aot, opt)
+  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, aot, opt)
   if err != nil {
     return nil, resp, fmt.Errorf("GetByFilter.trx: %s\n\n", err)
   }
