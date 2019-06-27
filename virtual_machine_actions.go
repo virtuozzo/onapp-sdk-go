@@ -91,8 +91,7 @@ type rootResetPassword struct {
 }
 
 // ResetPassword a VirtualMachine
-func (s *VirtualMachineActionsServiceOp) ResetPassword(ctx context.Context, id int,
-  password string, key string) (*Transaction, *Response, error) {
+func (s *VirtualMachineActionsServiceOp) ResetPassword(ctx context.Context, id int, password string, key string) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPost, "type": "reset_password", "action": "reset_root_password"}
 
   vmPassword := &resetPassword{
@@ -108,8 +107,7 @@ func (s *VirtualMachineActionsServiceOp) ResetPassword(ctx context.Context, id i
 }
 
 // FQDN a VirtualMachine
-func (s *VirtualMachineActionsServiceOp) FQDN(ctx context.Context, id int,
-  hostname string, domain string) (*Transaction, *Response, error) {
+func (s *VirtualMachineActionsServiceOp) FQDN(ctx context.Context, id int, hostname string, domain string) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPatch, "type": "fqdn", "action": "update_fqdn"}
 
   vmFQDN := &VirtualMachine{
@@ -124,8 +122,7 @@ func (s *VirtualMachineActionsServiceOp) FQDN(ctx context.Context, id int,
   return s.doAction(ctx, id, request, root)
 }
 
-func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
-  request *ActionRequest, jsonParams interface{}) (*Transaction, *Response, error) {
+func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, request *ActionRequest, jsonParams interface{}) (*Transaction, *Response, error) {
   if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -173,7 +170,7 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
   return nil, nil, err
 }
 
-func virtualMachineActionPath(virtualMachineID int, request *ActionRequest) (string, error) {
+func virtualMachineActionPath(id int, request *ActionRequest) (string, error) {
   if (*request)["type"] == nil {
     return "", godo.NewArgError("type", "must be specified")
   }
@@ -184,5 +181,5 @@ func virtualMachineActionPath(virtualMachineID int, request *ActionRequest) (str
     path = (*request)["path"].(string)
   }
 
-  return fmt.Sprintf("virtual_machines/%d/%s%s", virtualMachineID, path, apiFormat), nil
+  return fmt.Sprintf("virtual_machines/%d/%s%s", id, path, apiFormat), nil
 }
