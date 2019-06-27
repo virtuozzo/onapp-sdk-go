@@ -24,7 +24,7 @@ type HypervisorsService interface {
   Get(context.Context, int) (*Hypervisor, *Response, error)
   Create(context.Context, *HypervisorCreateRequest) (*Hypervisor, *Response, error)
   // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, string) (*Transaction, *Response, error)
+  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]Hypervisor, *Response, error)
 }
 
@@ -360,7 +360,7 @@ func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *Hyperv
 }
 
 // Delete Hypervisor.
-func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta string) (*Transaction, *Response, error) {
+func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
   if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }

@@ -19,7 +19,7 @@ type HypervisorGroupsService interface {
   Get(context.Context, int) (*HypervisorGroup, *Response, error)
   Create(context.Context, *HypervisorGroupCreateRequest) (*HypervisorGroup, *Response, error)
   // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, string    ) (*Transaction, *Response, error)
+  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]HypervisorGroup, *Response, error)
 }
 
@@ -182,7 +182,7 @@ func (s *HypervisorZonesServiceOp) Create(ctx context.Context, createRequest *Hy
 }
 
 // Delete HypervisorGroup.
-func (s *HypervisorZonesServiceOp) Delete(ctx context.Context, id int, meta string     ) (*Transaction, *Response, error) {
+func (s *HypervisorZonesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
   if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -221,11 +221,4 @@ func (s *HypervisorZonesServiceOp) Delete(ctx context.Context, id int, meta stri
 func (h HypervisorGroup) Debug() {
   fmt.Println("[                  ID]: ", h.ID)
   fmt.Println("[          Identifier]: ", h.Identifier)
-  // fmt.Println("[               Label]: ", h.Label)
-  // fmt.Println("[ InitialRootPassword]: ", h.InitialRootPassword)
-  // fmt.Println("[       TemplateLabel]: ", h.TemplateLabel)
-  // fmt.Println("[           CreatedAt]: ", h.CreatedAt)
-  // fmt.Println("[               State]: ", h.State)
-  // fmt.Println("[               Built]: ", h.Built)
-  // fmt.Println("[              Booted]: ", h.Booted)
 }
