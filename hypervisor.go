@@ -9,12 +9,12 @@ import (
   "github.com/digitalocean/godo"
 )
 
-// Xen/KVM, VMware
+// Xen/KVM, VMware - CRUD
+// CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
 const hypervisorBasePath = "/settings/hypervisors"
 
-// CloudBoot, Smart CloudBoot, Baremetal CloudBoot
+// CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
 const cloudBootHypervisorBasePath = "/settings/assets/%s/hypervisors"
-
 
 // HypervisorsService is an interface for interfacing with the Hypervisor
 // endpoints of the OnApp API
@@ -48,13 +48,13 @@ type ConnectionOptions struct {
 // Disks of hypervisor
 type Disks struct {
   Scsi     string   `json:"scsi,omitempty"`
-  Selected bool    `json:"selected,bool"`
+  Selected bool     `json:"selected,bool"`
 }
 
 // Nics of hypervisor
 type Nics struct {
   Mac  string  `json:"mac,omitempty"`
-  Type int     `json:"type"`
+  Type int     `json:"type,omitempty"`
 }
 
 // CustomPCIs of hypervisor
@@ -151,30 +151,36 @@ type Hypervisor struct {
 
 // HypervisorCreateRequest represents a request to create a default XEN/KVM Hypervisor
 type HypervisorCreateRequest struct {
-  Label                         string `json:"label,omitempty"`
+  Label                         string  `json:"label,omitempty"`
 
   // VMware
-  IPAddress                     string `json:"ip_address,omitempty"`
+  IPAddress                     string  `json:"ip_address,omitempty"`
 
   // CloudBoot, SmartCloudBoot, VMware
-  BackupIPAddress               string `json:"backup_ip_address,omitempty"`
-  CollectStats                  bool   `json:"collect_stats,bool"`
-  DisableFailover               bool   `json:"disable_failover,bool"`
+  BackupIPAddress               string  `json:"backup_ip_address,omitempty"`
+  CollectStats                  bool    `json:"collect_stats,bool"`
+  DisableFailover               bool    `json:"disable_failover,bool"`
 
-  HypervisorType                string `json:"hypervisor_type,omitempty"`
-  SegregationOsType             string `json:"segregation_os_type,omitempty"`
-  Enabled                       bool   `json:"enabled,bool"`
+  // SmartCloudBoot only can be: kvm
+  // VMware, CloudBoot: xen, kvm
+  // BaremetalCloudBoot only can be: xen
+  HypervisorType                string  `json:"hypervisor_type,omitempty"`
+  SegregationOsType             string  `json:"segregation_os_type,omitempty"`
+  Enabled                       bool    `json:"enabled,bool"`
 
   // BaremetalCloudBoot
-  FailoverRecipeID              int    `json:"failover_recipe_id,omitempty"`
+  FailoverRecipeID              int     `json:"failover_recipe_id,omitempty"`
 
-  HypervisorGroupID             int    `json:"hypervisor_group_id,omitempty"`
-  CPUUnits                      int    `json:"cpu_units,omitempty"`
+  HypervisorGroupID             int     `json:"hypervisor_group_id,omitempty"`
+  CPUUnits                      int     `json:"cpu_units,omitempty"`
 
   // SmartCloudBoot, BaremetalCloudBoot
   PxeIPAddressID                int     `json:"pxe_ip_address_id,omitempty"`
 
   // CloudBoot, SmartCloudBoot, BaremetalCloudBoot
+  // by default: virtual
+  // SmartCloudBoot: smart
+  // BaremetalCloudBoot: baremetal
   ServerType                    string  `json:"server_type,omitempty"`
   Backup                        bool    `json:"backup,bool"`
 
@@ -311,7 +317,6 @@ func (s *HypervisorsServiceOp) Get(ctx context.Context, id int) (*Hypervisor, *R
   }
 
   path := fmt.Sprintf("%s/%d%s", hypervisorBasePath, id, apiFormat)
-
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -332,15 +337,10 @@ func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *Hyperv
     return nil, nil, godo.NewArgError("Hypervisor createRequest", "cannot be nil")
   }
 
-  // if hypervisorType == "xen" || hypervisorType == "kvm" || hypervisorType == "vmware" {
-  //   path := hypervisorBasePath + apiFormat
-  // } else {
-  //   path := cloudBootHypervisorBasePath + apiFormat
-  // }
-  path := hypervisorBasePath + apiFormat
-
+  mac := "00:00:00:00:00:00"
+  path := hypervisorPath(mac, createRequest.ServerType)
   rootRequest := &hypervisorCreateRequestRoot{
-    HypervisorCreateRequest : createRequest,
+    HypervisorCreateRequest: createRequest,
   }
 
   req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
@@ -393,6 +393,18 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
   }
 
   return nil, nil, err
+}
+
+func hypervisorPath(mac string, serverType string) string {
+  if serverType == "virtual" {
+    path := hypervisorBasePath + apiFormat
+    return path
+  } else if serverType == "smart" || serverType == "baremetal" {
+    path := cloudBootHypervisorBasePath + apiFormat
+    return fmt.Sprintf(path, mac)
+  }
+
+  return ""
 }
 
 // Debug - print formatted Hypervisor structure

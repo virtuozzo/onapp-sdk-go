@@ -46,6 +46,8 @@ type Client struct {
   // Domains           DomainsService
   VirtualMachines         VirtualMachinesService
   VirtualMachinesActions  VirtualMachineActionsService
+  Hypervisors             HypervisorsService
+  HypervisorGroup         HypervisorGroupsService
   // Images            ImagesService
   // ImageActions      ImageActionsService
   // Keys              KeysService
@@ -140,6 +142,8 @@ func NewClient(httpClient *http.Client) *Client {
   // c.Domains = &DomainsServiceOp{client: c}
   c.VirtualMachines = &VirtualMachinesServiceOp{client: c}
   c.VirtualMachinesActions = &VirtualMachineActionsServiceOp{client: c}
+  c.Hypervisors = &HypervisorsServiceOp{client: c}
+  c.HypervisorGroup = &HypervisorGroupsServiceOp{client: c}
   // c.Firewalls = &FirewallsServiceOp{client: c}
   // c.FloatingIPs = &FloatingIPsServiceOp{client: c}
   // c.FloatingIPActions = &FloatingIPActionsServiceOp{client: c}
