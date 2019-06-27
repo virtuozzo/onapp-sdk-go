@@ -17,7 +17,7 @@ type IoLimits struct {
 type Disk struct {
   AddToFreebsdFstab              interface{}                    `json:"add_to_freebsd_fstab,omitempty"`
   AddToLinuxFstab                interface{}                    `json:"add_to_linux_fstab,omitempty"`
-  Built                          bool                           `json:"built,bool,omitempty"`
+  Built                          bool                           `json:"built,bool"`
   BurstBw                        int                            `json:"burst_bw,omitempty"`
   BurstIops                      int                            `json:"burst_iops,omitempty"`
   CreatedAt                      time.Time                      `json:"created_at,omitempty"`
@@ -28,22 +28,22 @@ type Disk struct {
   HasAutobackups                 bool                           `json:"has_autobackups"`
   ID                             int                            `json:"id,omitempty"`
   Identifier                     string                         `json:"identifier,omitempty"`
-  IntegratedStorageCacheEnabled  bool                           `json:"integrated_storage_cache_enabled,bool,omitempty"`
-  IntegratedStorageCacheOverride bool                           `json:"integrated_storage_cache_override,bool,omitempty"`
+  IntegratedStorageCacheEnabled  bool                           `json:"integrated_storage_cache_enabled,bool"`
+  IntegratedStorageCacheOverride bool                           `json:"integrated_storage_cache_override,bool"`
   IntegratedStorageCacheSettings IntegratedStorageCacheSettings `json:"integrated_storage_cache_settings,omitempty"`
   IoLimits                       IoLimits                       `json:"io_limits,omitempty"`
   IoLimitsOverride               bool                           `json:"io_limits_override"`
   Iqn                            string                         `json:"iqn,omitempty"`
-  IsSwap                         bool                           `json:"is_swap,bool,omitempty"`
+  IsSwap                         bool                           `json:"is_swap,bool"`
   Label                          string                         `json:"label,omitempty"`
-  Locked                         bool                           `json:"locked,bool,omitempty"`
+  Locked                         bool                           `json:"locked,bool"`
   MaxBw                          int                            `json:"max_bw,omitempty"`
   MaxIops                        int                            `json:"max_iops,omitempty"`
   MinIops                        int                            `json:"min_iops,omitempty"`
   MountPoint                     string                         `json:"mount_point,omitempty"`
-  Mounted                        bool                           `json:"mounted,bool,omitempty"`
+  Mounted                        bool                           `json:"mounted,bool"`
   OpenstackID                    int                            `json:"openstack_id,omitempty"`
-  Primary                        bool                           `json:"primary,bool,omitempty"`
+  Primary                        bool                           `json:"primary,bool"`
   TemporaryVirtualMachineID      int                            `json:"temporary_virtual_machine_id,omitempty"`
   UpdatedAt                      time.Time                      `json:"updated_at,omitempty"`
   VirtualMachineID               int                            `json:"virtual_machine_id,omitempty"`
