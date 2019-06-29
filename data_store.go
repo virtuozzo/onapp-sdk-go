@@ -79,7 +79,7 @@ func (d DataStoreCreateRequest) String() string {
   return godo.Stringify(d)
 }
 
-// List all Hypervisors.
+// List all DataStores.
 func (s *DataStoresServiceOp) List(ctx context.Context, opt *ListOptions) ([]DataStore, *Response, error) {
   path := dataStoreBasePath + apiFormat
   path, err := addOptions(path, opt)
@@ -144,7 +144,7 @@ func (s *DataStoresServiceOp) Create(ctx context.Context, createRequest *DataSto
     return nil, nil, err
   }
 
-  fmt.Println("\nHypervisor [Create] req: ", req)
+  fmt.Println("\nDataStore [Create] req: ", req)
 
   root := new(dataStoreRoot)
   resp, err := s.client.Do(ctx, req, root)

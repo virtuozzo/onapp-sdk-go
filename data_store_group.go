@@ -138,7 +138,7 @@ func (s *DataStoreGroupsServiceOp) Create(ctx context.Context, createRequest *Da
     return nil, nil, err
   }
 
-  fmt.Println("\nHypervisor [Create] req: ", req)
+  fmt.Println("\nDataStoreGroup [Create] req: ", req)
 
   root := new(dataStoreGroupRoot)
   resp, err := s.client.Do(ctx, req, root)

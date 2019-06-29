@@ -40,7 +40,7 @@ type HypervisorGroup struct {
   ServerType                  string        `json:"server_type,omitempty"`
   LocationGroupID             int           `json:"location_group_id,omitempty"`
   FederationEnabled           bool          `json:"federation_enabled,bool"`
-  FederationID                int           `json:"federation_id,omitempty"`
+  FederationID                string        `json:"federation_id,omitempty"`
   Traded                      bool          `json:"traded,bool"`
   Closed                      bool          `json:"closed,bool"`
   HypervisorID                int           `json:"hypervisor_id,omitempty"`
@@ -67,7 +67,7 @@ type HypervisorGroup struct {
   CPUFlagsEnabled             bool          `json:"cpu_flags_enabled,bool"`
   CPUFlags                    []string      `json:"cpu_flags,omitempty"`
   Tier                        string        `json:"tier,omitempty"`
-  SupportsVirtualServerMotion string        `json:"supports_virtual_server_motion,omitempty"`
+  SupportsVirtualServerMotion bool	        `json:"supports_virtual_server_motion,bool"`
   CustomConfig                string        `json:"custom_config,omitempty"`
 }
 
