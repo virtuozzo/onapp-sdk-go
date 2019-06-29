@@ -225,6 +225,25 @@ func (trx *Transaction) equal(filter interface{}) bool {
   return true
 }
 
+func lastTransaction(ctx context.Context, client *Client, id int, aot string) (*Transaction, *Response, error) {
+  fmt.Printf("lastTransaction: id[%d], AssociatedObjectType[%s]\n", id, aot)
+  opt := &ListOptions{
+    PerPage : searchTransactions,
+  }
+
+  trx, resp, err := client.Transactions.ListByGroup(ctx, id, aot, opt)
+
+  var root *Transaction
+  e := trx.Front()
+  if e != nil {
+    val := e.Value.(Transaction)
+    root = &val
+    return root, resp, err
+  }
+
+  return nil, nil, err
+}
+
 func (trx Transaction) String() string {
   return godo.Stringify(trx)
 }

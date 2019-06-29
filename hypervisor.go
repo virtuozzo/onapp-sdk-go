@@ -277,22 +277,11 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
   }
 
   resp, err := s.client.Do(ctx, req, nil)
-
-  opt := &ListOptions{
-    PerPage : searchTransactions,
+  if err != nil {
+    return nil, resp, err
   }
 
-  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "Hypervisor", opt)
-
-  var root *Transaction
-  e := trx.Front()
-  if e != nil {
-    val := e.Value.(Transaction)
-    root = &val
-    return root, resp, err
-  }
-
-  return nil, nil, err
+  return lastTransaction(ctx, s.client, id, "Hypervisor")
 }
 
 func hypervisorPath(mac string, serverType string) string {

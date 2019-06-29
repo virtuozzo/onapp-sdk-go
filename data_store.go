@@ -173,22 +173,11 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
   }
 
   resp, err := s.client.Do(ctx, req, nil)
-
-  opt := &ListOptions{
-    PerPage : searchTransactions,
+  if err != nil {
+    return nil, resp, err
   }
 
-  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "DataStore", opt)
-
-  var root *Transaction
-  e := trx.Front()
-  if e != nil {
-    val := e.Value.(Transaction)
-    root = &val
-    return root, resp, err
-  }
-
-  return nil, nil, err
+  return lastTransaction(ctx, s.client, id, "DataStore")
 }
 
 // Debug - print formatted DataStore structure

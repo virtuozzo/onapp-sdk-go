@@ -285,22 +285,11 @@ func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, id int, meta inte
   }
 
   resp, err := s.client.Do(ctx, req, nil)
-
-  opt := &ListOptions{
-    PerPage : searchTransactions,
+  if err != nil {
+    return nil, resp, err
   }
 
-  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "VirtualMachine", opt)
-
-  var root *Transaction
-  e := trx.Front()
-  if e != nil {
-    val := e.Value.(Transaction)
-    root = &val
-    return root, resp, err
-  }
-
-  return nil, nil, err
+  return lastTransaction(ctx, s.client, id, "VirtualMachine")
 }
 
 // Backups lists the backups for a VirtualMachine

@@ -199,22 +199,11 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
   }
 
   resp, err := s.client.Do(ctx, req, nil)
-
-  opt := &ListOptions{
-    PerPage : searchTransactions,
+  if err != nil {
+    return nil, resp, err
   }
 
-  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "HypervisorGroup", opt)
-
-  var root *Transaction
-  e := trx.Front()
-  if e != nil {
-    val := e.Value.(Transaction)
-    root = &val
-    return root, resp, err
-  }
-
-  return nil, nil, err
+  return lastTransaction(ctx, s.client, id, "HypervisorGroup")
 }
 
 // Debug - print formatted HypervisorGroup structure
