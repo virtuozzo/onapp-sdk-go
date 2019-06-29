@@ -31,6 +31,7 @@ type DataStoresServiceOp struct {
 
 var _ DataStoresService = &DataStoresServiceOp{}
 
+// DataStore represents a DataStore
 type DataStore struct {
   ID                             int                            `json:"id,omitempty"`
   Label                          string                         `json:"label,omitempty"`
@@ -181,13 +182,13 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
 }
 
 // Debug - print formatted DataStore structure
-func (h DataStore) Debug() {
-  fmt.Printf("           ID: %d\n", h.ID)
-  fmt.Printf("        Label: %s\n", h.Label)
-  fmt.Printf("   Identifier: %s\n", h.Identifier)
-  fmt.Printf("           IP: %s\n", h.IP)
-  fmt.Printf("DataStoreType: %s\n", h.DataStoreType)
-  fmt.Printf("      Default: %t\n", h.Default)
-  fmt.Printf("      Enabled: %t\n", h.Enabled)
-  fmt.Printf("DataStoreSize: %d\n", h.DataStoreSize)
+func (obj DataStore) Debug() {
+  fmt.Printf("           ID: %d\n", obj.ID)
+  fmt.Printf("        Label: %s\n", obj.Label)
+  fmt.Printf("   Identifier: %s\n", obj.Identifier)
+  fmt.Printf("           IP: %s\n", obj.IP)
+  fmt.Printf("DataStoreType: %s\n", obj.DataStoreType)
+  fmt.Printf("      Default: %t\n", obj.Default)
+  fmt.Printf("      Enabled: %t\n", obj.Enabled)
+  fmt.Printf("DataStoreSize: %d\n", obj.DataStoreSize)
 }

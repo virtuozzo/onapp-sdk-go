@@ -79,7 +79,7 @@ type CustomPCIs struct {
   Selected bool    `json:"selected,bool"`
 }
 
-// Storage for Hypervisor
+// Storage for hypervisor
 type Storage struct {
   Disks      []Disks        `json:"disks,omitempty"`
   Nics       []Nics         `json:"nics,omitempty"`
@@ -94,11 +94,13 @@ type IntegratedStorageCacheSettings struct {
 type IoLimits struct {
 }
 
+// AdditionalField - 
 type AdditionalField struct {
   Name  string `json:"name,omitempty"`
   Value string `json:"value,omitempty"`
 }
 
+// AdditionalFields - 
 type AdditionalFields struct {
   AdditionalField AdditionalField `json:"additional_field,omitempty"`
 }

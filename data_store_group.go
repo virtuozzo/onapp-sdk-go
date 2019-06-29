@@ -31,6 +31,7 @@ type DataStoreGroupsServiceOp struct {
 
 var _ DataStoreGroupsService = &DataStoreGroupsServiceOp{}
 
+// DataStoreGroup represents a DataStoreGroup
 type DataStoreGroup struct {
   ID                int               `json:"id,omitempty"`
   Label             string            `json:"label,omitempty"`

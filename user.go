@@ -5,11 +5,13 @@ import (
   "time"
 )
 
+// Infoboxes - 
 type Infoboxes struct {
   DisplayInfoboxes bool     `json:"display_infoboxes,bool"`
   HiddenInfoboxes  []string `json:"hidden_infoboxes,omitempty"`
 }
 
+// Permission - 
 type Permission struct {
   CreatedAt  time.Time `json:"created_at,omitempty"`
   ID         int       `json:"id,omitempty"`
@@ -17,10 +19,12 @@ type Permission struct {
   UpdatedAt  time.Time `json:"updated_at,omitempty"`
 }
 
+// Permissions - 
 type Permissions struct {
   Permission Permission `json:"permission,omitempty"`
 }
 
+// Role - 
 type Role struct {
   CreatedAt   time.Time     `json:"created_at,omitempty"`
   ID          int           `json:"id,omitempty"`
@@ -32,10 +36,12 @@ type Role struct {
   Permissions []Permissions `json:"permissions,omitempty"`
 }
 
+// Roles - 
 type Roles struct {
   Role Role `json:"role,omitempty"`
 }
 
+// User - 
 type User struct {
   ActivatedAt             time.Time          `json:"activated_at,omitempty"`
   Avatar                  interface{}        `json:"avatar,omitempty"`
@@ -83,6 +89,7 @@ type User struct {
   UsedIPAddresses         []IPAddress        `json:"used_ip_addresses,omitempty"`
 }
 
+// UserCreateRequest - 
 type UserCreateRequest struct {
   Login            string             `json:"login,omitempty"`
   Email            string             `json:"email,omitempty"`

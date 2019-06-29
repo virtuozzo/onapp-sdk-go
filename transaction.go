@@ -182,7 +182,7 @@ func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, id int, filter 
 
   trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, aot, opt)
   if err != nil {
-    return nil, resp, fmt.Errorf("GetByFilter.trx: %s\n\n", err)
+    return nil, resp, fmt.Errorf("GetByFilter.trx: %s.\n\n", err)
   }
 
   var root *Transaction

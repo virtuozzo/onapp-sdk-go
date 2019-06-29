@@ -165,12 +165,12 @@ func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta inter
 }
 
 // Debug - print formatted LocationGroup structure
-func (lg LocationGroup) Debug() {
-  fmt.Printf("        ID: %d\n", lg.ID)
-  fmt.Printf("   Country: %s\n", lg.Country)
-  fmt.Printf("      City: %s\n", lg.City)
-  fmt.Printf("       Lat: %f\n", lg.Lat)
-  fmt.Printf("       Lng: %f\n", lg.Lng)
-  fmt.Printf("CdnEnabled: %t\n", lg.CdnEnabled)
-  fmt.Printf(" Federated: %t\n", lg.Federated)
+func (obj LocationGroup) Debug() {
+  fmt.Printf("        ID: %d\n", obj.ID)
+  fmt.Printf("   Country: %s\n", obj.Country)
+  fmt.Printf("      City: %s\n", obj.City)
+  fmt.Printf("       Lat: %f\n", obj.Lat)
+  fmt.Printf("       Lng: %f\n", obj.Lng)
+  fmt.Printf("CdnEnabled: %t\n", obj.CdnEnabled)
+  fmt.Printf(" Federated: %t\n", obj.Federated)
 }
