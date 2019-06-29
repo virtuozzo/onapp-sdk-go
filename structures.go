@@ -2,6 +2,7 @@ package onappgo
 
 import (
   "time"
+  "fmt"
 )
 
 // Represent common structures for onappgo package
@@ -16,7 +17,7 @@ import (
 //   ShutdownType     string   `json:"shutdown_type,omitempty"`
 // }
 
-// IPAddress - represents an ip address
+// IPAddress - represents an IP address
 type IPAddress struct {
   Address         string      `json:"address,omitempty"`
   Broadcast       string      `json:"broadcast,omitempty"`
@@ -34,6 +35,21 @@ type IPAddress struct {
   Prefix          int         `json:"prefix,omitempty"`
   UpdatedAt       time.Time   `json:"updated_at,omitempty"`
   UserID          string      `json:"user_id,omitempty"`
+}
+
+// Debug - print formatted IPAddress structure
+func (obj IPAddress) Debug() {
+  fmt.Printf("\t            ID: %d\n",  obj.ID)
+  fmt.Printf("\t       Address: %s\n",  obj.Address)
+  fmt.Printf("\t     Broadcast: %s\n",  obj.Broadcast)
+  fmt.Printf("\t       Gateway: %s\n",  obj.Gateway)
+  fmt.Printf("\t       Netmask: %s\n",  obj.Netmask)
+  fmt.Printf("\tNetworkAddress: %s\n",  obj.NetworkAddress)
+  fmt.Printf("\t        UserID: %s\n",  obj.UserID)
+  fmt.Printf("\t     IPRangeID: %d\n",  obj.IPRangeID)
+  fmt.Printf("\t          Free: %t\n",  obj.Free)
+  fmt.Printf("\t  HypervisorID: %s\n",  obj.HypervisorID)
+  fmt.Printf("\t   LockVersion: %d\n",  obj.LockVersion)
 }
 
 // ConnectionOptions for VMware hypervisor
@@ -76,4 +92,13 @@ type IntegratedStorageCacheSettings struct {
 
 // IoLimits - 
 type IoLimits struct {
+}
+
+type AdditionalField struct {
+  Name  string `json:"name,omitempty"`
+  Value string `json:"value,omitempty"`
+}
+
+type AdditionalFields struct {
+  AdditionalField AdditionalField `json:"additional_field,omitempty"`
 }

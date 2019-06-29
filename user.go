@@ -6,7 +6,7 @@ import (
 )
 
 type Infoboxes struct {
-  DisplayInfoboxes bool     `json:"display_infoboxes"`
+  DisplayInfoboxes bool     `json:"display_infoboxes,bool"`
   HiddenInfoboxes  []string `json:"hidden_infoboxes,omitempty"`
 }
 
@@ -26,7 +26,7 @@ type Role struct {
   ID          int           `json:"id,omitempty"`
   Identifier  string        `json:"identifier,omitempty"`
   Label       string        `json:"label,omitempty"`
-  System      bool          `json:"system"`
+  System      bool          `json:"system,bool"`
   UpdatedAt   time.Time     `json:"updated_at,omitempty"`
   UsersCount  int           `json:"users_count,omitempty"`
   Permissions []Permissions `json:"permissions,omitempty"`
@@ -56,14 +56,14 @@ type User struct {
   Locale                  string             `json:"locale,omitempty"`
   Login                   string             `json:"login,omitempty"`
   PasswordChangedAt       time.Time          `json:"password_changed_at,omitempty"`
-  RegisteredYubikey       bool               `json:"registered_yubikey"`
+  RegisteredYubikey       bool               `json:"registered_yubikey,bool"`
   Status                  string             `json:"status,omitempty"`
-  Supplied                bool               `json:"supplied"`
+  Supplied                bool               `json:"supplied,bool"`
   SuspendAt               time.Time          `json:"suspend_at,omitempty"`
   SystemTheme             string             `json:"system_theme,omitempty"`
   TimeZone                string             `json:"time_zone,omitempty"`
   UpdatedAt               time.Time          `json:"updated_at,omitempty"`
-  UseGravatar             bool               `json:"use_gravatar"`
+  UseGravatar             bool               `json:"use_gravatar,bool"`
   UserGroupID             int                `json:"user_group_id,omitempty"`
   BucketID                int                `json:"bucket_id,omitempty"`
   UsedCpus                int                `json:"used_cpus,omitempty"`
@@ -83,15 +83,6 @@ type User struct {
   UsedIPAddresses         []IPAddress        `json:"used_ip_addresses,omitempty"`
 }
 
-type AdditionalField struct {
-  Name  string `json:"name,omitempty"`
-  Value string `json:"value,omitempty"`
-}
-
-type AdditionalFields struct {
-  AdditionalField AdditionalField `json:"additional_field,omitempty"`
-}
-
 type UserCreateRequest struct {
   Login            string             `json:"login,omitempty"`
   Email            string             `json:"email,omitempty"`
@@ -105,16 +96,16 @@ type UserCreateRequest struct {
 }
 
 // Debug - print formatted User structure
-func (u User) Debug() {
-  fmt.Printf("           ID: %d\n", u.ID)
-  fmt.Printf("    FirstName: %s\n", u.FirstName)
-  fmt.Printf("     LastName: %s\n", u.LastName)
-  fmt.Printf("        Email: %s\n", u.Email)
-  fmt.Printf("        Login: %s\n", u.Login)
-  fmt.Printf("   Identifier: %s\n", u.Identifier)
-  fmt.Printf("    CreatedAt: %s\n", u.CreatedAt)
-  fmt.Printf("     UsedCpus: %d\n", u.UsedCpus)
-  fmt.Printf("   UsedMemory: %d\n", u.UsedMemory)
-  fmt.Printf("UsedCPUShares: %d\n", u.UsedCPUShares)
-  fmt.Printf(" UsedDiskSize: %d\n", u.UsedDiskSize)
+func (obj User) Debug() {
+  fmt.Printf("           ID: %d\n", obj.ID)
+  fmt.Printf("    FirstName: %s\n", obj.FirstName)
+  fmt.Printf("     LastName: %s\n", obj.LastName)
+  fmt.Printf("        Email: %s\n", obj.Email)
+  fmt.Printf("        Login: %s\n", obj.Login)
+  fmt.Printf("   Identifier: %s\n", obj.Identifier)
+  fmt.Printf("    CreatedAt: %s\n", obj.CreatedAt)
+  fmt.Printf("     UsedCpus: %d\n", obj.UsedCpus)
+  fmt.Printf("   UsedMemory: %d\n", obj.UsedMemory)
+  fmt.Printf("UsedCPUShares: %d\n", obj.UsedCPUShares)
+  fmt.Printf(" UsedDiskSize: %d\n", obj.UsedDiskSize)
 }

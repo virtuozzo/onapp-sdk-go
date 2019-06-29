@@ -48,16 +48,6 @@ type TransactionsServiceOp struct {
 
 var _ TransactionsService = &TransactionsServiceOp{}
 
-// Params represents a OnApp Transaction params
-// type Params struct {
-//   DestroyMsg       string   `json:"destroy_msg,omitempty"`
-//   InitiatorID      int      `json:"initiator_id,omitempty"`
-//   RealUserID       int      `json:"real_user_id,omitempty"`
-//   RemoteIP         string   `json:"remote_ip,omitempty"`
-//   SkipNotification bool     `json:"skip_notification,bool"`
-//   ShutdownType     string   `json:"shutdown_type,omitempty"`
-// }
-
 // Transaction represents a OnApp Transaction
 type Transaction struct {
   Action                  string        `json:"action,omitempty"`
@@ -281,18 +271,17 @@ func (trx Transaction) Finished() bool {
 }
 
 // Debug - print formatted Transaction structure
-func (trx Transaction) Debug() {
-  fmt.Printf("                      ID: %d\n",  trx.ID)
-  fmt.Printf("              Identifier: %s\n",  trx.Identifier)
-  fmt.Printf("                  Action: %s\n",  trx.Action)
-  fmt.Printf("      AssociatedObjectID: %d\n",  trx.AssociatedObjectID)
-  fmt.Printf("    AssociatedObjectType: %s\n",  trx.AssociatedObjectType)
-  fmt.Printf("                  Status: %s\n",  trx.Status)
-  fmt.Printf("               CreatedAt: %s\n",  trx.CreatedAt)
-  fmt.Printf("                ParentID: %d\n",  trx.ParentID)
-  fmt.Printf("              ParentType: %s\n",  trx.ParentType)
-  fmt.Printf("                 ChainID: %d\n",  trx.ChainID)
-  fmt.Printf("  DependentTransactionID: %d\n",  trx.DependentTransactionID)
-  fmt.Printf("                  Params: %+v\n", trx.Params)
-  // fmt.Printf("     Params.ShutdownType: %s\n",  trx.Params.ShutdownType)
+func (obj Transaction) Debug() {
+  fmt.Printf("                    ID: %d\n", obj.ID)
+  fmt.Printf("            Identifier: %s\n", obj.Identifier)
+  fmt.Printf("                Action: %s\n", obj.Action)
+  fmt.Printf("    AssociatedObjectID: %d\n", obj.AssociatedObjectID)
+  fmt.Printf("  AssociatedObjectType: %s\n", obj.AssociatedObjectType)
+  fmt.Printf("                Status: %s\n", obj.Status)
+  fmt.Printf("             CreatedAt: %s\n", obj.CreatedAt)
+  fmt.Printf("              ParentID: %d\n", obj.ParentID)
+  fmt.Printf("            ParentType: %s\n", obj.ParentType)
+  fmt.Printf("               ChainID: %d\n", obj.ChainID)
+  fmt.Printf("DependentTransactionID: %d\n", obj.DependentTransactionID)
+  fmt.Printf("                Params: %+v\n", obj.Params)
 }

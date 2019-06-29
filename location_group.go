@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const locationGroupBasePath = "/settings/location_groups"
+const locationGroupBasePath = "settings/location_groups"
 
 // LocationGroupsService is an interface for interfacing with the LocationGroup
 // endpoints of the OnApp API
@@ -81,12 +81,12 @@ func (s *LocationGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([
     return nil, resp, err
   }
 
-  vms := make([]LocationGroup, len(out))
-  for i := range vms {
-    vms[i] = out[i]["location_group"]
+  arr := make([]LocationGroup, len(out))
+  for i := range arr {
+    arr[i] = out[i]["location_group"]
   }
 
-  return vms, resp, err
+  return arr, resp, err
 }
 
 // Get individual LocationGroup.
@@ -162,10 +162,10 @@ func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta inter
     PerPage : searchTransactions,
   }
 
-  trxVM, resp, err := s.client.Transactions.ListByGroup(ctx, id, "LocationGroup", opt)
+  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "LocationGroup", opt)
 
   var root *Transaction
-  e := trxVM.Front()
+  e := trx.Front()
   if e != nil {
     val := e.Value.(Transaction)
     root = &val
@@ -177,11 +177,11 @@ func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta inter
 
 // Debug - print formatted LocationGroup structure
 func (lg LocationGroup) Debug() {
-  fmt.Println("[        ID]: ",   lg.ID)
-  fmt.Println("[   Country]: ",   lg.Country)
-  fmt.Println("[      City]: ",   lg.City)
-  fmt.Printf( "[       Lat]: %f", lg.Lat)
-  fmt.Printf( "[       Lng]: %f", lg.Lng)
-  fmt.Println("[CdnEnabled]: ",   lg.CdnEnabled)
-  fmt.Println("[ Federated]: ",   lg.Federated)
+  fmt.Printf("        ID: %d\n", lg.ID)
+  fmt.Printf("   Country: %s\n", lg.Country)
+  fmt.Printf("      City: %s\n", lg.City)
+  fmt.Printf("       Lat: %f\n", lg.Lat)
+  fmt.Printf("       Lng: %f\n", lg.Lng)
+  fmt.Printf("CdnEnabled: %T\n", lg.CdnEnabled)
+  fmt.Printf(" Federated: %T\n", lg.Federated)
 }

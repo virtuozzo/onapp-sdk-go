@@ -9,9 +9,9 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const hypervisorGroupBasePath = "/settings/hypervisor_zones"
+const hypervisorGroupBasePath = "settings/hypervisor_zones"
 
-// HypervisorGroupsService is an interface for interfacing with the HypervisorGroup
+// HypervisorGroupsService is an interface for interfacing with the Compute Zone
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/compute-zones
 type HypervisorGroupsService interface {
@@ -23,15 +23,15 @@ type HypervisorGroupsService interface {
   // Edit(context.Context, int, *ListOptions) ([]HypervisorGroup, *Response, error)
 }
 
-// HypervisorGroupsServiceOp handles communication with the HypervisorGroup related methods of the
-// OnApp API.
+// HypervisorGroupsServiceOp handles communication with the Compute Zone
+// related methods of the OnApp API.
 type HypervisorGroupsServiceOp struct {
   client *Client
 }
 
 var _ HypervisorGroupsService = &HypervisorGroupsServiceOp{}
 
-// HypervisorGroup represent VirtualServer from OnApp API
+// HypervisorGroup represent Compute Zone of the OnApp API
 type HypervisorGroup struct {
   ID                          int           `json:"id,omitempty"`
   Label                       string        `json:"label,omitempty"`
@@ -71,7 +71,7 @@ type HypervisorGroup struct {
   CustomConfig                string        `json:"custom_config,omitempty"`
 }
 
-// HypervisorGroupCreateRequest represents a request to create a HypervisorGroup
+// HypervisorGroupCreateRequest represents a request to create a Compute Zone
 type HypervisorGroupCreateRequest struct {
   CPUFlagsEnabled     bool   `json:"cpu_flags_enabled,bool"`
   CPUUnits            string `json:"cpu_units,omitempty"`
@@ -123,12 +123,12 @@ func (s *HypervisorGroupsServiceOp) List(ctx context.Context, opt *ListOptions) 
     return nil, resp, err
   }
 
-  vms := make([]HypervisorGroup, len(out))
-  for i := range vms {
-    vms[i] = out[i]["hypervisor_group"]
+  arr := make([]HypervisorGroup, len(out))
+  for i := range arr {
+    arr[i] = out[i]["hypervisor_group"]
   }
 
-  return vms, resp, err
+  return arr, resp, err
 }
 
 // Get individual HypervisorGroup.
@@ -204,10 +204,10 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
     PerPage : searchTransactions,
   }
 
-  trxVM, resp, err := s.client.Transactions.ListByGroup(ctx, id, "HypervisorGroup", opt)
+  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "HypervisorGroup", opt)
 
   var root *Transaction
-  e := trxVM.Front()
+  e := trx.Front()
   if e != nil {
     val := e.Value.(Transaction)
     root = &val
@@ -218,7 +218,7 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
 }
 
 // Debug - print formatted HypervisorGroup structure
-func (h HypervisorGroup) Debug() {
-  fmt.Println("[                  ID]: ", h.ID)
-  fmt.Println("[          Identifier]: ", h.Identifier)
+func (obj HypervisorGroup) Debug() {
+  fmt.Printf("        ID: %d\n", obj.ID)
+  fmt.Printf("Identifier: %s\n", obj.Identifier)
 }

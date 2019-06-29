@@ -115,26 +115,6 @@ type VirtualMachine struct {
   XenID                         int                     `json:"xen_id,omitempty"`
 }
 
-// IPAddress - represents an ip address of VirtualMachine
-type IPAddress struct {
-  Address         string      `json:"address,omitempty"`
-  Broadcast       string      `json:"broadcast,omitempty"`
-  CreatedAt       time.Time   `json:"created_at,omitempty"`
-  Free            bool        `json:"free,bool"`
-  Gateway         string      `json:"gateway,omitempty"`
-  HypervisorID    string      `json:"hypervisor_id,omitempty"`
-  ID              int         `json:"id,omitempty"`
-  IPRangeID       int         `json:"ip_range_id,omitempty"`
-  IPv4            bool        `json:"ipv4,bool"`
-  LockVersion     int         `json:"lock_version,omitempty"`
-  Netmask         string      `json:"netmask,omitempty"`
-  NetworkAddress  string      `json:"network_address,omitempty"`
-  Pxe             bool        `json:"pxe,bool"`
-  Prefix          int         `json:"prefix,omitempty"`
-  UpdatedAt       time.Time   `json:"updated_at,omitempty"`
-  UserID          string      `json:"user_id,omitempty"`
-}
-
 // VirtualMachineCreateRequest represents a request to create a VirtualMachine
 type VirtualMachineCreateRequest struct {
   // custom_variables_attributes
@@ -229,12 +209,12 @@ func (s *VirtualMachinesServiceOp) List(ctx context.Context, opt *ListOptions) (
     return nil, resp, err
   }
 
-  vms := make([]VirtualMachine, len(out))
-  for i := range vms {
-    vms[i] = out[i]["virtual_machine"]
+  arr := make([]VirtualMachine, len(out))
+  for i := range arr {
+    arr[i] = out[i]["virtual_machine"]
   }
 
-  return vms, resp, err
+  return arr, resp, err
 }
 
 // Get individual VirtualMachine.
@@ -310,10 +290,10 @@ func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, id int, meta inte
     PerPage : searchTransactions,
   }
 
-  trxVM, resp, err := s.client.Transactions.ListByGroup(ctx, id, "VirtualMachine", opt)
+  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "VirtualMachine", opt)
 
   var root *Transaction
-  e := trxVM.Front()
+  e := trx.Front()
   if e != nil {
     val := e.Value.(Transaction)
     root = &val
@@ -420,36 +400,21 @@ func (s *VirtualMachinesServiceOp) Disks(ctx context.Context, id int, opt *ListO
 }
 
 // Debug - print formatted VirtualMachine structure
-func (vm VirtualMachine) Debug() {
-  fmt.Println("[                  ID]: ", vm.ID)
-  fmt.Println("[          Identifier]: ", vm.Identifier)
-  fmt.Println("[               Label]: ", vm.Label)
-  fmt.Println("[ InitialRootPassword]: ", vm.InitialRootPassword)
-  fmt.Println("[       TemplateLabel]: ", vm.TemplateLabel)
-  fmt.Println("[           CreatedAt]: ", vm.CreatedAt)
-  fmt.Println("[               State]: ", vm.State)
-  fmt.Println("[               Built]: ", vm.Built)
-  fmt.Println("[              Booted]: ", vm.Booted)
+func (obj VirtualMachine) Debug() {
+  fmt.Printf("                 ID: %d\n ", obj.ID)
+  fmt.Printf("         Identifier: %s\n ", obj.Identifier)
+  fmt.Printf("              Label: %s\n ", obj.Label)
+  fmt.Printf("InitialRootPassword: %s\n ", obj.InitialRootPassword)
+  fmt.Printf("      TemplateLabel: %s\n ", obj.TemplateLabel)
+  fmt.Printf("          CreatedAt: %s\n ", obj.CreatedAt)
+  fmt.Printf("              State: %s\n ", obj.State)
+  fmt.Printf("              Built: %T\n ", obj.Built)
+  fmt.Printf("             Booted: %T\n ", obj.Booted)
 
-  for i := range vm.IPAddresses {
-    ip := vm.IPAddresses[i]["ip_address"]
+  for i := range obj.IPAddresses {
+    ip := obj.IPAddresses[i]["ip_address"]
     fmt.Printf("\t   IPAddresses: [%d]\n", i)
     ip.Debug()
     fmt.Println("")
   }
-}
-
-// Debug - print formatted IPAddress structure
-func (ip IPAddress) Debug() {
-  fmt.Printf("\t            ID: %d\n",  ip.ID)
-  fmt.Printf("\t       Address: %s\n",  ip.Address)
-  fmt.Printf("\t     Broadcast: %s\n",  ip.Broadcast)
-  fmt.Printf("\t       Gateway: %s\n",  ip.Gateway)
-  fmt.Printf("\t       Netmask: %s\n",  ip.Netmask)
-  fmt.Printf("\tNetworkAddress: %s\n",  ip.NetworkAddress)
-  fmt.Printf("\t        UserID: %s\n",  ip.UserID)
-  fmt.Printf("\t     IPRangeID: %d\n",  ip.IPRangeID)
-  fmt.Printf("\t          Free: %t\n",  ip.Free)
-  fmt.Printf("\t  HypervisorID: %s\n",  ip.HypervisorID)
-  fmt.Printf("\t   LockVersion: %d\n",  ip.LockVersion)
 }

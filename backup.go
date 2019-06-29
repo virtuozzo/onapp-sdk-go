@@ -38,16 +38,16 @@ type Backup struct {
 }
 
 // Debug - print formatted Backup structure
-func (bak Backup) Debug() {
-  fmt.Printf("                   ID: %d\n",   bak.ID)
-  fmt.Printf("               UserID: %d\n",   bak.UserID)
-  fmt.Printf("           Identifier: %s\n",   bak.Identifier)
-  fmt.Printf("          MinDiskSize: %dGB\n", bak.MinDiskSize)
-  fmt.Printf("      OperatingSystem: %s\n",   bak.OperatingSystem)
-  fmt.Printf("OperatingSystemDistro: %s\n",   bak.OperatingSystemDistro)
-  fmt.Printf("            CreatedAt: %s\n",   bak.CreatedAt)
-  fmt.Printf("           TemplateID: %d\n",   bak.TemplateID)
-  fmt.Printf("        DataStoreType: %s\n",   bak.DataStoreType)
-  fmt.Printf("           BackupSize: %d\n",   bak.BackupSize)
-  fmt.Printf("            Initiated: %s\n",   bak.Initiated)
+func (obj Backup) Debug() {
+  fmt.Printf("                   ID: %d\n",   obj.ID)
+  fmt.Printf("               UserID: %d\n",   obj.UserID)
+  fmt.Printf("           Identifier: %s\n",   obj.Identifier)
+  fmt.Printf("          MinDiskSize: %dGB\n", obj.MinDiskSize)
+  fmt.Printf("      OperatingSystem: %s\n",   obj.OperatingSystem)
+  fmt.Printf("OperatingSystemDistro: %s\n",   obj.OperatingSystemDistro)
+  fmt.Printf("            CreatedAt: %s\n",   obj.CreatedAt)
+  fmt.Printf("           TemplateID: %d\n",   obj.TemplateID)
+  fmt.Printf("        DataStoreType: %s\n",   obj.DataStoreType)
+  fmt.Printf("           BackupSize: %d\n",   obj.BackupSize)
+  fmt.Printf("            Initiated: %s\n",   obj.Initiated)
 }

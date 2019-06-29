@@ -5,18 +5,10 @@ import (
   "time"
 )
 
-// IntegratedStorageCacheSettings - 
-type IntegratedStorageCacheSettings struct {
-}
-
-// IoLimits - 
-type IoLimits struct {
-}
-
 // Disk - 
 type Disk struct {
-  AddToFreebsdFstab              interface{}                    `json:"add_to_freebsd_fstab,omitempty"`
-  AddToLinuxFstab                interface{}                    `json:"add_to_linux_fstab,omitempty"`
+  AddToFreebsdFstab              string                         `json:"add_to_freebsd_fstab,omitempty"`
+  AddToLinuxFstab                string                         `json:"add_to_linux_fstab,omitempty"`
   Built                          bool                           `json:"built,bool"`
   BurstBw                        int                            `json:"burst_bw,omitempty"`
   BurstIops                      int                            `json:"burst_iops,omitempty"`
@@ -51,15 +43,15 @@ type Disk struct {
 }
 
 // Debug - print formatted Disk structure
-func (d Disk) Debug() {
-  fmt.Printf("                   ID: %d\n", d.ID)
-  fmt.Printf("           Identifier: %s\n", d.Identifier)
-  fmt.Printf("     VirtualMachineID: %d\n", d.VirtualMachineID)
-  fmt.Printf("                Label: %s\n", d.Label)
-  fmt.Printf("           FileSystem: %s\n", d.FileSystem)
-  fmt.Printf("            CreatedAt: %s\n", d.CreatedAt)
-  fmt.Printf("               Locked: %t\n", d.Locked)
-  fmt.Printf("             DiskSize: %d\n", d.DiskSize)
-  fmt.Printf("           MountPoint: %s\n", d.MountPoint)
-  fmt.Printf("             VolumeID: %d\n", d.VolumeID)
+func (obj Disk) Debug() {
+  fmt.Printf("              ID: %d\n", obj.ID)
+  fmt.Printf("      Identifier: %s\n", obj.Identifier)
+  fmt.Printf("VirtualMachineID: %d\n", obj.VirtualMachineID)
+  fmt.Printf("           Label: %s\n", obj.Label)
+  fmt.Printf("      FileSystem: %s\n", obj.FileSystem)
+  fmt.Printf("       CreatedAt: %s\n", obj.CreatedAt)
+  fmt.Printf("          Locked: %t\n", obj.Locked)
+  fmt.Printf("        DiskSize: %d\n", obj.DiskSize)
+  fmt.Printf("      MountPoint: %s\n", obj.MountPoint)
+  fmt.Printf("        VolumeID: %d\n", obj.VolumeID)
 }

@@ -156,11 +156,11 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, r
     PerPage : searchTransactions,
   }
 
-  trxVM, resp, err := s.client.Transactions.ListByGroup(ctx, id, "VirtualMachine", opt)
+  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "VirtualMachine", opt)
 
   // Return last transaction from list of transactions
   var root *Transaction
-  e := trxVM.Front()
+  e := trx.Front()
   if e != nil {
     val := e.Value.(Transaction)
     root = &val
@@ -181,5 +181,5 @@ func virtualMachineActionPath(id int, request *ActionRequest) (string, error) {
     path = (*request)["path"].(string)
   }
 
-  return fmt.Sprintf("virtual_machines/%d/%s%s", id, path, apiFormat), nil
+  return fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, id, path, apiFormat), nil
 }

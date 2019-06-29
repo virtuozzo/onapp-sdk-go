@@ -45,9 +45,11 @@ type Client struct {
   // CDNs              CDNService
   // Domains           DomainsService
   VirtualMachines         VirtualMachinesService
-  VirtualMachinesActions  VirtualMachineActionsService
+  VirtualMachineActions   VirtualMachineActionsService
   Hypervisors             HypervisorsService
-  HypervisorGroup         HypervisorGroupsService
+  HypervisorGroups        HypervisorGroupsService
+  DataStores              DataStoresService
+  DataStoreGroups         DataStoreGroupsService
   // Images            ImagesService
   // ImageActions      ImageActionsService
   // Keys              KeysService
@@ -84,7 +86,7 @@ type ListOptions struct {
   PerPage int `url:"per_page,omitempty"`
 }
 
-// Response is a DigitalOcean response. This wraps the standard http.Response returned from DigitalOcean.
+// Response is a OnApp response. This wraps the standard http.Response returned from OnApp.
 type Response struct {
   *http.Response
 }
@@ -141,9 +143,11 @@ func NewClient(httpClient *http.Client) *Client {
   // c.Certificates = &CertificatesServiceOp{client: c}
   // c.Domains = &DomainsServiceOp{client: c}
   c.VirtualMachines = &VirtualMachinesServiceOp{client: c}
-  c.VirtualMachinesActions = &VirtualMachineActionsServiceOp{client: c}
+  c.VirtualMachineActions = &VirtualMachineActionsServiceOp{client: c}
   c.Hypervisors = &HypervisorsServiceOp{client: c}
-  c.HypervisorGroup = &HypervisorGroupsServiceOp{client: c}
+  c.HypervisorGroups = &HypervisorGroupsServiceOp{client: c}
+  c.DataStores = &DataStoresServiceOp{client: c}
+  c.DataStoreGroups = &DataStoreGroupsServiceOp{client: c}
   // c.Firewalls = &FirewallsServiceOp{client: c}
   // c.FloatingIPs = &FloatingIPsServiceOp{client: c}
   // c.FloatingIPActions = &FloatingIPActionsServiceOp{client: c}
