@@ -309,12 +309,15 @@ func hypervisorPath(mac string, serverType string) string {
 
 // Debug - print formatted Hypervisor structure
 func (obj Hypervisor) Debug() {
-  fmt.Printf("        ID: %d\n", obj.ID)
-  fmt.Printf("     Label: %s\n", obj.Label)
-  fmt.Printf(" IPAddress: %s\n", obj.IPAddress)
-  fmt.Printf("      Host: %s\n", obj.Host)
-  fmt.Printf("       Mac: %s\n", obj.Mac)
-  fmt.Printf("    Online: %T\n", obj.Online)
-  fmt.Printf(" TotalCpus: %d\n", obj.TotalCpus)
-  fmt.Printf("    Uptime: %s\n", obj.Uptime)
+  fmt.Printf("            ID: %d\n", obj.ID)
+  fmt.Printf("         Label: %s\n", obj.Label)
+  fmt.Printf("     IPAddress: %s\n", obj.IPAddress)
+  fmt.Printf("    ServerType: %s\n", obj.ServerType)
+  fmt.Printf("HypervisorType: %s\n", obj.HypervisorType)
+  fmt.Printf("          Host: %s\n", obj.Host)
+  fmt.Printf("           Mac: %s\n", obj.Mac)
+  fmt.Printf("        Online: %t\n", obj.Online)
+  fmt.Printf("     TotalCpus: %d\n", obj.TotalCpus)
+  fmt.Printf("      TotalMem: %d\n", obj.TotalMem)
+  fmt.Printf("        Uptime: %s\n", obj.Uptime)
 }

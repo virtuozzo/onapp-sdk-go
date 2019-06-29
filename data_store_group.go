@@ -193,6 +193,6 @@ func (obj DataStoreGroup) Debug() {
   fmt.Printf("       ServerType: %s\n", obj.ServerType)
   fmt.Printf(" DefaultBurstIops: %d\n", obj.DefaultBurstIops)
   fmt.Printf("      MinDiskSize: %d\n", obj.MinDiskSize)
-  fmt.Printf("FederationEnabled: %T\n", obj.FederationEnabled)
-  fmt.Printf("           Closed: %T\n", obj.Closed)
+  fmt.Printf("FederationEnabled: %t\n", obj.FederationEnabled)
+  fmt.Printf("           Closed: %t\n", obj.Closed)
 }

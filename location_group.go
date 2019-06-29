@@ -182,6 +182,6 @@ func (lg LocationGroup) Debug() {
   fmt.Printf("      City: %s\n", lg.City)
   fmt.Printf("       Lat: %f\n", lg.Lat)
   fmt.Printf("       Lng: %f\n", lg.Lng)
-  fmt.Printf("CdnEnabled: %T\n", lg.CdnEnabled)
-  fmt.Printf(" Federated: %T\n", lg.Federated)
+  fmt.Printf("CdnEnabled: %t\n", lg.CdnEnabled)
+  fmt.Printf(" Federated: %t\n", lg.Federated)
 }

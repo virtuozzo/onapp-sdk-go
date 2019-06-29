@@ -408,8 +408,8 @@ func (obj VirtualMachine) Debug() {
   fmt.Printf("      TemplateLabel: %s\n ", obj.TemplateLabel)
   fmt.Printf("          CreatedAt: %s\n ", obj.CreatedAt)
   fmt.Printf("              State: %s\n ", obj.State)
-  fmt.Printf("              Built: %T\n ", obj.Built)
-  fmt.Printf("             Booted: %T\n ", obj.Booted)
+  fmt.Printf("              Built: %t\n ", obj.Built)
+  fmt.Printf("             Booted: %t\n ", obj.Booted)
 
   for i := range obj.IPAddresses {
     ip := obj.IPAddresses[i]["ip_address"]

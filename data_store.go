@@ -198,7 +198,7 @@ func (h DataStore) Debug() {
   fmt.Printf("   Identifier: %s\n", h.Identifier)
   fmt.Printf("           IP: %s\n", h.IP)
   fmt.Printf("DataStoreType: %s\n", h.DataStoreType)
-  fmt.Printf("      Default: %T\n", h.Default)
-  fmt.Printf("      Enabled: %T\n", h.Enabled)
+  fmt.Printf("      Default: %t\n", h.Default)
+  fmt.Printf("      Enabled: %t\n", h.Enabled)
   fmt.Printf("DataStoreSize: %d\n", h.DataStoreSize)
 }
