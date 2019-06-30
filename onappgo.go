@@ -16,7 +16,7 @@ import (
 )
 
 const (
-  libraryVersion  = "0.1.2"
+  libraryVersion  = "0.1.3"
   defaultBaseURL  = "http://69.168.237.17/"
   userAgent       = "onapp_sdk_go/" + libraryVersion
   mediaType       = "application/json"
@@ -54,7 +54,7 @@ type Client struct {
   // ImageActions      ImageActionsService
   // Keys              KeysService
   // Regions           RegionsService
-  // Sizes             SizesService
+  Networks             NetworksService
   // FloatingIPs       FloatingIPsService
   // FloatingIPActions FloatingIPActionsService
   // Snapshots         SnapshotsService
@@ -157,7 +157,7 @@ func NewClient(httpClient *http.Client) *Client {
   // c.LoadBalancers = &LoadBalancersServiceOp{client: c}
   // c.Projects = &ProjectsServiceOp{client: c}
   // c.Regions = &RegionsServiceOp{client: c}
-  // c.Sizes = &SizesServiceOp{client: c}
+  c.Networks = &NetworksServiceOp{client: c}
   // c.Snapshots = &SnapshotsServiceOp{client: c}
   // c.Storage = &StorageServiceOp{client: c}
   // c.StorageActions = &StorageActionsServiceOp{client: c}
