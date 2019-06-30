@@ -140,3 +140,27 @@ func (obj NetworkInterface) Debug() {
   fmt.Printf("            Primary: %t\n", obj.Primary)
   fmt.Printf("DefaultFirewallRule: %s\n", obj.DefaultFirewallRule)
 }
+
+// FirewallRule - 
+// https://docs.onapp.com/apim/latest/firewall-rules-for-vss
+type FirewallRule struct {
+  ID                  int         `json:"id,omitempty"`
+  Position            int         `json:"position,omitempty"`
+  Address             string      `json:"address,omitempty"`
+  CreatedAt           time.Time   `json:"created_at,omitempty"`
+  UpdatedAt           time.Time   `json:"updated_at,omitempty"`
+  Command             string      `json:"adapter_type,omitempty"`
+  Port                int         `json:"port,omitempty"`
+  Protocol            string      `json:"protocol,omitempty"`
+  NetworkInterfaceID  int         `json:"network_interface_id,omitempty"`
+}
+
+// Debug - print formatted FirewallRule structure
+func (obj FirewallRule) Debug() {
+  fmt.Printf("      ID: %d\n", obj.ID)
+  fmt.Printf("Position: %d\n", obj.Position)
+  fmt.Printf(" Address: %s\n", obj.Address)
+  fmt.Printf(" Command: %s\n", obj.Command)
+  fmt.Printf("    Port: %d\n", obj.Port)
+  fmt.Printf("Protocol: %s\n", obj.Protocol)
+}

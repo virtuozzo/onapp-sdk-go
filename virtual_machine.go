@@ -27,8 +27,9 @@ type VirtualMachinesService interface {
   Disks(context.Context, int, *ListOptions) ([]Disk, *Response, error)
 
   ListNetworkInterfaces(context.Context, int, *ListOptions) ([]NetworkInterface, *Response, error)
+  ListFirewallRules(context.Context, int, *ListOptions) ([]FirewallRule, *Response, error)
 }
-  
+
 // VirtualMachinesServiceOp handles communication with the VirtualMachine related methods of the
 // OnApp API.
 type VirtualMachinesServiceOp struct {
@@ -420,6 +421,38 @@ func (s *VirtualMachinesServiceOp) ListNetworkInterfaces(ctx context.Context, id
   }
 
   return nets, resp, err
+}
+
+// ListFirewallRules a VirtualMachine
+func (s *VirtualMachinesServiceOp) ListFirewallRules(ctx context.Context, id int, opt *ListOptions) ([]FirewallRule, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  resourceType := "firewall_rule"
+  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, id, resourceType+"s", apiFormat)
+  path, err := addOptions(path, opt)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]FirewallRule
+  resp, err := s.client.Do(ctx, req, &out)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  fwr := make([]FirewallRule, len(out))
+  for i := range fwr {
+    fwr[i] = out[i][resourceType]
+  }
+
+  return fwr, resp, err
 }
 
 // Debug - print formatted VirtualMachine structure
