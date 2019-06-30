@@ -16,7 +16,7 @@ import (
 )
 
 const (
-  libraryVersion  = "0.1.1"
+  libraryVersion  = "0.1.2"
   defaultBaseURL  = "http://69.168.237.17/"
   userAgent       = "onapp_sdk_go/" + libraryVersion
   mediaType       = "application/json"
@@ -60,7 +60,7 @@ type Client struct {
   // Snapshots         SnapshotsService
   // Storage           StorageService
   // StorageActions    StorageActionsService
-  // Tags              TagsService
+  Users	               UsersService
   // LoadBalancers     LoadBalancersService
   // Certificates      CertificatesService
   // Firewalls         FirewallsService
@@ -161,7 +161,7 @@ func NewClient(httpClient *http.Client) *Client {
   // c.Snapshots = &SnapshotsServiceOp{client: c}
   // c.Storage = &StorageServiceOp{client: c}
   // c.StorageActions = &StorageActionsServiceOp{client: c}
-  // c.Tags = &TagsServiceOp{client: c}
+  c.Users = &UsersServiceOp{client: c}
   // c.Kubernetes = &KubernetesServiceOp{client: c}
   // c.Databases = &DatabasesServiceOp{client: c}
   // c.VPCs = &VPCsServiceOp{client: c}

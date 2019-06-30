@@ -1,9 +1,35 @@
 package onappgo
 
 import (
+  "context"
+  "net/http"
   "fmt"
   "time"
+
+  "github.com/digitalocean/godo"
 )
+
+const userBasePath = "users"
+
+// UsersService is an interface for interfacing with the User
+// endpoints of the OnApp API
+// See: https://docs.onapp.com/apim/latest/users
+type UsersService interface {
+  List(context.Context, *ListOptions) ([]User, *Response, error)
+  Get(context.Context, int) (*User, *Response, error)
+  Create(context.Context, *UserCreateRequest) (*User, *Response, error)
+  // Delete(context.Context, int) (*Response, error)
+  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
+  // Edit(context.Context, int, *ListOptions) ([]User, *Response, error)
+}
+
+// UsersServiceOp handles communication with the User related methods of the
+// OnApp API.
+type UsersServiceOp struct {
+  client *Client
+}
+
+var _ UsersService = &UsersServiceOp{}
 
 // Infoboxes - 
 type Infoboxes struct {
@@ -76,15 +102,15 @@ type User struct {
   UsedMemory              int                `json:"used_memory,omitempty"`
   UsedCPUShares           int                `json:"used_cpu_shares,omitempty"`
   UsedDiskSize            int                `json:"used_disk_size,omitempty"`
-  MemoryAvailable         int                `json:"memory_available,omitempty"`
-  DiskSpaceAvailable      int                `json:"disk_space_available,omitempty"`
+  MemoryAvailable         float64            `json:"memory_available,omitempty"`
+  DiskSpaceAvailable      float64            `json:"disk_space_available,omitempty"`
   Roles                   []Roles            `json:"roles,omitempty"`
-  MonthlyPrice            int                `json:"monthly_price,omitempty"`
-  PaymentAmount           int                `json:"payment_amount,omitempty"`
-  OutstandingAmount       int                `json:"outstanding_amount,omitempty"`
-  TotalAmount             int                `json:"total_amount,omitempty"`
-  DiscountDueToFree       int                `json:"discount_due_to_free,omitempty"`
-  TotalAmountWithDiscount int                `json:"total_amount_with_discount,omitempty"`
+  MonthlyPrice            float64            `json:"monthly_price,omitempty"`
+  PaymentAmount           float64            `json:"payment_amount,omitempty"`
+  OutstandingAmount       float64            `json:"outstanding_amount,omitempty"`
+  TotalAmount             float64            `json:"total_amount,omitempty"`
+  DiscountDueToFree       float64            `json:"discount_due_to_free,omitempty"`
+  TotalAmountWithDiscount float64            `json:"total_amount_with_discount,omitempty"`
   AdditionalFields        []AdditionalFields `json:"additional_fields,omitempty"`
   UsedIPAddresses         []IPAddress        `json:"used_ip_addresses,omitempty"`
 }
@@ -102,6 +128,121 @@ type UserCreateRequest struct {
   AdditionalFields []AdditionalFields `json:"additional_fields,omitempty"`
 }
 
+type userCreateRequestRoot struct {
+  UserCreateRequest  *UserCreateRequest  `json:"user"`
+}
+
+type userRoot struct {
+  User  *User  `json:"user"`
+}
+
+func (d UserCreateRequest) String() string {
+  return godo.Stringify(d)
+}
+
+// List all Users.
+func (s *UsersServiceOp) List(ctx context.Context, opt *ListOptions) ([]User, *Response, error) {
+  path := userBasePath + apiFormat
+  path, err := addOptions(path, opt)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]User
+  resp, err := s.client.Do(ctx, req, &out)
+
+  if err != nil {
+    return nil, resp, err
+  }
+
+  arr := make([]User, len(out))
+  for i := range arr {
+    arr[i] = out[i]["user"]
+  }
+
+  return arr, resp, err
+}
+
+// Get individual User.
+func (s *UsersServiceOp) Get(ctx context.Context, id int) (*User, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf("%s/%d%s", userBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  root := new(userRoot)
+  resp, err := s.client.Do(ctx, req, root)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  return root.User, resp, err
+}
+
+// Create User.
+func (s *UsersServiceOp) Create(ctx context.Context, createRequest *UserCreateRequest) (*User, *Response, error) {
+  if createRequest == nil {
+    return nil, nil, godo.NewArgError("createRequest", "cannot be nil")
+  }
+
+  path := userBasePath + apiFormat
+
+  rootRequest := &userCreateRequestRoot{
+    UserCreateRequest : createRequest,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  fmt.Println("\nUser [Create]  req: ", req)
+
+  root := new(userRoot)
+  resp, err := s.client.Do(ctx, req, root)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  return root.User, resp, err
+}
+
+// Delete User.
+func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf("%s/%d%s", userBasePath, id, apiFormat)
+  path, err := addOptions(path, meta)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  resp, err := s.client.Do(ctx, req, nil)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  return lastTransaction(ctx, s.client, id, "User")
+}
+
 // Debug - print formatted User structure
 func (obj User) Debug() {
   fmt.Printf("           ID: %d\n", obj.ID)
@@ -115,4 +256,34 @@ func (obj User) Debug() {
   fmt.Printf("   UsedMemory: %d\n", obj.UsedMemory)
   fmt.Printf("UsedCPUShares: %d\n", obj.UsedCPUShares)
   fmt.Printf(" UsedDiskSize: %d\n", obj.UsedDiskSize)
+
+  if len(obj.Roles) > 0 {
+    for i := range obj.Roles {
+      r := obj.Roles[i].Role
+      fmt.Printf("\n\t      Role: [%d]\n", i)
+      r.Debug()
+    }
+  }
+}
+
+// Debug - print formatted Role structure
+func (obj Role) Debug() {
+  fmt.Printf("\t        ID: %d\n", obj.ID)
+  fmt.Printf("\tIdentifier: %s\n", obj.Identifier)
+  fmt.Printf("\t     Label: %s\n", obj.Label)
+  fmt.Printf("\t    System: %t\n", obj.System)
+  fmt.Printf("\tUsersCount: %d\n", obj.UsersCount)
+
+  if len(obj.Permissions) > 0 {
+    for i := range obj.Permissions {
+      p := obj.Permissions[i].Permission
+      fmt.Printf("\t\tPersission: [%d] -> ", i)
+      p.Debug()
+    }
+  }
+}
+
+// Debug - print formatted Permission structure
+func (obj Permission) Debug() {
+  fmt.Printf("ID: %d,\tIdentifier: %s\n", obj.ID, obj.Identifier)
 }
