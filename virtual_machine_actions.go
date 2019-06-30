@@ -145,29 +145,13 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, r
   if err != nil {
     return nil, nil, err
   }
-  // fmt.Printf(" doAction.req: [%+v]\n", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
     return nil, resp, err
   }
 
-  opt := &ListOptions{
-    PerPage : searchTransactions,
-  }
-
-  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, "VirtualMachine", opt)
-
-  // Return last transaction from list of transactions
-  var root *Transaction
-  e := trx.Front()
-  if e != nil {
-    val := e.Value.(Transaction)
-    root = &val
-    return root, resp, err
-  }
-
-  return nil, nil, err
+  return lastTransaction(ctx, s.client, id, "VirtualMachine")
 }
 
 func virtualMachineActionPath(id int, request *ActionRequest) (string, error) {
