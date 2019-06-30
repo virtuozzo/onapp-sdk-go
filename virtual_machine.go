@@ -25,8 +25,10 @@ type VirtualMachinesService interface {
   Backups(context.Context, int, *ListOptions) ([]Backup, *Response, error)
   Transactions(context.Context, int, *ListOptions) ([]Transaction, *Response, error)
   Disks(context.Context, int, *ListOptions) ([]Disk, *Response, error)
-}
 
+  ListNetworkInterfaces(context.Context, int, *ListOptions) ([]NetworkInterface, *Response, error)
+}
+  
 // VirtualMachinesServiceOp handles communication with the VirtualMachine related methods of the
 // OnApp API.
 type VirtualMachinesServiceOp struct {
@@ -386,6 +388,38 @@ func (s *VirtualMachinesServiceOp) Disks(ctx context.Context, id int, opt *ListO
   }
 
   return disks, resp, err
+}
+
+// ListNetworkInterfaces a VirtualMachine
+func (s *VirtualMachinesServiceOp) ListNetworkInterfaces(ctx context.Context, id int, opt *ListOptions) ([]NetworkInterface, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  resourceType := "network_interface"
+  path := fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, id, resourceType+"s", apiFormat)
+  path, err := addOptions(path, opt)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]NetworkInterface
+  resp, err := s.client.Do(ctx, req, &out)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  nets := make([]NetworkInterface, len(out))
+  for i := range nets {
+    nets[i] = out[i][resourceType]
+  }
+
+  return nets, resp, err
 }
 
 // Debug - print formatted VirtualMachine structure

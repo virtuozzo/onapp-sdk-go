@@ -104,3 +104,39 @@ type AdditionalField struct {
 type AdditionalFields struct {
   AdditionalField AdditionalField `json:"additional_field,omitempty"`
 }
+
+// NetworkInterface - 
+// https://docs.onapp.com/apim/latest/network-interfaces
+type NetworkInterface struct {
+  ID                  int         `json:"id,omitempty"`
+  VirtualMachineID    int         `json:"virtual_machine_id,omitempty"`
+  Label               string      `json:"label,omitempty"`
+  Identifier          string      `json:"identifier,omitempty"`
+  CreatedAt           time.Time   `json:"created_at,omitempty"`
+  UpdatedAt           time.Time   `json:"updated_at,omitempty"`
+  Primary             bool        `json:"primary,bool"`
+  MacAddress          string      `json:"mac_address,omitempty"`
+  NetworkJoinID       int         `json:"network_join_id,omitempty"`
+  Usage               float64     `json:"usage,omitempty"`
+  UsageLastResetAt    time.Time   `json:"usage_last_reset_at,omitempty"`
+  UsageMonthRolledAt  time.Time   `json:"usage_month_rolled_at,omitempty"`
+  RateLimit           int         `json:"rate_limit,omitempty"`
+  DefaultFirewallRule string      `json:"default_firewall_rule,omitempty"`
+  Connected           bool        `json:"connected,bool"`
+  EdgeGatewayID       int         `json:"edge_gateway_id,omitempty"`
+  UseAsGateway        bool        `json:"use_as_gateway,bool"`
+  OpenstackID         int         `json:"openstack_id,omitempty"`
+  AdapterType         string      `json:"adapter_type,omitempty"`
+}
+
+// Debug - print formatted NetworkInterface structure
+func (obj NetworkInterface) Debug() {
+  fmt.Printf("                 ID: %d\n", obj.ID)
+  fmt.Printf("   VirtualMachineID: %d\n", obj.VirtualMachineID)
+  fmt.Printf("              Label: %s\n", obj.Label)
+  fmt.Printf("         Identifier: %s\n", obj.Identifier)
+  fmt.Printf("         MacAddress: %s\n", obj.MacAddress)
+  fmt.Printf("        AdapterType: %s\n", obj.AdapterType)
+  fmt.Printf("            Primary: %t\n", obj.Primary)
+  fmt.Printf("DefaultFirewallRule: %s\n", obj.DefaultFirewallRule)
+}
