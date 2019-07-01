@@ -138,7 +138,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 
   v1 := val.FieldByName("AssociatedObjectID")
   if v1.IsValid() {
-    associatedObjectID = val.FieldByName("AssociatedObjectID").Interface().(int)
+    associatedObjectID = v1.Interface().(int)
     // fmt.Printf("associatedObjectID: <%d>\n", associatedObjectID)
 
     if associatedObjectID < 1 {
@@ -148,7 +148,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 
   v2 := val.FieldByName("ParentID")
   if v2.IsValid() {
-    parentID = val.FieldByName("ParentID").Interface().(int)
+    parentID = v2.Interface().(int)
     // fmt.Printf("parentID: <%d>\n", parentID)
 
     if parentID < 1 {
@@ -158,12 +158,12 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
   
   v1 = val.FieldByName("AssociatedObjectType")
   if v1.IsValid() {
-    associatedObjectType = val.FieldByName("AssociatedObjectType").String()
+    associatedObjectType = v1.String()
   }
 
   v2 = val.FieldByName("ParentType")
   if v2.IsValid() {
-    parentType = val.FieldByName("ParentType").String()
+    parentType = v2.String()
   }
 
 
@@ -180,15 +180,17 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
   for i := range trx {
     cur := trx[i]
     if associatedObjectType != "" {
-      // fmt.Printf("associatedObjectType: <%s>\n", associatedObjectType)
-      if cur.AssociatedObjectID != associatedObjectID && cur.AssociatedObjectType == associatedObjectType {
+      // fmt.Printf("cur.AssociatedObjectID: <%d> -> associatedObjectID: <%d>\n", cur.AssociatedObjectID, associatedObjectID)
+      // fmt.Printf("cur.AssociatedObjectType: <%s> -> associatedObjectType: <%s>\n", cur.AssociatedObjectType, associatedObjectType)
+      if cur.AssociatedObjectID != associatedObjectID || cur.AssociatedObjectType != associatedObjectType {
         continue
       }
     }
     
     if parentType != "" {
-      // fmt.Printf("parentType: <%s>\n", parentType)
-      if cur.ParentID != parentID && cur.ParentType == parentType {
+      // fmt.Printf("cur.ParentID: <%d> -> parentID: <%d>\n", cur.ParentID, parentID)
+      // fmt.Printf("cur.ParentType: <%s> -> parentType: <%s>\n", cur.ParentType, parentType)
+      if cur.ParentID != parentID || cur.ParentType != parentType {
         continue
       }
     }
@@ -263,15 +265,15 @@ func (trx *Transaction) equal(filter interface{}) bool {
     value := val.Field(i)
     filterValue := filterFields.FieldByName(typeField.Name)
 
-    // fmt.Printf("%s: %s[%#v] -> %s[%#v]\n", typeField.Name, value.Type(), value, filterValue.Type(), filterValue)
+    fmt.Printf("%s: %s[%#v] -> %s[%#v]\n", typeField.Name, value.Type(), value, filterValue.Type(), filterValue)
 
     if value.Interface() != filterValue.Interface() {
-      // fmt.Printf("[false] return on filed [%s]\n\n", typeField.Name)
+      fmt.Printf("[false] return on filed [%s]\n\n", typeField.Name)
       return false
     }
   }
 
-  // fmt.Printf("[true] transaction found with id[%d]\n\n", trx.ID)
+  fmt.Printf("[true] transaction found with id[%d]\n\n", trx.ID)
   return true
 }
 

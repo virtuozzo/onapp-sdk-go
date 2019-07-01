@@ -175,9 +175,11 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
   }
 
   filter := struct{
+    Action                string
     AssociatedObjectID    int
     AssociatedObjectType  string
   }{
+    Action                : (*request)["action"].(string),
     AssociatedObjectID    : id,
     AssociatedObjectType  : "VirtualMachine",
   }
