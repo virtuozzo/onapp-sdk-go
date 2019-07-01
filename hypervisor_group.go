@@ -203,7 +203,16 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "HypervisorGroup")
+  filter := struct{
+    ParentID    int
+    ParentType  string
+  }{
+    ParentID    : id,
+    ParentType  : "HypervisorGroup",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "HypervisorGroup")
 }
 
 // Debug - print formatted HypervisorGroup structure

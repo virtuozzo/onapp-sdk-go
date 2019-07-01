@@ -159,8 +159,6 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
     return nil, nil, err
   }
 
-  fmt.Printf("path: %s\n", path)
-
   if (*request)["method"] == nil {
     return nil, nil, godo.NewArgError("method", "must be specified")
   }
@@ -176,7 +174,16 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "VirtualMachine")
+  filter := struct{
+    AssociatedObjectID    int
+    AssociatedObjectType  string
+  }{
+    AssociatedObjectID    : id,
+    AssociatedObjectType  : "VirtualMachine",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "VirtualMachine")
 }
 
 func virtualMachineActionPath(id int, request *ActionRequest) (string, error) {

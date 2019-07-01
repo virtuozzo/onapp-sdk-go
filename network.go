@@ -183,7 +183,16 @@ func (s *NetworksServiceOp) Delete(ctx context.Context, id int, meta interface{}
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "Network")
+  filter := struct{
+    ParentID    int
+    ParentType  string
+  }{
+    ParentID    : id,
+    ParentType  : "Network",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "Network")
 }
 
 // Debug - print formatted Network structure

@@ -161,7 +161,16 @@ func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta inter
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "LocationGroup")
+  filter := struct{
+    ParentID    int
+    ParentType  string
+  }{
+    ParentID    : id,
+    ParentType  : "LocationGroup",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "LocationGroup")
 }
 
 // Debug - print formatted LocationGroup structure

@@ -292,7 +292,16 @@ func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, id int, meta inte
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "VirtualMachine")
+  filter := struct{
+    AssociatedObjectID    int
+    AssociatedObjectType  string
+  }{
+    AssociatedObjectID    : id,
+    AssociatedObjectType  : "VirtualMachine",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "VirtualMachine")
 }
 
 // Backups lists the backups for a VirtualMachine

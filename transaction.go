@@ -37,7 +37,8 @@ type TransactionsService interface {
   Get(context.Context, int) (*Transaction, *Response, error)
 
   GetByFilter(context.Context, int, interface{}, *ListOptions) (*Transaction, *Response, error)
-  ListByGroup(context.Context, int, string, *ListOptions) (*list.List, *Response, error)
+  // ListByGroup(context.Context, int, string, *ListOptions) (*list.List, *Response, error)
+  ListByGroup(context.Context, interface{}, *ListOptions) (*list.List, *Response, error)
 }
 
 // TransactionsServiceOp handles communition with the image action related methods of the
@@ -128,10 +129,43 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, 
 }
 
 // ListByGroup return group of transcations depended by action
-func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, id int, objectType string, opt *ListOptions) (*list.List, *Response, error) {
-  if id < 1 {
-    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+// func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, id int, objectType string, opt *ListOptions) (*list.List, *Response, error) {
+func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{}, opt *ListOptions) (*list.List, *Response, error) {
+  var associatedObjectID, parentID int
+  var associatedObjectType, parentType string
+
+  val := reflect.ValueOf(meta)
+
+  v1 := val.FieldByName("AssociatedObjectID")
+  if v1.IsValid() {
+    associatedObjectID = val.FieldByName("AssociatedObjectID").Interface().(int)
+    // fmt.Printf("associatedObjectID: <%d>\n", associatedObjectID)
+
+    if associatedObjectID < 1 {
+      return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+    }
   }
+
+  v2 := val.FieldByName("ParentID")
+  if v2.IsValid() {
+    parentID = val.FieldByName("ParentID").Interface().(int)
+    // fmt.Printf("parentID: <%d>\n", parentID)
+
+    if parentID < 1 {
+      return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+    }
+  }
+  
+  v1 = val.FieldByName("AssociatedObjectType")
+  if v1.IsValid() {
+    associatedObjectType = val.FieldByName("AssociatedObjectType").String()
+  }
+
+  v2 = val.FieldByName("ParentType")
+  if v2.IsValid() {
+    parentType = val.FieldByName("ParentType").String()
+  }
+
 
   trx, resp, err := s.client.Transactions.List(ctx, opt)
   if err != nil {
@@ -145,13 +179,18 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, id int, objectT
 
   for i := range trx {
     cur := trx[i]
-    if cur.AssociatedObjectID != id &&
-       cur.AssociatedObjectType == objectType {
-      continue
+    if associatedObjectType != "" {
+      // fmt.Printf("associatedObjectType: <%s>\n", associatedObjectType)
+      if cur.AssociatedObjectID != associatedObjectID && cur.AssociatedObjectType == associatedObjectType {
+        continue
+      }
     }
-
-    if i+1 < len {
-      next = &trx[i+1]
+    
+    if parentType != "" {
+      // fmt.Printf("parentType: <%s>\n", parentType)
+      if cur.ParentID != parentID && cur.ParentType == parentType {
+        continue
+      }
     }
 
     if cur.DependentTransactionID == 0 {
@@ -159,11 +198,25 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, id int, objectT
       break
     }
 
+    if i+1 < len {
+      next = &trx[i+1]
+    }
+
     if next != nil {
-      if cur.AssociatedObjectID == next.AssociatedObjectID &&
-         cur.AssociatedObjectType == next.AssociatedObjectType &&
-         cur.ChainID == next.ChainID {
-        groupList.PushBack(cur)
+      if associatedObjectType != "" {
+        if cur.AssociatedObjectID == next.AssociatedObjectID &&
+          cur.AssociatedObjectType == next.AssociatedObjectType &&
+          cur.ChainID == next.ChainID {
+          groupList.PushBack(cur)
+        }
+      }
+
+      if parentType != "" {
+        if cur.ParentID == next.ParentID &&
+          cur.ParentType == next.ParentType &&
+          cur.ChainID == next.ChainID {
+          groupList.PushBack(cur)
+        }
       }
     }
   }
@@ -177,10 +230,7 @@ func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, id int, filter 
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  val := reflect.ValueOf(filter)
-  aot := val.FieldByName("AssociatedObjectType").String()
-
-  trx, resp, err := s.client.Transactions.ListByGroup(ctx, id, aot, opt)
+  trx, resp, err := s.client.Transactions.ListByGroup(ctx, filter, opt)
   if err != nil {
     return nil, resp, fmt.Errorf("GetByFilter.trx: %s.\n\n", err)
   }
@@ -200,7 +250,7 @@ func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, id int, filter 
     return root, resp, err
   }
 
-  return nil, nil, fmt.Errorf("Transaction not found or wrong filter [%+v].\n", filter)
+  return nil, nil, fmt.Errorf("Transaction not found or wrong filter %+v.\n", filter)
 }
 
 func (trx *Transaction) equal(filter interface{}) bool {
@@ -225,13 +275,14 @@ func (trx *Transaction) equal(filter interface{}) bool {
   return true
 }
 
-func lastTransaction(ctx context.Context, client *Client, id int, aot string) (*Transaction, *Response, error) {
-  fmt.Printf("lastTransaction: id[%d], AssociatedObjectType[%s]\n", id, aot)
+// func lastTransaction(ctx context.Context, client *Client, id int, objectType string) (*Transaction, *Response, error) {
+func lastTransaction(ctx context.Context, client *Client, filter interface{}) (*Transaction, *Response, error) {
   opt := &ListOptions{
     PerPage : searchTransactions,
   }
 
-  trx, resp, err := client.Transactions.ListByGroup(ctx, id, aot, opt)
+  // trx, resp, err := client.Transactions.ListByGroup(ctx, id, aot, opt)
+  trx, resp, err := client.Transactions.ListByGroup(ctx, filter, opt)
 
   var root *Transaction
   e := trx.Front()

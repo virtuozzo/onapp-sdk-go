@@ -240,7 +240,16 @@ func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "User")
+  filter := struct{
+    ParentID    int
+    ParentType  string
+  }{
+    ParentID    : id,
+    ParentType  : "User",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "User")
 }
 
 // Debug - print formatted User structure

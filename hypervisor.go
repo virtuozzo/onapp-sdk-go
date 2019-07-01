@@ -281,7 +281,16 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "Hypervisor")
+  filter := struct{
+    ParentID    int
+    ParentType  string
+  }{
+    ParentID    : id,
+    ParentType  : "Hypervisor",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "Hypervisor")
 }
 
 func hypervisorPath(mac string, serverType string) string {

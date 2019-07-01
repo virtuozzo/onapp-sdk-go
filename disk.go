@@ -83,7 +83,7 @@ type DiskCreateRequest struct {
   Mounted           bool   `json:"mounted,bool"`
 
   // Additional field to determine Virtual Machine to create disk
-  VirtualMachineID  int    `json:"virtual_machine_id,omitempty"`
+  VirtualMachineID  int    /*`json:"virtual_machine_id,omitempty"`*/
 }
 
 type diskCreateRequestRoot struct {
@@ -199,7 +199,16 @@ func (s *DisksServiceOp) Delete(ctx context.Context, id int/*, meta interface{}*
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "Disk")
+  filter := struct{
+    ParentID    int
+    ParentType  string
+  }{
+    ParentID    : id,
+    ParentType  : "Disk",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "Disk")
 }
 
 // Debug - print formatted Disk structure
@@ -207,11 +216,14 @@ func (obj Disk) Debug() {
   fmt.Printf("              ID: %d\n", obj.ID)
   fmt.Printf("      Identifier: %s\n", obj.Identifier)
   fmt.Printf("VirtualMachineID: %d\n", obj.VirtualMachineID)
+  fmt.Printf("     DataStoreID: %d\n", obj.DataStoreID)
+  fmt.Printf("           Built: %t\n", obj.Built)
   fmt.Printf("           Label: %s\n", obj.Label)
   fmt.Printf("      FileSystem: %s\n", obj.FileSystem)
   fmt.Printf("       CreatedAt: %s\n", obj.CreatedAt)
   fmt.Printf("          Locked: %t\n", obj.Locked)
   fmt.Printf("        DiskSize: %d\n", obj.DiskSize)
+  fmt.Printf("    DiskVMNumber: %d\n", obj.DiskVMNumber)
   fmt.Printf("      MountPoint: %s\n", obj.MountPoint)
-  fmt.Printf("        VolumeID: %d\n", obj.VolumeID)
+  fmt.Printf("         Mounted: %t\n", obj.Mounted)
 }

@@ -178,7 +178,16 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
     return nil, resp, err
   }
 
-  return lastTransaction(ctx, s.client, id, "DataStore")
+  filter := struct{
+    ParentID    int
+    ParentType  string
+  }{
+    ParentID    : id,
+    ParentType  : "DataStore",
+  }
+
+  return lastTransaction(ctx, s.client, filter)
+  // return lastTransaction(ctx, s.client, id, "DataStore")
 }
 
 // Debug - print formatted DataStore structure
