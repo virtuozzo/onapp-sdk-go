@@ -25,7 +25,7 @@ type VirtualMachineActionsService interface {
   ResetPassword(context.Context, int, string, string) (*Transaction, *Response, error)
   FQDN(context.Context, int, string, string) (*Transaction, *Response, error)
 
-  RebuildNetwork(context.Context, int, VirtualMachineRebuildNetworkRequest) (*Transaction, *Response, error)
+  RebuildNetwork(context.Context, int, interface{}) (*Transaction, *Response, error)
 }
 
 // VirtualMachineActionsServiceOp handles communication with the VirtualMachine action related
@@ -134,7 +134,7 @@ type VirtualMachineRebuildNetworkRequest struct {
 }
 
 // RebuildNetwork a VirtualMachine
-func (s *VirtualMachineActionsServiceOp) RebuildNetwork(ctx context.Context, id int, opts VirtualMachineRebuildNetworkRequest) (*Transaction, *Response, error) {
+func (s *VirtualMachineActionsServiceOp) RebuildNetwork(ctx context.Context, id int, opts interface{}) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPost, "type": "rebuild_network", "action": "rebuild_network"}
   return s.doAction(ctx, id, request, nil, opts)
 }
