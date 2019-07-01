@@ -24,6 +24,8 @@ type VirtualMachineActionsService interface {
 
   ResetPassword(context.Context, int, string, string) (*Transaction, *Response, error)
   FQDN(context.Context, int, string, string) (*Transaction, *Response, error)
+
+  RebuildNetwork(context.Context, int, VirtualMachineRebuildNetworkRequest) (*Transaction, *Response, error)
 }
 
 // VirtualMachineActionsServiceOp handles communication with the VirtualMachine action related
@@ -37,37 +39,37 @@ var _ VirtualMachineActionsService = &VirtualMachineActionsServiceOp{}
 // Shutdown a VirtualMachine gracefully
 func (s *VirtualMachineActionsServiceOp) Shutdown(ctx context.Context, id int) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPost, "type": "shutdown", "action": "stop_virtual_machine"}
-  return s.doAction(ctx, id, request, nil)
+  return s.doAction(ctx, id, request, nil, nil)
 }
 
 // Stop a VirtualMachine forcefully
 func (s *VirtualMachineActionsServiceOp) Stop(ctx context.Context, id int) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPost, "type": "stop", "action": "stop_virtual_machine"}
-  return s.doAction(ctx, id, request, nil)
+  return s.doAction(ctx, id, request, nil, nil)
 }
 
 // Startup a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Startup(ctx context.Context, id int) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPost, "type": "startup", "action": "startup_virtual_machine"}
-  return s.doAction(ctx, id, request, nil)
+  return s.doAction(ctx, id, request, nil, nil)
 }
 
 // Unlock a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Unlock(ctx context.Context, id int) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPost, "type": "unlock", "action": "startup_virtual_machine"}
-  return s.doAction(ctx, id, request, nil)
+  return s.doAction(ctx, id, request, nil, nil)
 }
 
 // Reboot a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Reboot(ctx context.Context, id int) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPost, "type": "reboot", "action": "reboot_virtual_machine"}
-  return s.doAction(ctx, id, request, nil)
+  return s.doAction(ctx, id, request, nil, nil)
 }
 
 // Suspend a VirtualMachine
 func (s *VirtualMachineActionsServiceOp) Suspend(ctx context.Context, id int) (*Transaction, *Response, error) {
   request := &ActionRequest{"method": http.MethodPost, "type": "suspend", "action": "stop_virtual_machine"}
-  return s.doAction(ctx, id, request, nil)
+  return s.doAction(ctx, id, request, nil, nil)
 }
 
 // Unsuspend a VirtualMachine
@@ -78,10 +80,10 @@ func (s *VirtualMachineActionsServiceOp) Unsuspend(ctx context.Context, id int) 
     "path"   : "suspend",
     "action" : "stop_virtual_machine",
   }
-  return s.doAction(ctx, id, request, nil)
+  return s.doAction(ctx, id, request, nil, nil)
 }
 
-type resetPassword  struct {
+type resetPassword struct {
   InitialRootPassword               string  `json:"initial_root_password,omitempty"`
   InitialRootPasswordEncryptionKey  string  `json:"initial_root_password_encryption_key,omitempty"`
 }
@@ -103,7 +105,7 @@ func (s *VirtualMachineActionsServiceOp) ResetPassword(ctx context.Context, id i
     ResetPassword : vmPassword,
   }
 
-  return s.doAction(ctx, id, request, root)
+  return s.doAction(ctx, id, request, root, nil)
 }
 
 // FQDN a VirtualMachine
@@ -119,10 +121,26 @@ func (s *VirtualMachineActionsServiceOp) FQDN(ctx context.Context, id int, hostn
     VirtualMachine : vmFQDN,
   }
 
-  return s.doAction(ctx, id, request, root)
+  return s.doAction(ctx, id, request, root, nil)
 }
 
-func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, request *ActionRequest, jsonParams interface{}) (*Transaction, *Response, error) {
+// VirtualMachineRebuildNetworkRequest - 
+type VirtualMachineRebuildNetworkRequest struct {
+  Force           int     `url:"force"`
+
+  // "hard", "graceful" or "soft"
+  ShutdownType    string  `url:"shutdown_type"`
+  RequiredStartup int     `url:"required_startup"`
+}
+
+// RebuildNetwork a VirtualMachine
+func (s *VirtualMachineActionsServiceOp) RebuildNetwork(ctx context.Context, id int, opts VirtualMachineRebuildNetworkRequest) (*Transaction, *Response, error) {
+  request := &ActionRequest{"method": http.MethodPost, "type": "rebuild_network", "action": "rebuild_network"}
+  return s.doAction(ctx, id, request, nil, opts)
+}
+
+func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
+  request *ActionRequest, jsonParams interface{}, urlParams interface{}) (*Transaction, *Response, error) {
   if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -135,6 +153,13 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int, r
   if err != nil {
     return nil, nil, err
   }
+
+  path, err = addOptions(path, urlParams)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  fmt.Printf("path: %s\n", path)
 
   if (*request)["method"] == nil {
     return nil, nil, godo.NewArgError("method", "must be specified")
