@@ -265,15 +265,15 @@ func (trx *Transaction) equal(filter interface{}) bool {
     value := val.Field(i)
     filterValue := filterFields.FieldByName(typeField.Name)
 
-    fmt.Printf("%s: %s[%#v] -> %s[%#v]\n", typeField.Name, value.Type(), value, filterValue.Type(), filterValue)
+    // fmt.Printf("%s: %s[%#v] -> %s[%#v]\n", typeField.Name, value.Type(), value, filterValue.Type(), filterValue)
 
     if value.Interface() != filterValue.Interface() {
-      fmt.Printf("[false] return on filed [%s]\n\n", typeField.Name)
+      // fmt.Printf("[false] return on filed [%s]\n\n", typeField.Name)
       return false
     }
   }
 
-  fmt.Printf("[true] transaction found with id[%d]\n\n", trx.ID)
+  // fmt.Printf("[true] transaction found with id[%d]\n\n", trx.ID)
   return true
 }
 

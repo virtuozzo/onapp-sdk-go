@@ -76,9 +76,9 @@ type VirtualMachine struct {
   Identifier                    string                  `json:"identifier,omitempty"`
   InitialRootPassword           string                  `json:"initial_root_password,omitempty"`
   InitialRootPasswordEncrypted  bool                    `json:"initial_root_password_encrypted,bool"`
-  InstancePackageID             string                  `json:"instance_package_id,omitempty"`
+  InstancePackageID             int                     `json:"instance_package_id,omitempty"`
   IPAddresses                   []map[string]IPAddress  `json:"ip_addresses,omitempty"`
-  IsoID                         string                  `json:"iso_id,omitempty"`
+  IsoID                         int                     `json:"iso_id,omitempty"`
   Label                         string                  `json:"label,omitempty"`
   LocalRemoteAccessIPAddress    string                  `json:"local_remote_access_ip_address,omitempty"`
   LocalRemoteAccessPort         int                     `json:"local_remote_access_port,omitempty"`
@@ -87,7 +87,7 @@ type VirtualMachine struct {
   MinDiskSize                   int                     `json:"min_disk_size,omitempty"`
   MonthlyBandwidthUsed          float32                 `json:"monthly_bandwidth_used,omitempty"`
   Note                          string                  `json:"note,omitempty"`
-  OpenstackID                   string                  `json:"openstack_id,omitempty"`
+  OpenstackID                   int                     `json:"openstack_id,omitempty"`
   OperatingSystem               string                  `json:"operating_system,omitempty"`
   OperatingSystemDistro         string                  `json:"operating_system_distro,omitempty"`
   // PreferredHVS                  []HVS                   `json:"preferred_hvs"`
@@ -99,7 +99,7 @@ type VirtualMachine struct {
   ServicePassword               string                  `json:"service_password,omitempty"`
   State                         string                  `json:"state,omitempty"`
   StorageServerType             string                  `json:"storage_server_type,omitempty"`
-  StrictVirtualMachineID        string                  `json:"strict_virtual_machine_id,omitempty"`
+  StrictVirtualMachineID        int                     `json:"strict_virtual_machine_id,omitempty"`
   SupportIncrementalBackups     bool                    `json:"support_incremental_backups,bool"`
   Suspended                     bool                    `json:"suspended,bool"`
   TemplateID                    int                     `json:"template_id,omitempty"`
@@ -109,8 +109,8 @@ type VirtualMachine struct {
   TotalDiskSize                 int                     `json:"total_disk_size,omitempty"`
   UpdatedAt                     time.Time               `json:"updated_at,omitempty"`
   UserID                        int                     `json:"user_id,omitempty"`
-  VappID                        string                  `json:"vapp_id,omitempty"`
-  VcenterClusterID              string                  `json:"vcenter_cluster_id,omitempty"`
+  VappID                        int                     `json:"vapp_id,omitempty"`
+  VcenterClusterID              int                     `json:"vcenter_cluster_id,omitempty"`
   VcenterMoref                  string                  `json:"vcenter_moref,omitempty"`
   VcenterReservedMemory         int                     `json:"vcenter_reserved_memory,omitempty"`
   Vip                           string                  `json:"vip,omitempty"`
@@ -146,7 +146,7 @@ type VirtualMachineCreateRequest struct {
   HypervisorID                      int       `json:"hypervisor_id,omitempty"`
   InitialRootPassword               string    `json:"initial_root_password,omitempty"`
   InitialRootPasswordEncryptionKey  string    `json:"initial_root_password_encryption_key,omitempty"`
-  InstancePackageID                 string    `json:"instance_package_id,omitempty"`
+  InstancePackageID                 int       `json:"instance_package_id,omitempty"`
   // *
   Label                             string    `json:"label,omitempty"`
   // *
