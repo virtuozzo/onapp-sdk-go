@@ -12,11 +12,10 @@ import (
   "reflect"
 
   "github.com/google/go-querystring/query"
-  // "github.com/digitalocean/godo"
 )
 
 const (
-  libraryVersion  = "0.1.7"
+  libraryVersion  = "0.1.8"
   defaultBaseURL  = "http://69.168.237.17/"
   userAgent       = "onapp_sdk_go/" + libraryVersion
   mediaType       = "application/json"
@@ -89,6 +88,10 @@ type ListOptions struct {
 // Response is a OnApp response. This wraps the standard http.Response returned from OnApp.
 type Response struct {
   *http.Response
+
+  // Links that were returned with the response. These are parsed from
+  // request body and not the header.
+  Links *Links
 }
 
 // An ErrorResponse reports the error caused by an API request
