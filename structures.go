@@ -24,7 +24,7 @@ type IPAddress struct {
   CreatedAt       time.Time   `json:"created_at,omitempty"`
   Free            bool        `json:"free,bool"`
   Gateway         string      `json:"gateway,omitempty"`
-  HypervisorID    string      `json:"hypervisor_id,omitempty"`
+  HypervisorID    int         `json:"hypervisor_id,omitempty"`
   ID              int         `json:"id,omitempty"`
   IPRangeID       int         `json:"ip_range_id,omitempty"`
   IPv4            bool        `json:"ipv4,bool"`
@@ -34,7 +34,7 @@ type IPAddress struct {
   Pxe             bool        `json:"pxe,bool"`
   Prefix          int         `json:"prefix,omitempty"`
   UpdatedAt       time.Time   `json:"updated_at,omitempty"`
-  UserID          string      `json:"user_id,omitempty"`
+  UserID          int         `json:"user_id,omitempty"`
 }
 
 // Debug - print formatted IPAddress structure
@@ -45,10 +45,10 @@ func (obj IPAddress) Debug() {
   fmt.Printf("\t       Gateway: %s\n",  obj.Gateway)
   fmt.Printf("\t       Netmask: %s\n",  obj.Netmask)
   fmt.Printf("\tNetworkAddress: %s\n",  obj.NetworkAddress)
-  fmt.Printf("\t        UserID: %s\n",  obj.UserID)
+  fmt.Printf("\t        UserID: %d\n",  obj.UserID)
   fmt.Printf("\t     IPRangeID: %d\n",  obj.IPRangeID)
   fmt.Printf("\t          Free: %t\n",  obj.Free)
-  fmt.Printf("\t  HypervisorID: %s\n",  obj.HypervisorID)
+  fmt.Printf("\t  HypervisorID: %d\n",  obj.HypervisorID)
   fmt.Printf("\t   LockVersion: %d\n",  obj.LockVersion)
 }
 
