@@ -13,7 +13,7 @@ const virtualMachineBasePath = "virtual_machines"
 
 // VirtualMachinesService is an interface for interfacing with the VirtualMachine
 // endpoints of the OnApp API
-// See: https://docs.onapp.com/apim/latest/virtual-servers/get-list-of-vss
+// See: https://docs.onapp.com/apim/latest/virtual-servers
 type VirtualMachinesService interface {
   List(context.Context, *ListOptions) ([]VirtualMachine, *Response, error)
   Get(context.Context, int) (*VirtualMachine, *Response, error)
@@ -466,15 +466,15 @@ func (s *VirtualMachinesServiceOp) ListFirewallRules(ctx context.Context, id int
 
 // Debug - print formatted VirtualMachine structure
 func (obj VirtualMachine) Debug() {
-  fmt.Printf("                 ID: %d\n ", obj.ID)
-  fmt.Printf("         Identifier: %s\n ", obj.Identifier)
-  fmt.Printf("              Label: %s\n ", obj.Label)
-  fmt.Printf("InitialRootPassword: %s\n ", obj.InitialRootPassword)
-  fmt.Printf("      TemplateLabel: %s\n ", obj.TemplateLabel)
-  fmt.Printf("          CreatedAt: %s\n ", obj.CreatedAt)
-  fmt.Printf("              State: %s\n ", obj.State)
-  fmt.Printf("              Built: %t\n ", obj.Built)
-  fmt.Printf("             Booted: %t\n ", obj.Booted)
+  fmt.Printf("                 ID: %d\n", obj.ID)
+  fmt.Printf("         Identifier: %s\n", obj.Identifier)
+  fmt.Printf("              Label: %s\n", obj.Label)
+  fmt.Printf("InitialRootPassword: %s\n", obj.InitialRootPassword)
+  fmt.Printf("      TemplateLabel: %s\n", obj.TemplateLabel)
+  fmt.Printf("          CreatedAt: %s\n", obj.CreatedAt)
+  fmt.Printf("              State: %s\n", obj.State)
+  fmt.Printf("              Built: %t\n", obj.Built)
+  fmt.Printf("             Booted: %t\n", obj.Booted)
 
   for i := range obj.IPAddresses {
     ip := obj.IPAddresses[i]["ip_address"]

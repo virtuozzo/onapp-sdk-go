@@ -15,7 +15,7 @@ import (
 )
 
 const (
-  libraryVersion  = "0.1.8"
+  libraryVersion  = "0.1.9"
   defaultBaseURL  = "http://69.168.237.17/"
   userAgent       = "onapp_sdk_go/" + libraryVersion
   mediaType       = "application/json"
@@ -49,7 +49,7 @@ type Client struct {
   HypervisorGroups        HypervisorGroupsService
   DataStores              DataStoresService
   DataStoreGroups         DataStoreGroupsService
-  // Images            ImagesService
+  ImageTemplates          ImageTemplatesService
   // ImageActions      ImageActionsService
   Disks                   DisksService
   // Regions           RegionsService
@@ -154,7 +154,7 @@ func NewClient(httpClient *http.Client) *Client {
   // c.Firewalls = &FirewallsServiceOp{client: c}
   // c.FloatingIPs = &FloatingIPsServiceOp{client: c}
   // c.FloatingIPActions = &FloatingIPActionsServiceOp{client: c}
-  // c.Images = &ImagesServiceOp{client: c}
+  c.ImageTemplates = &ImageTemplatesServiceOp{client: c}
   // c.ImageActions = &ImageActionsServiceOp{client: c}
   c.Disks = &DisksServiceOp{client: c}
   // c.LoadBalancers = &LoadBalancersServiceOp{client: c}
