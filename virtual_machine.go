@@ -118,16 +118,16 @@ type VirtualMachine struct {
   XenID                         int                     `json:"xen_id,omitempty"`
 }
 
+// CustomRecipeVariable - 
+type CustomRecipeVariable struct {
+  Enabled         bool   `json:"enabled,bool"`
+  Name            string `json:"name,omitempty"`
+  Value           string `json:"value,omitempty"`
+}
+
 // VirtualMachineCreateRequest represents a request to create a VirtualMachine
 type VirtualMachineCreateRequest struct {
-  // custom_variables_attributes
-      // [
-      //   enabled - true, if the variable is enabled, otherwise false
-      //   id - variable ID
-      //   name - variable name
-      //   value - variable value script
-      // ]
-  // service_addon_ids
+  CustomRecipeVariables             []CustomRecipeVariable `json:"custom_recipe_variables,omitempty"`
 
   AccelerationAllowed               bool      `json:"acceleration_allowed,bool"`
   AdminNote                         string    `json:"admin_note,omitempty"`
@@ -171,6 +171,7 @@ type VirtualMachineCreateRequest struct {
   RequiredVirtualMachineBuild       bool      `json:"required_virtual_machine_build,bool"`
   RequiredVirtualMachineStartup     bool      `json:"required_virtual_machine_startup,bool"`
   SelectedIPAddress                 string    `json:"selected_ip_address,omitempty"`
+  ServiceAddonIds                   []int     `json:"service_addon_ids,omitempty"`
   SwapDiskMinIops                   int       `json:"swap_disk_min_iops,omitempty"`
   // * in gigabytes 5, 10
   SwapDiskSize                      int       `json:"swap_disk_size,omitempty"`
