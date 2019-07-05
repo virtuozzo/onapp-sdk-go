@@ -63,10 +63,10 @@ type ImageTemplate struct {
   InitialUsername           string      `json:"initial_username,omitempty"`
   RemoteID                  int         `json:"remote_id,omitempty"`
   ManagerID                 string      `json:"manager_id,omitempty"`
-  ResizeWithoutRebootPolicy interface{} `json:"resize_without_reboot_policy,omitempty"`
+  // ResizeWithoutRebootPolicy interface{} `json:"resize_without_reboot_policy,omitempty"`
   ApplicationServer         bool        `json:"application_server,bool"`
   Draas                     bool        `json:"draas,bool"`
-  Properties                interface{} `json:"properties,omitempty"`
+  Properties                string      `json:"properties,omitempty"`
   Locked                    bool        `json:"locked,bool"`
   OpenstackID               int         `json:"openstack_id,omitempty"`
   Type                      string      `json:"type,omitempty"`
