@@ -118,16 +118,16 @@ type VirtualMachine struct {
   XenID                         int                     `json:"xen_id,omitempty"`
 }
 
-// CustomRecipeVariable - 
-type CustomRecipeVariable struct {
-  Enabled         bool   `json:"enabled,bool"`
+// CustomRecipeVariableAttributes - 
+type CustomRecipeVariableAttributes struct {
+  Enabled         int    `json:"enabled"`
   Name            string `json:"name,omitempty"`
   Value           string `json:"value,omitempty"`
 }
 
 // VirtualMachineCreateRequest represents a request to create a VirtualMachine
 type VirtualMachineCreateRequest struct {
-  CustomRecipeVariables             []CustomRecipeVariable `json:"custom_recipe_variables,omitempty"`
+  CustomRecipeVariablesAttributes   []CustomRecipeVariableAttributes `json:"custom_recipe_variables_attributes,omitempty"`
 
   AccelerationAllowed               bool      `json:"acceleration_allowed,bool"`
   AdminNote                         string    `json:"admin_note,omitempty"`

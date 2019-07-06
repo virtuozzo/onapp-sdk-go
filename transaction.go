@@ -169,7 +169,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 
   trx, resp, err := s.client.Transactions.List(ctx, opt)
   if err != nil {
-    return nil, resp, fmt.Errorf("ListByGroup.trx: %s\n\n", err)
+    return nil, resp, fmt.Errorf("ListByGroup.trx: %s", err)
   }
 
   var next *Transaction
@@ -234,7 +234,7 @@ func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, id int, filter 
 
   trx, resp, err := s.client.Transactions.ListByGroup(ctx, filter, opt)
   if err != nil {
-    return nil, resp, fmt.Errorf("GetByFilter.trx: %s.\n\n", err)
+    return nil, resp, fmt.Errorf("GetByFilter.trx: %s", err)
   }
 
   var root *Transaction
@@ -252,7 +252,7 @@ func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, id int, filter 
     return root, resp, err
   }
 
-  return nil, nil, fmt.Errorf("Transaction not found or wrong filter %+v.\n", filter)
+  return nil, nil, fmt.Errorf("Transaction not found or wrong filter %+v", filter)
 }
 
 func (trx *Transaction) equal(filter interface{}) bool {
@@ -343,17 +343,17 @@ func (trx Transaction) Finished() bool {
 }
 
 // Debug - print formatted Transaction structure
-func (obj Transaction) Debug() {
-  fmt.Printf("                    ID: %d\n", obj.ID)
-  fmt.Printf("            Identifier: %s\n", obj.Identifier)
-  fmt.Printf("                Action: %s\n", obj.Action)
-  fmt.Printf("    AssociatedObjectID: %d\n", obj.AssociatedObjectID)
-  fmt.Printf("  AssociatedObjectType: %s\n", obj.AssociatedObjectType)
-  fmt.Printf("                Status: %s\n", obj.Status)
-  fmt.Printf("             CreatedAt: %s\n", obj.CreatedAt)
-  fmt.Printf("              ParentID: %d\n", obj.ParentID)
-  fmt.Printf("            ParentType: %s\n", obj.ParentType)
-  fmt.Printf("               ChainID: %d\n", obj.ChainID)
-  fmt.Printf("DependentTransactionID: %d\n", obj.DependentTransactionID)
-  fmt.Printf("                Params: %+v\n", obj.Params)
+func (trx Transaction) Debug() {
+  fmt.Printf("                    ID: %d\n", trx.ID)
+  fmt.Printf("            Identifier: %s\n", trx.Identifier)
+  fmt.Printf("                Action: %s\n", trx.Action)
+  fmt.Printf("    AssociatedObjectID: %d\n", trx.AssociatedObjectID)
+  fmt.Printf("  AssociatedObjectType: %s\n", trx.AssociatedObjectType)
+  fmt.Printf("                Status: %s\n", trx.Status)
+  fmt.Printf("             CreatedAt: %s\n", trx.CreatedAt)
+  fmt.Printf("              ParentID: %d\n", trx.ParentID)
+  fmt.Printf("            ParentType: %s\n", trx.ParentType)
+  fmt.Printf("               ChainID: %d\n", trx.ChainID)
+  fmt.Printf("DependentTransactionID: %d\n", trx.DependentTransactionID)
+  fmt.Printf("                Params: %+v\n", trx.Params)
 }
