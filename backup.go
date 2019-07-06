@@ -2,7 +2,6 @@ package onappgo
 
 import (
   "fmt"
-  "time"
 )
 
 // Backup represent VirtualMachine backup
@@ -14,8 +13,8 @@ type Backup struct {
   BackupSize               int         `json:"backup_size,omitempty"`
   BackupType               string      `json:"backup_type,omitempty"`
   Built                    bool        `json:"built,bool"`
-  BuiltAt                  time.Time   `json:"built_at,omitempty"`
-  CreatedAt                time.Time   `json:"created_at,omitempty"`
+  BuiltAt                  string      `json:"built_at,omitempty"`
+  CreatedAt                string      `json:"created_at,omitempty"`
   DataStoreType            string      `json:"data_store_type,omitempty"`
   DiskID                   int         `json:"disk_id,omitempty"`
   ID                       int         `json:"id,omitempty"`
@@ -32,7 +31,7 @@ type Backup struct {
   TargetID                 int         `json:"target_id,omitempty"`
   TargetType               string      `json:"target_type,omitempty"`
   TemplateID               int         `json:"template_id,omitempty"`
-  UpdatedAt                time.Time   `json:"updated_at,omitempty"`
+  UpdatedAt                string      `json:"updated_at,omitempty"`
   UserID                   int         `json:"user_id,omitempty"`
   VolumeID                 int         `json:"volume_id,omitempty"`
 }

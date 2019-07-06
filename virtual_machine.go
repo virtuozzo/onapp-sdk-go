@@ -4,7 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -59,8 +58,8 @@ type VirtualMachine struct {
   CPUSockets                    string                  `json:"cpu_sockets,omitempty"`
   CPUUnits                      int                     `json:"cpu_units,omitempty"`
   Cpus                          int                     `json:"cpus,omitempty"`
-  CreatedAt                     time.Time               `json:"created_at,omitempty"`
-  DeletedAt                     time.Time               `json:"deleted_at,omitempty"`
+  CreatedAt                     string                  `json:"created_at,omitempty"`
+  DeletedAt                     string                  `json:"deleted_at,omitempty"`
   Domain                        string                  `json:"domain,omitempty"`
   DraasKeys                     []string                `json:"draas_keys,omitempty"`
   DraasMode                     int                     `json:"draas_mode,omitempty"`
@@ -107,7 +106,7 @@ type VirtualMachine struct {
   TemplateVersion               string                  `json:"template_version,omitempty"`
   TimeZone                      string                  `json:"time_zone,omitempty"`
   TotalDiskSize                 int                     `json:"total_disk_size,omitempty"`
-  UpdatedAt                     time.Time               `json:"updated_at,omitempty"`
+  UpdatedAt                     string                  `json:"updated_at,omitempty"`
   UserID                        int                     `json:"user_id,omitempty"`
   VappID                        int                     `json:"vapp_id,omitempty"`
   VcenterClusterID              int                     `json:"vcenter_cluster_id,omitempty"`

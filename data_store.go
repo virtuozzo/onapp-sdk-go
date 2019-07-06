@@ -4,7 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -36,8 +35,8 @@ type DataStore struct {
   ID                             int                            `json:"id,omitempty"`
   Label                          string                         `json:"label,omitempty"`
   Identifier                     string                         `json:"identifier,omitempty"`
-  CreatedAt                      time.Time                      `json:"created_at,omitempty"`
-  UpdatedAt                      time.Time                      `json:"updated_at,omitempty"`
+  CreatedAt                      string                         `json:"created_at,omitempty"`
+  UpdatedAt                      string                         `json:"updated_at,omitempty"`
   LocalHypervisorID              int                            `json:"local_hypervisor_id,omitempty"`
   DataStoreSize                  int                            `json:"data_store_size,omitempty"`
   ZombieDisksSize                int                            `json:"zombie_disks_size,omitempty"`
@@ -60,11 +59,11 @@ type DataStore struct {
 // DataStoreCreateRequest represents a request to create a DataStore
 type DataStoreCreateRequest struct {
   Label             string `json:"label,omitempty"`
-  DataStoreGroupID  string `json:"data_store_group_id,omitempty"`
-  LocalHypervisorID string `json:"local_hypervisor_id,omitempty"`
+  DataStoreGroupID  int    `json:"data_store_group_id,omitempty"`
+  LocalHypervisorID int    `json:"local_hypervisor_id,omitempty"`
   IP                string `json:"ip,omitempty"`
   Enabled           bool   `json:"enabled,bool"`
-  DataStoreSize     string `json:"data_store_size,omitempty"`
+  DataStoreSize     int    `json:"data_store_size,omitempty"`
   DataStoreType     string `json:"data_store_type,omitempty"`
 }
 

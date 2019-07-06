@@ -4,7 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -36,8 +35,8 @@ type Network struct {
   ID                        int         `json:"id,omitempty"`
   Label                     string      `json:"label,omitempty"`
   Identifier                string      `json:"identifier,omitempty"`
-  CreatedAt                 time.Time   `json:"created_at,omitempty"`
-  UpdatedAt                 time.Time   `json:"updated_at,omitempty"`
+  CreatedAt                 string      `json:"created_at,omitempty"`
+  UpdatedAt                 string      `json:"updated_at,omitempty"`
   Vlan                      int         `json:"vlan,omitempty"`
   NetworkGroupID            int         `json:"network_group_id,omitempty"`
   Type                      string      `json:"type,omitempty"`

@@ -4,7 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -39,10 +38,10 @@ type Infoboxes struct {
 
 // Permission - 
 type Permission struct {
-  CreatedAt  time.Time `json:"created_at,omitempty"`
+  CreatedAt  string    `json:"created_at,omitempty"`
   ID         int       `json:"id,omitempty"`
   Identifier string    `json:"identifier,omitempty"`
-  UpdatedAt  time.Time `json:"updated_at,omitempty"`
+  UpdatedAt  string    `json:"updated_at,omitempty"`
 }
 
 // Permissions - 
@@ -52,12 +51,12 @@ type Permissions struct {
 
 // Role - 
 type Role struct {
-  CreatedAt   time.Time     `json:"created_at,omitempty"`
+  CreatedAt   string        `json:"created_at,omitempty"`
   ID          int           `json:"id,omitempty"`
   Identifier  string        `json:"identifier,omitempty"`
   Label       string        `json:"label,omitempty"`
   System      bool          `json:"system,bool"`
-  UpdatedAt   time.Time     `json:"updated_at,omitempty"`
+  UpdatedAt   string        `json:"updated_at,omitempty"`
   UsersCount  int           `json:"users_count,omitempty"`
   Permissions []Permissions `json:"permissions,omitempty"`
 }
@@ -69,13 +68,13 @@ type Roles struct {
 
 // User - 
 type User struct {
-  ActivatedAt             time.Time          `json:"activated_at,omitempty"`
+  ActivatedAt             string             `json:"activated_at,omitempty"`
   Avatar                  interface{}        `json:"avatar,omitempty"`
   BillingPlanID           int                `json:"billing_plan_id,omitempty"`
   CdnAccountStatus        string             `json:"cdn_account_status,omitempty"`
   CdnStatus               string             `json:"cdn_status,omitempty"`
-  CreatedAt               time.Time          `json:"created_at,omitempty"`
-  DeletedAt               time.Time          `json:"deleted_at,omitempty"`
+  CreatedAt               string             `json:"created_at,omitempty"`
+  DeletedAt               string             `json:"deleted_at,omitempty"`
   Email                   string             `json:"email,omitempty"`
   FirewallID              int                `json:"firewall_id,omitempty"`
   FirstName               string             `json:"first_name,omitempty"`
@@ -87,14 +86,14 @@ type User struct {
   LastName                string             `json:"last_name,omitempty"`
   Locale                  string             `json:"locale,omitempty"`
   Login                   string             `json:"login,omitempty"`
-  PasswordChangedAt       time.Time          `json:"password_changed_at,omitempty"`
+  PasswordChangedAt       string             `json:"password_changed_at,omitempty"`
   RegisteredYubikey       bool               `json:"registered_yubikey,bool"`
   Status                  string             `json:"status,omitempty"`
   Supplied                bool               `json:"supplied,bool"`
-  SuspendAt               time.Time          `json:"suspend_at,omitempty"`
+  SuspendAt               string             `json:"suspend_at,omitempty"`
   SystemTheme             string             `json:"system_theme,omitempty"`
   TimeZone                string             `json:"time_zone,omitempty"`
-  UpdatedAt               time.Time          `json:"updated_at,omitempty"`
+  UpdatedAt               string             `json:"updated_at,omitempty"`
   UseGravatar             bool               `json:"use_gravatar,bool"`
   UserGroupID             int                `json:"user_group_id,omitempty"`
   BucketID                int                `json:"bucket_id,omitempty"`
@@ -122,8 +121,8 @@ type UserCreateRequest struct {
   FirstName        string             `json:"first_name,omitempty"`
   LastName         string             `json:"last_name,omitempty"`
   Password         string             `json:"password,omitempty"`
-  UserGroupID      string             `json:"user_group_id,omitempty"`
-  BillingPlanID    string             `json:"billing_plan_id,omitempty"`
+  UserGroupID      int                `json:"user_group_id,omitempty"`
+  BillingPlanID    int                `json:"billing_plan_id,omitempty"`
   RoleIds          []string           `json:"role_ids,omitempty"`
   AdditionalFields []AdditionalFields `json:"additional_fields,omitempty"`
 }

@@ -4,7 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -33,16 +32,16 @@ var _ LocationGroupsService = &LocationGroupsServiceOp{}
 
 // LocationGroup represent LocationGroup from OnApp API
 type LocationGroup struct {
-  ID           int       `json:"id,omitempty"`
-  CreatedAt    time.Time `json:"created_at,omitempty"`
-  UpdatedAt    time.Time `json:"updated_at,omitempty"`
-  Country      string    `json:"country,omitempty"`
-  City         string    `json:"city,omitempty"`
-  FederationID int       `json:"federation_id,omitempty"`
-  Lat          float64   `json:"lat,omitempty"`
-  Lng          float64   `json:"lng,omitempty"`
-  CdnEnabled   bool      `json:"cdn_enabled,bool"`
-  Federated    bool      `json:"federated,bool"`
+  ID           int      `json:"id,omitempty"`
+  CreatedAt    string   `json:"created_at,omitempty"`
+  UpdatedAt    string   `json:"updated_at,omitempty"`
+  Country      string   `json:"country,omitempty"`
+  City         string   `json:"city,omitempty"`
+  FederationID int      `json:"federation_id,omitempty"`
+  Lat          float64  `json:"lat,omitempty"`
+  Lng          float64  `json:"lng,omitempty"`
+  CdnEnabled   bool     `json:"cdn_enabled,bool"`
+  Federated    bool     `json:"federated,bool"`
 }
 
 // LocationGroupCreateRequest represents a request to create a LocationGroup

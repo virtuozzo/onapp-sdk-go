@@ -15,7 +15,7 @@ import (
 )
 
 const (
-  libraryVersion  = "0.1.10"
+  libraryVersion  = "0.1.11"
   defaultBaseURL  = "http://69.168.237.17/"
   userAgent       = "onapp_sdk_go/" + libraryVersion
   mediaType       = "application/json"

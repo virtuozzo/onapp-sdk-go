@@ -4,7 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -41,8 +40,8 @@ type Hypervisor struct {
   ID                               int               `json:"id,omitempty"`
   Label                            string            `json:"label,omitempty"`
   IPAddress                        string            `json:"ip_address,omitempty"`
-  CreatedAt                        time.Time         `json:"created_at,omitempty"`
-  UpdatedAt                        time.Time         `json:"updated_at,omitempty"`
+  CreatedAt                        string            `json:"created_at,omitempty"`
+  UpdatedAt                        string            `json:"updated_at,omitempty"`
   Locked                           bool              `json:"locked,bool"`
   CalledInAt                       string            `json:"called_in_at,omitempty"`
   Online                           bool              `json:"online,bool"`
@@ -68,7 +67,7 @@ type Hypervisor struct {
   FormatDisks                      bool              `json:"format_disks,bool"`
   PassthroughDisks                 bool              `json:"passthrough_disks,bool"`
   ConnectionOptions                ConnectionOptions `json:"connection_options,omitempty"`
-  HostID                           string            `json:"host_id,omitempty"`
+  HostID                           int               `json:"host_id,omitempty"`
   FreeMem                          int               `json:"free_mem,omitempty"`
   BackupIPAddress                  string            `json:"backup_ip_address,omitempty"`
   Built                            bool              `json:"built,bool"`
@@ -102,7 +101,7 @@ type Hypervisor struct {
   CPUModel                         string            `json:"cpu_model,omitempty"`
   SegregationOsType                string            `json:"segregation_os_type,omitempty"`
   CrashDebug                       bool              `json:"crash_debug,bool"`
-  FailoverRecipeID                 string            `json:"failover_recipe_id,omitempty"`
+  FailoverRecipeID                 int               `json:"failover_recipe_id,omitempty"`
   TotalCpus                        int               `json:"total_cpus,omitempty"`
   FreeMemory                       int               `json:"free_memory,omitempty"`
   UsedCPUResources                 int               `json:"used_cpu_resources,omitempty"`

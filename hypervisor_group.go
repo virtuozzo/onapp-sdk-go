@@ -4,7 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -35,8 +34,8 @@ var _ HypervisorGroupsService = &HypervisorGroupsServiceOp{}
 type HypervisorGroup struct {
   ID                          int           `json:"id,omitempty"`
   Label                       string        `json:"label,omitempty"`
-  CreatedAt                   time.Time     `json:"created_at,omitempty"`
-  UpdatedAt                   time.Time     `json:"updated_at,omitempty"`
+  CreatedAt                   string        `json:"created_at,omitempty"`
+  UpdatedAt                   string        `json:"updated_at,omitempty"`
   ServerType                  string        `json:"server_type,omitempty"`
   LocationGroupID             int           `json:"location_group_id,omitempty"`
   FederationEnabled           bool          `json:"federation_enabled,bool"`

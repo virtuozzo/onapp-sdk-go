@@ -1,7 +1,6 @@
 package onappgo
 
 import (
-  "time"
   "fmt"
 )
 
@@ -21,7 +20,7 @@ import (
 type IPAddress struct {
   Address         string      `json:"address,omitempty"`
   Broadcast       string      `json:"broadcast,omitempty"`
-  CreatedAt       time.Time   `json:"created_at,omitempty"`
+  CreatedAt       string      `json:"created_at,omitempty"`
   Free            bool        `json:"free,bool"`
   Gateway         string      `json:"gateway,omitempty"`
   HypervisorID    int         `json:"hypervisor_id,omitempty"`
@@ -33,23 +32,23 @@ type IPAddress struct {
   NetworkAddress  string      `json:"network_address,omitempty"`
   Pxe             bool        `json:"pxe,bool"`
   Prefix          int         `json:"prefix,omitempty"`
-  UpdatedAt       time.Time   `json:"updated_at,omitempty"`
+  UpdatedAt       string      `json:"updated_at,omitempty"`
   UserID          int         `json:"user_id,omitempty"`
 }
 
 // Debug - print formatted IPAddress structure
 func (obj IPAddress) Debug() {
-  fmt.Printf("\t            ID: %d\n",  obj.ID)
-  fmt.Printf("\t       Address: %s\n",  obj.Address)
-  fmt.Printf("\t     Broadcast: %s\n",  obj.Broadcast)
-  fmt.Printf("\t       Gateway: %s\n",  obj.Gateway)
-  fmt.Printf("\t       Netmask: %s\n",  obj.Netmask)
-  fmt.Printf("\tNetworkAddress: %s\n",  obj.NetworkAddress)
-  fmt.Printf("\t        UserID: %d\n",  obj.UserID)
-  fmt.Printf("\t     IPRangeID: %d\n",  obj.IPRangeID)
-  fmt.Printf("\t          Free: %t\n",  obj.Free)
-  fmt.Printf("\t  HypervisorID: %d\n",  obj.HypervisorID)
-  fmt.Printf("\t   LockVersion: %d\n",  obj.LockVersion)
+  fmt.Printf("\t            ID: %d\n", obj.ID)
+  fmt.Printf("\t       Address: %s\n", obj.Address)
+  fmt.Printf("\t     Broadcast: %s\n", obj.Broadcast)
+  fmt.Printf("\t       Gateway: %s\n", obj.Gateway)
+  fmt.Printf("\t       Netmask: %s\n", obj.Netmask)
+  fmt.Printf("\tNetworkAddress: %s\n", obj.NetworkAddress)
+  fmt.Printf("\t        UserID: %d\n", obj.UserID)
+  fmt.Printf("\t     IPRangeID: %d\n", obj.IPRangeID)
+  fmt.Printf("\t          Free: %t\n", obj.Free)
+  fmt.Printf("\t  HypervisorID: %d\n", obj.HypervisorID)
+  fmt.Printf("\t   LockVersion: %d\n", obj.LockVersion)
 }
 
 // ConnectionOptions for VMware hypervisor
@@ -112,14 +111,14 @@ type NetworkInterface struct {
   VirtualMachineID    int         `json:"virtual_machine_id,omitempty"`
   Label               string      `json:"label,omitempty"`
   Identifier          string      `json:"identifier,omitempty"`
-  CreatedAt           time.Time   `json:"created_at,omitempty"`
-  UpdatedAt           time.Time   `json:"updated_at,omitempty"`
+  CreatedAt           string      `json:"created_at,omitempty"`
+  UpdatedAt           string      `json:"updated_at,omitempty"`
   Primary             bool        `json:"primary,bool"`
   MacAddress          string      `json:"mac_address,omitempty"`
   NetworkJoinID       int         `json:"network_join_id,omitempty"`
   Usage               float64     `json:"usage,omitempty"`
-  UsageLastResetAt    time.Time   `json:"usage_last_reset_at,omitempty"`
-  UsageMonthRolledAt  time.Time   `json:"usage_month_rolled_at,omitempty"`
+  UsageLastResetAt    string      `json:"usage_last_reset_at,omitempty"`
+  UsageMonthRolledAt  string      `json:"usage_month_rolled_at,omitempty"`
   RateLimit           int         `json:"rate_limit,omitempty"`
   DefaultFirewallRule string      `json:"default_firewall_rule,omitempty"`
   Connected           bool        `json:"connected,bool"`
@@ -147,8 +146,8 @@ type FirewallRule struct {
   ID                  int         `json:"id,omitempty"`
   Position            int         `json:"position,omitempty"`
   Address             string      `json:"address,omitempty"`
-  CreatedAt           time.Time   `json:"created_at,omitempty"`
-  UpdatedAt           time.Time   `json:"updated_at,omitempty"`
+  CreatedAt           string      `json:"created_at,omitempty"`
+  UpdatedAt           string      `json:"updated_at,omitempty"`
   Command             string      `json:"adapter_type,omitempty"`
   Port                int         `json:"port,omitempty"`
   Protocol            string      `json:"protocol,omitempty"`

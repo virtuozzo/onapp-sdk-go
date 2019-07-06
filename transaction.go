@@ -4,7 +4,6 @@ import (
   "context"
   "fmt"
   "net/http"
-  "time"
   "reflect"
   "container/list"
 
@@ -57,7 +56,7 @@ type Transaction struct {
   AssociatedObjectID      int           `json:"associated_object_id,omitempty"`
   AssociatedObjectType    string        `json:"associated_object_type,omitempty"`
   ChainID                 int           `json:"chain_id,omitempty"`
-  CreatedAt               time.Time     `json:"created_at,omitempty"`
+  CreatedAt               string        `json:"created_at,omitempty"`
   DependentTransactionID  int           `json:"dependent_transaction_id,omitempty"`
   ID                      int           `json:"id,omitempty"`
   Identifier              string        `json:"identifier,omitempty"`
@@ -69,10 +68,10 @@ type Transaction struct {
   Pid                     int           `json:"pid,omitempty"`
   Priority                int           `json:"priority,omitempty"`
   Scheduled               bool          `json:"scheduled,bool"`
-  StartAfter              time.Time     `json:"start_after,omitempty"`
-  StartedAt               time.Time     `json:"started_at,omitempty"`
+  StartAfter              string        `json:"start_after,omitempty"`
+  StartedAt               string        `json:"started_at,omitempty"`
   Status                  string        `json:"status,omitempty"`
-  UpdatedAt               time.Time     `json:"updated_at,omitempty"`
+  UpdatedAt               string        `json:"updated_at,omitempty"`
   UserID                  int           `json:"user_id,omitempty"`
 }
 

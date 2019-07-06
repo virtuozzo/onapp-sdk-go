@@ -4,7 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-  "time"
 
   "github.com/digitalocean/godo"
 )
@@ -38,7 +37,7 @@ type Disk struct {
   Built                          bool                           `json:"built,bool"`
   BurstBw                        int                            `json:"burst_bw,omitempty"`
   BurstIops                      int                            `json:"burst_iops,omitempty"`
-  CreatedAt                      time.Time                      `json:"created_at,omitempty"`
+  CreatedAt                      string                         `json:"created_at,omitempty"`
   DataStoreID                    int                            `json:"data_store_id,omitempty"`
   DiskSize                       int                            `json:"disk_size,omitempty"`
   DiskVMNumber                   int                            `json:"disk_vm_number,omitempty"`
@@ -63,7 +62,7 @@ type Disk struct {
   OpenstackID                    int                            `json:"openstack_id,omitempty"`
   Primary                        bool                           `json:"primary,bool"`
   TemporaryVirtualMachineID      int                            `json:"temporary_virtual_machine_id,omitempty"`
-  UpdatedAt                      time.Time                      `json:"updated_at,omitempty"`
+  UpdatedAt                      string                         `json:"updated_at,omitempty"`
   VirtualMachineID               int                            `json:"virtual_machine_id,omitempty"`
   VolumeID                       int                            `json:"volume_id,omitempty"`
 }
