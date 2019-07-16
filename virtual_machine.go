@@ -119,7 +119,7 @@ type VirtualMachine struct {
 
 // CustomRecipeVariableAttributes - 
 type CustomRecipeVariableAttributes struct {
-  Enabled         int    `json:"enabled"`
+  Enabled         int    `json:"enabled,omitempty"`
   Name            string `json:"name,omitempty"`
   Value           string `json:"value,omitempty"`
 }

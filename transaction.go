@@ -61,8 +61,6 @@ type Transaction struct {
   ID                      int           `json:"id,omitempty"`
   Identifier              string        `json:"identifier,omitempty"`
   LockVersion             int           `json:"lock_version,omitempty"`
-  // Params                  Params        `json:"params,omitempty"`
-  Params                  interface{}   `json:"params,omitempty"`
   ParentID                int           `json:"parent_id,omitempty"`
   ParentType              string        `json:"parent_type,omitempty"`
   Pid                     int           `json:"pid,omitempty"`
@@ -73,6 +71,8 @@ type Transaction struct {
   Status                  string        `json:"status,omitempty"`
   UpdatedAt               string        `json:"updated_at,omitempty"`
   UserID                  int           `json:"user_id,omitempty"`
+
+  Params                  map[string]interface{}  `json:"params,omitempty"`
 }
 
 type transactionRoot struct {

@@ -53,7 +53,7 @@ type HypervisorGroup struct {
   MaxHostCPU                  int           `json:"max_host_cpu,omitempty"`
   PreferLocalReads            bool          `json:"prefer_local_reads,bool"`
   ReleaseResourceType         string        `json:"release_resource_type,omitempty"`
-  NetworkFailure              bool          `json:"network_failure"`
+  NetworkFailure              bool          `json:"network_failure,bool"`
   StorageChannel              int           `json:"storage_channel,omitempty"`
   RunSysprep                  bool          `json:"run_sysprep,bool"`
   RecoveryType                string        `json:"recovery_type,omitempty"`
@@ -218,4 +218,6 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
 func (obj HypervisorGroup) Debug() {
   fmt.Printf("        ID: %d\n", obj.ID)
   fmt.Printf("Identifier: %s\n", obj.Identifier)
+  fmt.Printf("     Label: %s\n", obj.Label)
+  fmt.Printf("ServerType: %s\n", obj.ServerType)
 }

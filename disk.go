@@ -82,7 +82,7 @@ type DiskCreateRequest struct {
   Mounted           bool   `json:"mounted,bool"`
 
   // Additional field to determine Virtual Machine to create disk
-  VirtualMachineID  int    /*`json:"virtual_machine_id,omitempty"`*/
+  VirtualMachineID  int    `json:"-"`
 }
 
 type diskCreateRequestRoot struct {

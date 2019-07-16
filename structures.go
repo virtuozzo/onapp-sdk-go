@@ -60,29 +60,29 @@ type ConnectionOptions struct {
   DistributedVirtualSwitchName string `json:"distributed_virtual_switch_name,omitempty"`
 }
 
-// Disks of hypervisor
-type Disks struct {
+// StorageDisk of storage
+type StorageDisk struct {
   Scsi     string   `json:"scsi,omitempty"`
   Selected bool     `json:"selected,bool"`
 }
 
-// Nics of hypervisor
-type Nics struct {
+// StorageNic of storage
+type StorageNic struct {
   Mac  string  `json:"mac,omitempty"`
   Type int     `json:"type,omitempty"`
 }
 
-// CustomPCIs of hypervisor
-type CustomPCIs struct {
+// StorageCustomPCI of storage
+type StorageCustomPCI struct {
   Pci      string  `json:"pci,omitempty"`
   Selected bool    `json:"selected,bool"`
 }
 
 // Storage for hypervisor
 type Storage struct {
-  Disks      []Disks        `json:"disks,omitempty"`
-  Nics       []Nics         `json:"nics,omitempty"`
-  CustomPCIs []CustomPCIs   `json:"custom_pcis,omitempty"`
+  Disks      []StorageDisk        `json:"disks,omitempty"`
+  Nics       []StorageNic         `json:"nics,omitempty"`
+  CustomPCIs []StorageCustomPCI   `json:"custom_pcis,omitempty"`
 }
 
 // IntegratedStorageCacheSettings - 

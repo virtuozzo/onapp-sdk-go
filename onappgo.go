@@ -11,13 +11,14 @@ import (
   "net/url"
   "reflect"
 
+  version "github.com/onapp/onapp-sdk-go/version"
   "github.com/google/go-querystring/query"
 )
 
+var userAgent     = "onapp_sdk_go/" + version.String()
+
 const (
-  libraryVersion  = "0.1.11"
   defaultBaseURL  = "http://69.168.237.17/"
-  userAgent       = "onapp_sdk_go/" + libraryVersion
   mediaType       = "application/json"
   apiFormat       = ".json"
 
@@ -53,18 +54,18 @@ type Client struct {
   // ImageActions      ImageActionsService
   Disks                   DisksService
   // Regions           RegionsService
-  Networks             NetworksService
+  Networks                NetworksService
   // FloatingIPs       FloatingIPsService
   // FloatingIPActions FloatingIPActionsService
   // Snapshots         SnapshotsService
   // Storage           StorageService
   // StorageActions    StorageActionsService
-  Users	               UsersService
+  Users	                  UsersService
   // LoadBalancers     LoadBalancersService
   // Certificates      CertificatesService
   // Firewalls         FirewallsService
   // Projects          ProjectsService
-  // Kubernetes        KubernetesService
+  HypervisorZones         HypervisorZonesService
   // Databases         DatabasesService
   // VPCs              VPCsService
 
@@ -165,7 +166,7 @@ func NewClient(httpClient *http.Client) *Client {
   // c.Storage = &StorageServiceOp{client: c}
   // c.StorageActions = &StorageActionsServiceOp{client: c}
   c.Users = &UsersServiceOp{client: c}
-  // c.Kubernetes = &KubernetesServiceOp{client: c}
+  c.HypervisorZones = &HypervisorZonesServiceOp{client: c}
   // c.Databases = &DatabasesServiceOp{client: c}
   // c.VPCs = &VPCsServiceOp{client: c}
 
