@@ -29,15 +29,18 @@ type HypervisorZonesServiceOp struct {
 
 var _ HypervisorZonesService = &HypervisorZonesServiceOp{}
 
+// Certificate - 
 type Certificate struct {
   ExpireAt string `json:"expire_at,omitempty"`
   Name     string `json:"name,omitempty"`
 }
 
+// Certificates - 
 type Certificates struct {
   Certificate Certificate `json:"certificate,omitempty"`
 }
 
+// DataStoreZonePricing - 
 type DataStoreZonePricing struct {
   DataRead       string `json:"data_read,omitempty"`
   DataWrite      string `json:"data_write,omitempty"`
@@ -48,6 +51,7 @@ type DataStoreZonePricing struct {
   OutputRequests string `json:"output_requests,omitempty"`
 }
 
+// HypervisorZonePricing - 
 type HypervisorZonePricing struct {
   CPUMax         string `json:"cpu_max,omitempty"`
   CPUOff         string `json:"cpu_off,omitempty"`
@@ -60,6 +64,7 @@ type HypervisorZonePricing struct {
   MemoryOn       string `json:"memory_on,omitempty"`
 }
 
+// NetworkZonePricing - 
 type NetworkZonePricing struct {
   DataRxed       string `json:"data_rxed,omitempty"`
   DataSent       string `json:"data_sent,omitempty"`
@@ -70,6 +75,7 @@ type NetworkZonePricing struct {
   PortSpeedMax   string `json:"port_speed_max,omitempty"`
 }
 
+// TierOptions - 
 type TierOptions struct {
   Backups            bool `json:"backups,bool"`
   DdosProtection     bool `json:"ddos_protection,bool"`
@@ -84,6 +90,7 @@ type TierOptions struct {
   WindowsLicense     bool `json:"windows_license,bool"`
 }
 
+// UserVirtualServerPricing - 
 type UserVirtualServerPricing struct {
   AutoScaling            string `json:"auto_scaling,omitempty"`
   AutoScalingMax         string `json:"auto_scaling_max,omitempty"`
@@ -95,6 +102,7 @@ type UserVirtualServerPricing struct {
   TemplateMax            string `json:"template_max,omitempty"`
 }
 
+// HypervisorZone - 
 type HypervisorZone struct {
   BandwidthIndex           int                      `json:"bandwidth_index,omitempty"`
   BandwidthScore           int                      `json:"bandwidth_score,omitempty"`
