@@ -57,7 +57,8 @@ type Client struct {
   Networks                NetworksService
   // FloatingIPs       FloatingIPsService
   // FloatingIPActions FloatingIPActionsService
-  // Snapshots         SnapshotsService
+  BackupServers           BackupServersService
+  BackupServerGroups      BackupServerGroupsService
   // Storage           StorageService
   // StorageActions    StorageActionsService
   Users	                  UsersService
@@ -162,7 +163,8 @@ func NewClient(httpClient *http.Client) *Client {
   // c.Projects = &ProjectsServiceOp{client: c}
   // c.Regions = &RegionsServiceOp{client: c}
   c.Networks = &NetworksServiceOp{client: c}
-  // c.Snapshots = &SnapshotsServiceOp{client: c}
+  c.BackupServers = &BackupServersServiceOp{client: c}
+  c.BackupServerGroups = &BackupServerGroupsServiceOp{client: c}
   // c.Storage = &StorageServiceOp{client: c}
   // c.StorageActions = &StorageActionsServiceOp{client: c}
   c.Users = &UsersServiceOp{client: c}
