@@ -10,7 +10,7 @@ import (
 
 const backupResourceZonesBasePath = "settings/backups/resource_zones"
 
-// BackupResourceZonesService is an interface for interfacing with the Data Store Zones
+// BackupResourceZonesService is an interface for interfacing with the Backup Resource Zones
 // endpoints of the OnApp API
 // https://docs.onapp.com/apim/latest/backup-server-zones
 type BackupResourceZonesService interface {
@@ -22,7 +22,7 @@ type BackupResourceZonesService interface {
   // Edit(context.Context, int, *ListOptions) ([]BackupResourceZone, *Response, error)
 }
 
-// BackupResourceZonesServiceOp handles communication with the Data Store related methods of the
+// BackupResourceZonesServiceOp handles communication with the Backup Resource Zone related methods of the
 // OnApp API.
 type BackupResourceZonesServiceOp struct {
   client *Client

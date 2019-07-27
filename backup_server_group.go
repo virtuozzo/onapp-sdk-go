@@ -10,7 +10,7 @@ import (
 
 const backupServerGroupsBasePath = "settings/backup_server_zones"
 
-// BackupServerGroupsService is an interface for interfacing with the Data Store Zones
+// BackupServerGroupsService is an interface for interfacing with the Backup Server Groups
 // endpoints of the OnApp API
 // https://docs.onapp.com/apim/latest/backup-server-zones
 type BackupServerGroupsService interface {
@@ -22,7 +22,7 @@ type BackupServerGroupsService interface {
   // Edit(context.Context, int, *ListOptions) ([]BackupServerGroup, *Response, error)
 }
 
-// BackupServerGroupsServiceOp handles communication with the Data Store related methods of the
+// BackupServerGroupsServiceOp handles communication with the Backup Server Group related methods of the
 // OnApp API.
 type BackupServerGroupsServiceOp struct {
   client *Client

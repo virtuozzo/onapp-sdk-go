@@ -10,7 +10,7 @@ import (
 
 const backupServerBasePath = "settings/backup_servers"
 
-// BackupServersService is an interface for interfacing with the BackupServer
+// BackupServersService is an interface for interfacing with the Backup Server
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/backup-servers
 type BackupServersService interface {
@@ -21,7 +21,7 @@ type BackupServersService interface {
   // Edit(context.Context, int, *ListOptions) ([]BackupServer, *Response, error)
 }
 
-// BackupServersServiceOp handles communication with the BackupServer related methods of the
+// BackupServersServiceOp handles communication with the Backup Server related methods of the
 // OnApp API.
 type BackupServersServiceOp struct {
   client *Client
