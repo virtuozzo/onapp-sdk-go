@@ -43,7 +43,7 @@ type Client struct {
   // Account           AccountService
   Transactions            TransactionsService
   // CDNs              CDNService
-  // Domains           DomainsService
+  InstancePackages        InstancePackagesService
   VirtualMachines         VirtualMachinesService
   VirtualMachineActions   VirtualMachineActionsService
   Hypervisors             HypervisorsService
@@ -148,7 +148,7 @@ func NewClient(httpClient *http.Client) *Client {
   c.Transactions = &TransactionsServiceOp{client: c}
   // c.CDNs = &CDNServiceOp{client: c}
   // c.Certificates = &CertificatesServiceOp{client: c}
-  // c.Domains = &DomainsServiceOp{client: c}
+  c.InstancePackages = &InstancePackagesServiceOp{client: c}
   c.VirtualMachines = &VirtualMachinesServiceOp{client: c}
   c.VirtualMachineActions = &VirtualMachineActionsServiceOp{client: c}
   c.Hypervisors = &HypervisorsServiceOp{client: c}
