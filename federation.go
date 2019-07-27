@@ -29,92 +29,101 @@ type HypervisorZonesServiceOp struct {
 
 var _ HypervisorZonesService = &HypervisorZonesServiceOp{}
 
-type HypervisorZonePricing struct {
-  CPUOn          string `json:"cpu_on,omitempty"`
-  CPUOff         string `json:"cpu_off,omitempty"`
-  CPUPriorityOn  string `json:"cpu_priority_on,omitempty"`
-  CPUPriorityOff string `json:"cpu_priority_off,omitempty"`
-  MemoryOn       string `json:"memory_on,omitempty"`
-  MemoryOff      string `json:"memory_off,omitempty"`
-  CPUMax         string `json:"cpu_max,omitempty"`
-  CPUPriorityMax string `json:"cpu_priority_max,omitempty"`
-  MemoryMax      string `json:"memory_max,omitempty"`
+type Certificate struct {
+  ExpireAt string `json:"expire_at,omitempty"`
+  Name     string `json:"name,omitempty"`
+}
+
+type Certificates struct {
+  Certificate Certificate `json:"certificate,omitempty"`
 }
 
 type DataStoreZonePricing struct {
-  DiskSizeOn     string `json:"disk_size_on,omitempty"`
-  DiskSizeOff    string `json:"disk_size_off,omitempty"`
   DataRead       string `json:"data_read,omitempty"`
   DataWrite      string `json:"data_write,omitempty"`
+  DiskSizeMax    string `json:"disk_size_max,omitempty"`
+  DiskSizeOff    string `json:"disk_size_off,omitempty"`
+  DiskSizeOn     string `json:"disk_size_on,omitempty"`
   InputRequests  string `json:"input_requests,omitempty"`
   OutputRequests string `json:"output_requests,omitempty"`
-  DiskSizeMax    string `json:"disk_size_max,omitempty"`
+}
+
+type HypervisorZonePricing struct {
+  CPUMax         string `json:"cpu_max,omitempty"`
+  CPUOff         string `json:"cpu_off,omitempty"`
+  CPUOn          string `json:"cpu_on,omitempty"`
+  CPUPriorityMax string `json:"cpu_priority_max,omitempty"`
+  CPUPriorityOff string `json:"cpu_priority_off,omitempty"`
+  CPUPriorityOn  string `json:"cpu_priority_on,omitempty"`
+  MemoryMax      string `json:"memory_max,omitempty"`
+  MemoryOff      string `json:"memory_off,omitempty"`
+  MemoryOn       string `json:"memory_on,omitempty"`
 }
 
 type NetworkZonePricing struct {
-  IPAddressesOn  string `json:"ip_addresses_on,omitempty"`
-  IPAddressesOff string `json:"ip_addresses_off,omitempty"`
-  PortSpeed      string `json:"port_speed,omitempty"`
   DataRxed       string `json:"data_rxed,omitempty"`
   DataSent       string `json:"data_sent,omitempty"`
   IPAddressesMax string `json:"ip_addresses_max,omitempty"`
+  IPAddressesOff string `json:"ip_addresses_off,omitempty"`
+  IPAddressesOn  string `json:"ip_addresses_on,omitempty"`
+  PortSpeed      string `json:"port_speed,omitempty"`
   PortSpeedMax   string `json:"port_speed_max,omitempty"`
+}
+
+type TierOptions struct {
+  Backups            bool `json:"backups,bool"`
+  DdosProtection     bool `json:"ddos_protection,bool"`
+  DNS                bool `json:"dns,bool"`
+  Ha                 bool `json:"ha,bool"`
+  Ipv6               bool `json:"ipv6,bool"`
+  Motion             bool `json:"motion,bool"`
+  Replication        bool `json:"replication,bool"`
+  SLA                bool `json:"sla,bool"`
+  StoragePerformance bool `json:"storage_performance,bool"`
+  Templates          bool `json:"templates,bool"`
+  WindowsLicense     bool `json:"windows_license,bool"`
 }
 
 type UserVirtualServerPricing struct {
   AutoScaling            string `json:"auto_scaling,omitempty"`
-  TemplateBackupStore    string `json:"template_backup_store,omitempty"`
-  Backup                 string `json:"backup,omitempty"`
-  Template               string `json:"template,omitempty"`
   AutoScalingMax         string `json:"auto_scaling_max,omitempty"`
-  TemplateBackupStoreMax string `json:"template_backup_store_max,omitempty"`
+  Backup                 string `json:"backup,omitempty"`
   BackupMax              string `json:"backup_max,omitempty"`
+  Template               string `json:"template,omitempty"`
+  TemplateBackupStore    string `json:"template_backup_store,omitempty"`
+  TemplateBackupStoreMax string `json:"template_backup_store_max,omitempty"`
   TemplateMax            string `json:"template_max,omitempty"`
 }
 
-type TierOptions struct {
-  Ha                 bool `json:"ha,bool"`
-  SLA                bool `json:"sla,bool"`
-  StoragePerformance bool `json:"storage_performance,bool"`
-  Backups            bool `json:"backups,bool"`
-  Templates          bool `json:"templates,bool"`
-  WindowsLicense     bool `json:"windows_license,bool"`
-  DdosProtection     bool `json:"ddos_protection,bool"`
-  Ipv6               bool `json:"ipv6,bool"`
-  DNS                bool `json:"dns,bool"`
-  Motion             bool `json:"motion,bool"`
-  Replication        bool `json:"replication,bool"`
-}
-
 type HypervisorZone struct {
-  Label                    string                   `json:"label,omitempty"`
-  ProviderName             string                   `json:"provider_name,omitempty"`
-  SellerPageURL            string                   `json:"seller_page_url,omitempty"`
-  Description              string                   `json:"description,omitempty"`
-  FederationID             string                   `json:"federation_id,omitempty"`
-  Country                  string                   `json:"country,omitempty"`
+  BandwidthIndex           int                      `json:"bandwidth_index,omitempty"`
+  BandwidthScore           int                      `json:"bandwidth_score,omitempty"`
+  Certificates             []Certificates           `json:"certificates,omitempty"`
   City                     string                   `json:"city,omitempty"`
-  UptimePercentage         int                      `json:"uptime_percentage,omitempty"`
-  Tier                     string                   `json:"tier,omitempty"`
+  CloudIndex               int                      `json:"cloud_index,omitempty"`
+  Country                  string                   `json:"country,omitempty"`
+  CPUIndex                 int                      `json:"cpu_index,omitempty"`
+  CPUScore                 int                      `json:"cpu_score,omitempty"`
+  DataStoreZonePricing     DataStoreZonePricing     `json:"data_store_zone_pricing,omitempty"`
+  Description              string                   `json:"description,omitempty"`
+  DiskIndex                int                      `json:"disk_index,omitempty"`
+  DiskScore                int                      `json:"disk_score,omitempty"`
+  FederationID             string                   `json:"federation_id,omitempty"`
+  HypervisorZonePricing    HypervisorZonePricing    `json:"hypervisor_zone_pricing,omitempty"`
+  Label                    string                   `json:"label,omitempty"`
   Latitude                 float64                  `json:"latitude,omitempty"`
   Longitude                float64                  `json:"longitude,omitempty"`
-  CPUScore                 int                      `json:"cpu_score,omitempty"`
-  CPUIndex                 int                      `json:"cpu_index,omitempty"`
-  BandwidthScore           int                      `json:"bandwidth_score,omitempty"`
-  BandwidthIndex           int                      `json:"bandwidth_index,omitempty"`
-  DiskScore                int                      `json:"disk_score,omitempty"`
-  DiskIndex                int                      `json:"disk_index,omitempty"`
-  CloudIndex               int                      `json:"cloud_index,omitempty"`
-  TierCPUIndex             int                      `json:"tier_cpu_index,omitempty"`
-  TierDiskIndex            int                      `json:"tier_disk_index,omitempty"`
+  NetworkZonePricing       NetworkZonePricing       `json:"network_zone_pricing,omitempty"`
+  ProviderName             string                   `json:"provider_name,omitempty"`
+  SellerPageURL            string                   `json:"seller_page_url,omitempty"`
+  Tier                     string                   `json:"tier,omitempty"`
   TierBandwidthIndex       int                      `json:"tier_bandwidth_index,omitempty"`
   TierCloudIndex           int                      `json:"tier_cloud_index,omitempty"`
-  Certificates             []interface{}            `json:"certificates,omitempty"`
-  HypervisorZonePricing    HypervisorZonePricing    `json:"hypervisor_zone_pricing,omitempty"`
-  DataStoreZonePricing     DataStoreZonePricing     `json:"data_store_zone_pricing,omitempty"`
-  NetworkZonePricing       NetworkZonePricing       `json:"network_zone_pricing,omitempty"`
-  UserVirtualServerPricing UserVirtualServerPricing `json:"user_virtual_server_pricing,omitempty"`
+  TierCPUIndex             int                      `json:"tier_cpu_index,omitempty"`
+  TierDiskIndex            int                      `json:"tier_disk_index,omitempty"`
   TierOptions              TierOptions              `json:"tier_options,omitempty"`
+  UptimePercentage         int                      `json:"uptime_percentage,omitempty"`
+  UserVirtualServerPricing UserVirtualServerPricing `json:"user_virtual_server_pricing,omitempty"`
 }
 
 type hypervisorZonesRoot struct {
@@ -213,4 +222,17 @@ func (obj HypervisorZone) Debug() {
   fmt.Printf("            City: %s\n", obj.City)
   fmt.Printf("UptimePercentage: %d\n", obj.UptimePercentage)
   fmt.Printf("    FederationID: %s\n", obj.FederationID)
+
+  for i := range obj.Certificates {
+    cert := obj.Certificates[i].Certificate
+    fmt.Printf("\tCertificate: [%d]\n", i)
+    cert.Debug()
+    fmt.Println("")
+  }
+}
+
+// Debug - print formatted Certificate structure
+func (obj Certificate) Debug() {
+  fmt.Printf("\t       Name: %s\n", obj.Name)
+  fmt.Printf("\t   ExpireAt: %s\n", obj.ExpireAt)
 }
