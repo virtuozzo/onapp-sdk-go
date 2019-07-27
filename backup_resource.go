@@ -48,7 +48,7 @@ type BackupResource struct {
 // BackupResourceCreateRequest represents a request to create a BackupResource
 type BackupResourceCreateRequest struct {
   Label           string  `json:"label,omitempty"`
-  Plugin          string  `json:"plugin,omitempty`
+  Plugin          string  `json:"plugin,omitempty"`
   PrimaryHost     string  `json:"primary_host,omitempty"`
   Username        string  `json:"username,omitempty"`
   Password        string  `json:"password,omitempty"`
