@@ -40,9 +40,7 @@ type Client struct {
   apiPassword string
 
   // Services used for communicating with the API
-  // Account           AccountService
   Transactions            TransactionsService
-  // CDNs              CDNService
   InstancePackages        InstancePackagesService
   VirtualMachines         VirtualMachinesService
   VirtualMachineActions   VirtualMachineActionsService
@@ -51,26 +49,15 @@ type Client struct {
   DataStores              DataStoresService
   DataStoreGroups         DataStoreGroupsService
   ImageTemplates          ImageTemplatesService
-  // ImageActions      ImageActionsService
   Disks                   DisksService
-  // Regions           RegionsService
   Networks                NetworksService
-  // FloatingIPs       FloatingIPsService
-  // FloatingIPActions FloatingIPActionsService
+  NetworkGroups           NetworkGroupsService
   BackupServers           BackupServersService
   BackupServerGroups      BackupServerGroupsService
   BackupResources         BackupResourcesService
   BackupResourceZones    BackupResourceZonesService
-  // Storage           StorageService
-  // StorageActions    StorageActionsService
   Users	                  UsersService
-  // LoadBalancers     LoadBalancersService
-  // Certificates      CertificatesService
-  // Firewalls         FirewallsService
-  // Projects          ProjectsService
   HypervisorZones         HypervisorZonesService
-  // Databases         DatabasesService
-  // VPCs              VPCsService
 
   // Optional function called after every successful request made to the DO APIs
   onRequestCompleted RequestCompletionCallback
@@ -144,10 +131,7 @@ func NewClient(httpClient *http.Client) *Client {
 
   c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: userAgent}
 
-  // c.Account = &AccountServiceOp{client: c}
   c.Transactions = &TransactionsServiceOp{client: c}
-  // c.CDNs = &CDNServiceOp{client: c}
-  // c.Certificates = &CertificatesServiceOp{client: c}
   c.InstancePackages = &InstancePackagesServiceOp{client: c}
   c.VirtualMachines = &VirtualMachinesServiceOp{client: c}
   c.VirtualMachineActions = &VirtualMachineActionsServiceOp{client: c}
@@ -155,26 +139,16 @@ func NewClient(httpClient *http.Client) *Client {
   c.HypervisorGroups = &HypervisorGroupsServiceOp{client: c}
   c.DataStores = &DataStoresServiceOp{client: c}
   c.DataStoreGroups = &DataStoreGroupsServiceOp{client: c}
-  // c.Firewalls = &FirewallsServiceOp{client: c}
-  // c.FloatingIPs = &FloatingIPsServiceOp{client: c}
-  // c.FloatingIPActions = &FloatingIPActionsServiceOp{client: c}
   c.ImageTemplates = &ImageTemplatesServiceOp{client: c}
-  // c.ImageActions = &ImageActionsServiceOp{client: c}
   c.Disks = &DisksServiceOp{client: c}
-  // c.LoadBalancers = &LoadBalancersServiceOp{client: c}
-  // c.Projects = &ProjectsServiceOp{client: c}
-  // c.Regions = &RegionsServiceOp{client: c}
   c.Networks = &NetworksServiceOp{client: c}
+  c.NetworkGroups = &NetworkGroupsServiceOp{client: c}
   c.BackupServers = &BackupServersServiceOp{client: c}
   c.BackupServerGroups = &BackupServerGroupsServiceOp{client: c}
   c.BackupResources = &BackupResourcesServiceOp{client: c}
   c.BackupResourceZones = &BackupResourceZonesServiceOp{client: c}
-  // c.Storage = &StorageServiceOp{client: c}
-  // c.StorageActions = &StorageActionsServiceOp{client: c}
   c.Users = &UsersServiceOp{client: c}
   c.HypervisorZones = &HypervisorZonesServiceOp{client: c}
-  // c.Databases = &DatabasesServiceOp{client: c}
-  // c.VPCs = &VPCsServiceOp{client: c}
 
   return c
 }
