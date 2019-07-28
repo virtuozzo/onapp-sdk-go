@@ -32,28 +32,30 @@ var _ NetworkGroupsService = &NetworkGroupsServiceOp{}
 
 // NetworkGroup represents a NetworkGroup
 type NetworkGroup struct {
-  AdditionalFields  interface{} `json:"additional_fields,omitempty"`
-  Closed            bool        `json:"closed,bool"`
-  CreatedAt         string      `json:"created_at,omitempty"`
-  DatacenterID      int         `json:"datacenter_id,omitempty"`
-  DraasID           int         `json:"draas_id,omitempty"`
-  FederationEnabled bool        `json:"federation_enabled,bool"`
-  FederationID      int         `json:"federation_id,omitempty"`
-  HypervisorID      int         `json:"hypervisor_id,omitempty"`
-  ID                int         `json:"id,omitempty"`
-  Identifier        string      `json:"identifier,omitempty"`
-  Label             string      `json:"label,omitempty"`
-  LocationGroupID   int         `json:"location_group_id,omitempty"`
-  PreconfiguredOnly bool        `json:"preconfigured_only,omitempty"`
-  ProviderVdcID     int         `json:"provider_vdc_id,omitempty"`
-  ServerType        string      `json:"server_type,omitempty"`
-  Traded            bool        `json:"traded,bool"`
-  UpdatedAt         string      `json:"updated_at,omitempty"`
+  AdditionalFields  []AdditionalFields  `json:"additional_fields,omitempty"`
+  Closed            bool                `json:"closed,bool"`
+  CreatedAt         string              `json:"created_at,omitempty"`
+  DatacenterID      int                 `json:"datacenter_id,omitempty"`
+  DraasID           int                 `json:"draas_id,omitempty"`
+  FederationEnabled bool                `json:"federation_enabled,bool"`
+  FederationID      int                 `json:"federation_id,omitempty"`
+  HypervisorID      int                 `json:"hypervisor_id,omitempty"`
+  ID                int                 `json:"id,omitempty"`
+  Identifier        string              `json:"identifier,omitempty"`
+  Label             string              `json:"label,omitempty"`
+  LocationGroupID   int                 `json:"location_group_id,omitempty"`
+  PreconfiguredOnly bool                `json:"preconfigured_only,omitempty"`
+  ProviderVdcID     int                 `json:"provider_vdc_id,omitempty"`
+  ServerType        string              `json:"server_type,omitempty"`
+  Traded            bool                `json:"traded,bool"`
+  UpdatedAt         string              `json:"updated_at,omitempty"`
 }
 
 // NetworkGroupCreateRequest represents a request to create a NetworkGroup
 type NetworkGroupCreateRequest struct {
-
+  Label             string  `json:"label,omitempty"`
+  LocationGroupID   int     `json:"location_group_id,omitempty"`
+  PreconfiguredOnly bool    `json:"preconfigured_only,omitempty"`
 }
 
 type networkZoneCreateRequestRoot struct {

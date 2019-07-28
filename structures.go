@@ -104,6 +104,10 @@ type AdditionalFields struct {
   AdditionalField AdditionalField `json:"additional_field,omitempty"`
 }
 
+// AdvancedOptions - 
+type AdvancedOptions struct {
+}
+
 // NetworkInterface - 
 // https://docs.onapp.com/apim/latest/network-interfaces
 type NetworkInterface struct {

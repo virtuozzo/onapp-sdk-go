@@ -55,7 +55,7 @@ type Client struct {
   BackupServers           BackupServersService
   BackupServerGroups      BackupServerGroupsService
   BackupResources         BackupResourcesService
-  BackupResourceZones    BackupResourceZonesService
+  BackupResourceZones     BackupResourceZonesService
   Users	                  UsersService
   HypervisorZones         HypervisorZonesService
 
@@ -131,24 +131,24 @@ func NewClient(httpClient *http.Client) *Client {
 
   c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: userAgent}
 
-  c.Transactions = &TransactionsServiceOp{client: c}
-  c.InstancePackages = &InstancePackagesServiceOp{client: c}
-  c.VirtualMachines = &VirtualMachinesServiceOp{client: c}
+  c.Transactions          = &TransactionsServiceOp{client: c}
+  c.InstancePackages      = &InstancePackagesServiceOp{client: c}
+  c.VirtualMachines       = &VirtualMachinesServiceOp{client: c}
   c.VirtualMachineActions = &VirtualMachineActionsServiceOp{client: c}
-  c.Hypervisors = &HypervisorsServiceOp{client: c}
-  c.HypervisorGroups = &HypervisorGroupsServiceOp{client: c}
-  c.DataStores = &DataStoresServiceOp{client: c}
-  c.DataStoreGroups = &DataStoreGroupsServiceOp{client: c}
-  c.ImageTemplates = &ImageTemplatesServiceOp{client: c}
-  c.Disks = &DisksServiceOp{client: c}
-  c.Networks = &NetworksServiceOp{client: c}
-  c.NetworkGroups = &NetworkGroupsServiceOp{client: c}
-  c.BackupServers = &BackupServersServiceOp{client: c}
-  c.BackupServerGroups = &BackupServerGroupsServiceOp{client: c}
-  c.BackupResources = &BackupResourcesServiceOp{client: c}
-  c.BackupResourceZones = &BackupResourceZonesServiceOp{client: c}
-  c.Users = &UsersServiceOp{client: c}
-  c.HypervisorZones = &HypervisorZonesServiceOp{client: c}
+  c.Hypervisors           = &HypervisorsServiceOp{client: c}
+  c.HypervisorGroups      = &HypervisorGroupsServiceOp{client: c}
+  c.DataStores            = &DataStoresServiceOp{client: c}
+  c.DataStoreGroups       = &DataStoreGroupsServiceOp{client: c}
+  c.ImageTemplates        = &ImageTemplatesServiceOp{client: c}
+  c.Disks                 = &DisksServiceOp{client: c}
+  c.Networks              = &NetworksServiceOp{client: c}
+  c.NetworkGroups         = &NetworkGroupsServiceOp{client: c}
+  c.BackupServers         = &BackupServersServiceOp{client: c}
+  c.BackupServerGroups    = &BackupServerGroupsServiceOp{client: c}
+  c.BackupResources       = &BackupResourcesServiceOp{client: c}
+  c.BackupResourceZones   = &BackupResourceZonesServiceOp{client: c}
+  c.Users                 = &UsersServiceOp{client: c}
+  c.HypervisorZones       = &HypervisorZonesServiceOp{client: c}
 
   return c
 }

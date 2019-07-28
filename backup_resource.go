@@ -32,17 +32,18 @@ var _ BackupResourcesService = &BackupResourcesServiceOp{}
 
 // BackupResource represents a BackupResource
 type BackupResource struct {
-  ID              int     `json:"id,omitempty"`
-  CreatedAt       string  `json:"created_at,omitempty"`
-  Label           string  `json:"label,omitempty"`
-  Enabled         bool    `json:"enabled,bool"`
-  Plugin          string  `json:"plugin,omitempty"`
-  PrimaryHost     string  `json:"primary_host,omitempty"`
-  SecondaryHost   string  `json:"secondary_host,omitempty"`
-  UpdatedAt       string  `json:"updated_at,omitempty,omitempty"`
-  Username        string  `json:"username,omitempty"`
-  Password        string  `json:"password,omitempty"`
-  ResourceZoneID  int     `json:"resource_zone_id,omitempty"`
+  AdvancedOptions []AdvancedOptions `json:"advanced_options"`
+  ID              int               `json:"id,omitempty"`
+  CreatedAt       string            `json:"created_at,omitempty"`
+  Label           string            `json:"label,omitempty"`
+  Enabled         bool              `json:"enabled,bool"`
+  Plugin          string            `json:"plugin,omitempty"`
+  PrimaryHost     string            `json:"primary_host,omitempty"`
+  SecondaryHost   string            `json:"secondary_host,omitempty"`
+  UpdatedAt       string            `json:"updated_at,omitempty,omitempty"`
+  Username        string            `json:"username,omitempty"`
+  Password        string            `json:"password,omitempty"`
+  ResourceZoneID  int               `json:"resource_zone_id,omitempty"`
 }
 
 // BackupResourceCreateRequest represents a request to create a BackupResource

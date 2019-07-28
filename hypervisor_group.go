@@ -32,42 +32,42 @@ var _ HypervisorGroupsService = &HypervisorGroupsServiceOp{}
 
 // HypervisorGroup represent Compute Zone of the OnApp API
 type HypervisorGroup struct {
-  ID                          int           `json:"id,omitempty"`
-  Label                       string        `json:"label,omitempty"`
-  CreatedAt                   string        `json:"created_at,omitempty"`
-  UpdatedAt                   string        `json:"updated_at,omitempty"`
-  ServerType                  string        `json:"server_type,omitempty"`
-  LocationGroupID             int           `json:"location_group_id,omitempty"`
-  FederationEnabled           bool          `json:"federation_enabled,bool"`
-  FederationID                string        `json:"federation_id,omitempty"`
-  Traded                      bool          `json:"traded,bool"`
-  Closed                      bool          `json:"closed,bool"`
-  HypervisorID                int           `json:"hypervisor_id,omitempty"`
-  Identifier                  string        `json:"identifier,omitempty"`
-  DraasID                     int           `json:"draas_id,omitempty"`
-  PreconfiguredOnly           bool          `json:"preconfigured_only,bool"`
-  ProviderVdcID               int           `json:"provider_vdc_id,omitempty"`
-  AdditionalFields            string        `json:"additional_fields,omitempty"`
-  DatacenterID                int           `json:"datacenter_id,omitempty"`
-  MaxHostFreeMemory           int           `json:"max_host_free_memory,omitempty"`
-  MaxHostCPU                  int           `json:"max_host_cpu,omitempty"`
-  PreferLocalReads            bool          `json:"prefer_local_reads,bool"`
-  ReleaseResourceType         string        `json:"release_resource_type,omitempty"`
-  NetworkFailure              bool          `json:"network_failure,bool"`
-  StorageChannel              int           `json:"storage_channel,omitempty"`
-  RunSysprep                  bool          `json:"run_sysprep,bool"`
-  RecoveryType                string        `json:"recovery_type,omitempty"`
-  FailoverTimeout             int           `json:"failover_timeout,omitempty"`
-  CPUUnits                    int           `json:"cpu_units,omitempty"`
-  SupplierVersion             string        `json:"supplier_version,omitempty"`
-  SupplierProvider            string        `json:"supplier_provider,omitempty"`
-  ProviderName                string        `json:"provider_name,omitempty"`
-  ScheduledForDeletion        string        `json:"scheduled_for_deletion,omitempty"`
-  CPUFlagsEnabled             bool          `json:"cpu_flags_enabled,bool"`
-  CPUFlags                    []string      `json:"cpu_flags,omitempty"`
-  Tier                        string        `json:"tier,omitempty"`
-  SupportsVirtualServerMotion bool	        `json:"supports_virtual_server_motion,bool"`
-  CustomConfig                string        `json:"custom_config,omitempty"`
+  ID                          int                 `json:"id,omitempty"`
+  Label                       string              `json:"label,omitempty"`
+  CreatedAt                   string              `json:"created_at,omitempty"`
+  UpdatedAt                   string              `json:"updated_at,omitempty"`
+  ServerType                  string              `json:"server_type,omitempty"`
+  LocationGroupID             int                 `json:"location_group_id,omitempty"`
+  FederationEnabled           bool                `json:"federation_enabled,bool"`
+  FederationID                string              `json:"federation_id,omitempty"`
+  Traded                      bool                `json:"traded,bool"`
+  Closed                      bool                `json:"closed,bool"`
+  HypervisorID                int                 `json:"hypervisor_id,omitempty"`
+  Identifier                  string              `json:"identifier,omitempty"`
+  DraasID                     int                 `json:"draas_id,omitempty"`
+  PreconfiguredOnly           bool                `json:"preconfigured_only,bool"`
+  ProviderVdcID               int                 `json:"provider_vdc_id,omitempty"`
+  AdditionalFields            []AdditionalFields  `json:"additional_fields,omitempty"`
+  DatacenterID                int                 `json:"datacenter_id,omitempty"`
+  MaxHostFreeMemory           int                 `json:"max_host_free_memory,omitempty"`
+  MaxHostCPU                  int                 `json:"max_host_cpu,omitempty"`
+  PreferLocalReads            bool                `json:"prefer_local_reads,bool"`
+  ReleaseResourceType         string              `json:"release_resource_type,omitempty"`
+  NetworkFailure              bool                `json:"network_failure,bool"`
+  StorageChannel              int                 `json:"storage_channel,omitempty"`
+  RunSysprep                  bool                `json:"run_sysprep,bool"`
+  RecoveryType                string              `json:"recovery_type,omitempty"`
+  FailoverTimeout             int                 `json:"failover_timeout,omitempty"`
+  CPUUnits                    int                 `json:"cpu_units,omitempty"`
+  SupplierVersion             string              `json:"supplier_version,omitempty"`
+  SupplierProvider            string              `json:"supplier_provider,omitempty"`
+  ProviderName                string              `json:"provider_name,omitempty"`
+  ScheduledForDeletion        string              `json:"scheduled_for_deletion,omitempty"`
+  CPUFlagsEnabled             bool                `json:"cpu_flags_enabled,bool"`
+  CPUFlags                    []string            `json:"cpu_flags,omitempty"`
+  Tier                        string              `json:"tier,omitempty"`
+  SupportsVirtualServerMotion bool	              `json:"supports_virtual_server_motion,bool"`
+  CustomConfig                string              `json:"custom_config,omitempty"`
 }
 
 // HypervisorGroupCreateRequest represents a request to create a Compute Zone
@@ -216,8 +216,12 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
 
 // Debug - print formatted HypervisorGroup structure
 func (obj HypervisorGroup) Debug() {
-  fmt.Printf("        ID: %d\n", obj.ID)
-  fmt.Printf("Identifier: %s\n", obj.Identifier)
-  fmt.Printf("     Label: %s\n", obj.Label)
-  fmt.Printf("ServerType: %s\n", obj.ServerType)
+  fmt.Printf("               ID: %d\n", obj.ID)
+  fmt.Printf("       Identifier: %s\n", obj.Identifier)
+  fmt.Printf("            Label: %s\n", obj.Label)
+  fmt.Printf("       ServerType: %s\n", obj.ServerType)
+  fmt.Printf("FederationEnabled: %t\n", obj.FederationEnabled)
+  fmt.Printf("     FederationID: %s\n", obj.FederationID)
+  fmt.Printf(" SupplierProvider: %s\n", obj.SupplierProvider)
+  fmt.Printf("  SupplierVersion: %s\n", obj.SupplierVersion)
 }

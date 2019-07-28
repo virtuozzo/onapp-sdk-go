@@ -32,22 +32,22 @@ var _ BackupServerGroupsService = &BackupServerGroupsServiceOp{}
 
 // BackupServerGroup represents a BackupServerGroup
 type BackupServerGroup struct {
-  AdditionalFields  AdditionalFields `json:"additional_fields"`
-  Closed            bool             `json:"closed"`
-  CreatedAt         string           `json:"created_at"`
-  DatacenterID      int              `json:"datacenter_id"`
-  DraasID           int              `json:"draas_id"`
-  FederationEnabled bool             `json:"federation_enabled"`
-  FederationID      int              `json:"federation_id"`
-  HypervisorID      int              `json:"hypervisor_id"`
-  ID                int              `json:"id"`
-  Identifier        string           `json:"identifier"`
-  Label             string           `json:"label"`
-  LocationGroupID   int              `json:"location_group_id"`
-  ProviderVdcID     int              `json:"provider_vdc_id"`
-  ServerType        string           `json:"server_type"`
-  Traded            bool             `json:"traded"`
-  UpdatedAt         string           `json:"updated_at"`
+  AdditionalFields  []AdditionalFields  `json:"additional_fields"`
+  Closed            bool                `json:"closed"`
+  CreatedAt         string              `json:"created_at"`
+  DatacenterID      int                 `json:"datacenter_id"`
+  DraasID           int                 `json:"draas_id"`
+  FederationEnabled bool                `json:"federation_enabled"`
+  FederationID      int                 `json:"federation_id"`
+  HypervisorID      int                 `json:"hypervisor_id"`
+  ID                int                 `json:"id"`
+  Identifier        string              `json:"identifier"`
+  Label             string              `json:"label"`
+  LocationGroupID   int                 `json:"location_group_id"`
+  ProviderVdcID     int                 `json:"provider_vdc_id"`
+  ServerType        string              `json:"server_type"`
+  Traded            bool                `json:"traded"`
+  UpdatedAt         string              `json:"updated_at"`
 }
 
 // BackupServerGroupCreateRequest represents a request to create a BackupServerGroup

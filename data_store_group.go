@@ -32,26 +32,26 @@ var _ DataStoreGroupsService = &DataStoreGroupsServiceOp{}
 
 // DataStoreGroup represents a DataStoreGroup
 type DataStoreGroup struct {
-  ID                int               `json:"id,omitempty"`
-  Label             string            `json:"label,omitempty"`
-  CreatedAt         string            `json:"created_at,omitempty"`
-  UpdatedAt         string            `json:"updated_at,omitempty"`
-  ServerType        string            `json:"server_type,omitempty"`
-  LocationGroupID   int               `json:"location_group_id,omitempty"`
-  FederationEnabled bool              `json:"federation_enabled,bool"`
-  FederationID      int               `json:"federation_id,omitempty"`
-  Traded            bool              `json:"traded,bool"`
-  Closed            bool              `json:"closed,bool"`
-  HypervisorID      int               `json:"hypervisor_id,omitempty"`
-  Identifier        string            `json:"identifier,omitempty"`
-  PreconfiguredOnly bool              `json:"preconfigured_only,bool"`
-  DraasID           int               `json:"draas_id,omitempty"`
-  ProviderVdcID     int               `json:"provider_vdc_id,omitempty"`
-  AdditionalFields  AdditionalFields  `json:"additional_fields,omitempty"`
-  DatacenterID      int               `json:"datacenter_id,omitempty"`
-  DefaultMaxIops    int               `json:"default_max_iops,omitempty"`
-  DefaultBurstIops  int               `json:"default_burst_iops,omitempty"`
-  MinDiskSize       int               `json:"min_disk_size,omitempty"`
+  ID                int                 `json:"id,omitempty"`
+  Label             string              `json:"label,omitempty"`
+  CreatedAt         string              `json:"created_at,omitempty"`
+  UpdatedAt         string              `json:"updated_at,omitempty"`
+  ServerType        string              `json:"server_type,omitempty"`
+  LocationGroupID   int                 `json:"location_group_id,omitempty"`
+  FederationEnabled bool                `json:"federation_enabled,bool"`
+  FederationID      int                 `json:"federation_id,omitempty"`
+  Traded            bool                `json:"traded,bool"`
+  Closed            bool                `json:"closed,bool"`
+  HypervisorID      int                 `json:"hypervisor_id,omitempty"`
+  Identifier        string              `json:"identifier,omitempty"`
+  PreconfiguredOnly bool                `json:"preconfigured_only,bool"`
+  DraasID           int                 `json:"draas_id,omitempty"`
+  ProviderVdcID     int                 `json:"provider_vdc_id,omitempty"`
+  AdditionalFields  []AdditionalFields  `json:"additional_fields,omitempty"`
+  DatacenterID      int                 `json:"datacenter_id,omitempty"`
+  DefaultMaxIops    int                 `json:"default_max_iops,omitempty"`
+  DefaultBurstIops  int                 `json:"default_burst_iops,omitempty"`
+  MinDiskSize       int                 `json:"min_disk_size,omitempty"`
 }
 
 // DataStoreGroupCreateRequest represents a request to create a DataStoreGroup
