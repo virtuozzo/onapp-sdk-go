@@ -8,7 +8,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const backupServerBasePath = "settings/backup_servers"
+const backupServersBasePath = "settings/backup_servers"
 
 // BackupServersService is an interface for interfacing with the Backup Server
 // endpoints of the OnApp API
@@ -16,6 +16,7 @@ const backupServerBasePath = "settings/backup_servers"
 type BackupServersService interface {
   List(context.Context, *ListOptions) ([]BackupServer, *Response, error)
   Get(context.Context, int) (*BackupServer, *Response, error)
+  Create(context.Context, *BackupServerCreateRequest) (*BackupServer, *Response, error)
   // Delete(context.Context, int) (*Response, error)
   Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]BackupServer, *Response, error)
@@ -53,14 +54,15 @@ type BackupServer struct {
 
 // BackupServerCreateRequest represents a request to create a BackupServer
 type BackupServerCreateRequest struct {
-  Label           string `json:"label"`
-  Enabled         string `json:"enabled"`
-  Capacity        string `json:"capacity"`
-  IPAddress       string `json:"ip_address"`
-  BackupIPAddress string `json:"backup_ip_address"`
+  Label               string `json:"label"`
+  Enabled             string `json:"enabled"`
+  Capacity            string `json:"capacity"`
+  IPAddress           string `json:"ip_address"`
+  BackupIPAddress     string `json:"backup_ip_address"`
+  BackupServerGroupID int    `json:"backup_server_group_id,omitempty"`
 }
 
-type backupServersRoot struct {
+type backupServerRoot struct {
   BackupServer  *BackupServer  `json:"backup_server"`
 }
 
@@ -74,7 +76,7 @@ func (d BackupServerCreateRequest) String() string {
 
 // List all BackupServers.
 func (s *BackupServersServiceOp) List(ctx context.Context, opt *ListOptions) ([]BackupServer, *Response, error) {
-  path := backupServerBasePath + apiFormat
+  path := backupServersBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -106,17 +108,44 @@ func (s *BackupServersServiceOp) Get(ctx context.Context, id int) (*BackupServer
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", backupServerBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", backupServersBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
   }
 
-  root := new(backupServersRoot)
+  root := new(backupServerRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
     return nil, resp, err
+  }
+
+  return root.BackupServer, resp, err
+}
+
+// Create BackupServer.
+func (s *BackupServersServiceOp) Create(ctx context.Context, createRequest *BackupServerCreateRequest) (*BackupServer, *Response, error) {
+  if createRequest == nil {
+    return nil, nil, godo.NewArgError("BackupServer createRequest", "cannot be nil")
+  }
+
+  path := backupServersBasePath + apiFormat
+  rootRequest := &backupServerCreateRequestRoot{
+    BackupServerCreateRequest: createRequest,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  fmt.Println("\nBackupServer [Create] req: ", req)
+
+  root := new(backupServerRoot)
+  resp, err := s.client.Do(ctx, req, root)
+  if err != nil {
+    return nil, nil, err
   }
 
   return root.BackupServer, resp, err
@@ -128,7 +157,7 @@ func (s *BackupServersServiceOp) Delete(ctx context.Context, id int, meta interf
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", backupServerBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", backupServersBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, nil, err
