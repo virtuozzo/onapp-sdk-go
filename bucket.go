@@ -8,7 +8,9 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const bucketBasePath = "billing/buckets"
+const bucketBasePath                = "billing/buckets"
+const bucketAccessControlsBasePath  = "billing/buckets/%d/access_controls"
+const bucketRateCardsBasePath       = "billing/buckets/%d/rate_cards"
 
 // BucketsService is an interface for interfacing with the Bucket
 // endpoints of the OnApp API
@@ -20,6 +22,10 @@ type BucketsService interface {
   // Delete(context.Context, int) (*Response, error)
   Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]Bucket, *Response, error)
+
+  // TODO: Move to the BucketActions later
+  AccessControls(context.Context, int) ([]AccessControl, *Response, error)
+  RateCards(context.Context, int) ([]RateCard, *Response, error)
 }
 
 // BucketsServiceOp handles communication with the Bucket related methods of the
@@ -176,6 +182,114 @@ func (s *BucketsServiceOp) Delete(ctx context.Context, id int, meta interface{})
 
   return lastTransaction(ctx, s.client, filter)
   // return lastTransaction(ctx, s.client, id, "Bucket")
+}
+
+type Preferences struct {
+}
+
+type Limits struct {
+}
+
+type AccessControl struct {
+  BucketID        int          `json:"bucket_id,omitempty"`
+  ServerType      string       `json:"server_type,omitempty"`
+  TargetID        int          `json:"target_id,omitempty"`
+  Type            string       `json:"type,omitempty"`
+  TimingStrategy  string       `json:"timing_strategy,omitempty"`
+  TargetName      string       `json:"target_name,omitempty"`
+  Preferences     Preferences  `json:"preferences,omitempty"`
+  Limits          Limits       `json:"limits,omitempty"`
+}
+
+func (obj AccessControl) Debug() {
+  fmt.Printf("      BucketID: %d\n", obj.BucketID)
+  fmt.Printf("    ServerType: %s\n", obj.ServerType)
+  fmt.Printf("      TargetID: %d\n", obj.TargetID)
+  fmt.Printf("          Type: %s\n", obj.Type)
+  fmt.Printf("TimingStrategy: %s\n", obj.TimingStrategy)
+  fmt.Printf("    TargetName: %s\n", obj.TargetName)
+}
+
+// type accessControlRoot struct {
+//   AccessControl  *AccessControl  `json:"access_control"`
+// }
+
+// AccessControls return AccessControls for Bucket.
+func (s *BucketsServiceOp) AccessControls(ctx context.Context, id int) ([]AccessControl, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf(bucketAccessControlsBasePath, id) + apiFormat
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]AccessControl
+  resp, err := s.client.Do(ctx, req, &out)
+
+  if err != nil {
+    return nil, resp, err
+  }
+
+  arr := make([]AccessControl, len(out))
+  for i := range arr {
+    arr[i] = out[i]["access_control"]
+  }
+
+  return arr, resp, err
+}
+
+type Prices struct {
+}
+
+type RateCard struct {
+  BucketID       int    `json:"bucket_id,omitempty"`
+  ServerType     string `json:"server_type,omitempty"`
+  TargetID       int    `json:"target_id,omitempty"`
+  Type           string `json:"type,omitempty"`
+  TimingStrategy string `json:"timing_strategy,omitempty"`
+  TargetName     string `json:"target_name,omitempty"`
+  Prices         Prices `json:"prices"`
+}
+
+func (obj RateCard) Debug() {
+  fmt.Printf("      BucketID: %d\n", obj.BucketID)
+  fmt.Printf("    ServerType: %s\n", obj.ServerType)
+  fmt.Printf("      TargetID: %d\n", obj.TargetID)
+  fmt.Printf("          Type: %s\n", obj.Type)
+  fmt.Printf("TimingStrategy: %s\n", obj.TimingStrategy)
+  fmt.Printf("    TargetName: %s\n", obj.TargetName)
+}
+
+// RateCards return RateCards for Bucket.
+func (s *BucketsServiceOp) RateCards(ctx context.Context, id int) ([]RateCard, *Response, error) {
+  if id < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf(bucketRateCardsBasePath, id) + apiFormat
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  var out []map[string]RateCard
+  resp, err := s.client.Do(ctx, req, &out)
+
+  if err != nil {
+    return nil, resp, err
+  }
+
+  arr := make([]RateCard, len(out))
+  for i := range arr {
+    arr[i] = out[i]["rate_card"]
+  }
+
+  return arr, resp, err
 }
 
 // Debug - print formatted Bucket structure
