@@ -62,7 +62,7 @@ type HypervisorGroup struct {
   SupplierVersion             string              `json:"supplier_version,omitempty"`
   SupplierProvider            string              `json:"supplier_provider,omitempty"`
   ProviderName                string              `json:"provider_name,omitempty"`
-  ScheduledForDeletion        string              `json:"scheduled_for_deletion,omitempty"`
+  ScheduledForDeletion        int                 `json:"scheduled_for_deletion,omitempty"`
   CPUFlagsEnabled             bool                `json:"cpu_flags_enabled,bool"`
   CPUFlags                    []string            `json:"cpu_flags,omitempty"`
   Tier                        string              `json:"tier,omitempty"`
@@ -73,7 +73,7 @@ type HypervisorGroup struct {
 // HypervisorGroupCreateRequest represents a request to create a Compute Zone
 type HypervisorGroupCreateRequest struct {
   CPUFlagsEnabled     bool   `json:"cpu_flags_enabled,bool"`
-  CPUUnits            string `json:"cpu_units,omitempty"`
+  CPUUnits            int    `json:"cpu_units,omitempty"`
   CustomConfig        string `json:"custom_config,omitempty"`
   FailoverTimeout     int    `json:"failover_timeout,omitempty"`
   Label               string `json:"label,omitempty"`
@@ -169,7 +169,7 @@ func (s *HypervisorGroupsServiceOp) Create(ctx context.Context, createRequest *H
     return nil, nil, err
   }
 
-  fmt.Println("\nHypervisorZone [Create] req: ", req)
+  fmt.Println("\nHypervisorGroup [Create] req: ", req)
 
   root := new(hypervisorGroupRoot)
   resp, err := s.client.Do(ctx, req, root)

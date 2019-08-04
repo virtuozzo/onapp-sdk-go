@@ -54,11 +54,11 @@ type BackupServer struct {
 
 // BackupServerCreateRequest represents a request to create a BackupServer
 type BackupServerCreateRequest struct {
-  Label               string `json:"label"`
-  Enabled             string `json:"enabled"`
-  Capacity            string `json:"capacity"`
-  IPAddress           string `json:"ip_address"`
-  BackupIPAddress     string `json:"backup_ip_address"`
+  Label               string `json:"label,omitempty"`
+  Enabled             bool   `json:"enabled,bool"`
+  Capacity            int    `json:"capacity,omitempty"`
+  IPAddress           string `json:"ip_address,omitempty"`
+  BackupIPAddress     string `json:"backup_ip_address,omitempty"`
   BackupServerGroupID int    `json:"backup_server_group_id,omitempty"`
 }
 

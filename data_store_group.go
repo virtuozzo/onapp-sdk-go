@@ -59,6 +59,7 @@ type DataStoreGroupCreateRequest struct {
   Label             string  `json:"label,omitempty"`
   LocationGroupID   int     `json:"location_group_id,omitempty"`
   PreconfiguredOnly bool    `json:"preconfigured_only,bool"`
+  ServerType        string  `json:"server_type,omitempty"`
 }
 
 type dataStoreGroupCreateRequestRoot struct {

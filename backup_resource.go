@@ -12,7 +12,7 @@ const backupResourcesBasePath = "settings/backups/resources"
 
 // BackupResourcesService is an interface for interfacing with the Backup Resources
 // endpoints of the OnApp API
-// https://docs.onapp.com/apim/latest/backup-server-zones
+// https://docs.onapp.com/apim/latest/backup-resources
 type BackupResourcesService interface {
   List(context.Context, *ListOptions) ([]BackupResource, *Response, error)
   Get(context.Context, int) (*BackupResource, *Response, error)

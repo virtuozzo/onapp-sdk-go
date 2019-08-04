@@ -115,58 +115,73 @@ type Hypervisor struct {
 }
 
 // HypervisorCreateRequest represents a request to create a Hypervisor
+// type HypervisorCreateRequest struct {
+//   Label                         string  `json:"label,omitempty"`
+
+//   // VMware
+//   IPAddress                     string  `json:"ip_address,omitempty"`
+
+//   // CloudBoot, SmartCloudBoot, VMware
+//   BackupIPAddress               string  `json:"backup_ip_address,omitempty"`
+//   CollectStats                  bool    `json:"collect_stats,bool"`
+//   DisableFailover               bool    `json:"disable_failover,bool"`
+
+//   // SmartCloudBoot only can be: kvm
+//   // VMware, CloudBoot: xen, kvm
+//   // BaremetalCloudBoot only can be: xen
+//   HypervisorType                string  `json:"hypervisor_type,omitempty"`
+//   SegregationOsType             string  `json:"segregation_os_type,omitempty"`
+//   Enabled                       bool    `json:"enabled,bool"`
+
+//   // BaremetalCloudBoot
+//   FailoverRecipeID              int     `json:"failover_recipe_id,omitempty"`
+
+//   HypervisorGroupID             int     `json:"hypervisor_group_id,omitempty"`
+//   CPUUnits                      int     `json:"cpu_units,omitempty"`
+
+//   // SmartCloudBoot, BaremetalCloudBoot
+//   PxeIPAddressID                int     `json:"pxe_ip_address_id,omitempty"`
+
+//   // CloudBoot, SmartCloudBoot, BaremetalCloudBoot
+//   // by default: virtual
+//   // SmartCloudBoot: smart
+//   // BaremetalCloudBoot: baremetal
+//   ServerType                    string  `json:"server_type,omitempty"`
+//   Backup                        bool    `json:"backup,bool"`
+
+//   // only for VMware
+//   ConnectionOptions             ConnectionOptions `json:"connection_options,omitempty"`
+
+//   // CloudBoot, SmartCloudBoot
+//   FormatDisks                   bool    `json:"format_disks,bool"`
+//   PassthroughDisks              bool    `json:"passthrough_disks,bool"`
+//   Storage                       Storage `json:"storage,omitempty"`
+//   Mtu                           int     `json:"mtu,omitempty"`
+//   StorageControllerMemorySize   int     `json:"storage_controller_memory_size,omitempty"`
+//   DisksPerStorageController     int     `json:"disks_per_storage_controller,omitempty"`
+//   CustomConfig                  string  `json:"custom_config,omitempty"`
+
+//   // only for CloudBoot
+//   CloudBootOs                   string  `json:"cloud_boot_os,omitempty"`
+
+//   // only for SmartCloudBoot
+//   PassthroughCustomPcis         string  `json:"passthrough_custom_pcis,omitempty"`
+//   AllowUnsafeAssignedInterrupts bool    `json:"allow_unsafe_assigned_interrupts,bool"`
+// }
+
+// HypervisorCreateRequest represents a request to create a Hypervisor
 type HypervisorCreateRequest struct {
   Label                         string  `json:"label,omitempty"`
-
-  // VMware
   IPAddress                     string  `json:"ip_address,omitempty"`
-
-  // CloudBoot, SmartCloudBoot, VMware
   BackupIPAddress               string  `json:"backup_ip_address,omitempty"`
   CollectStats                  bool    `json:"collect_stats,bool"`
   DisableFailover               bool    `json:"disable_failover,bool"`
-
-  // SmartCloudBoot only can be: kvm
-  // VMware, CloudBoot: xen, kvm
-  // BaremetalCloudBoot only can be: xen
   HypervisorType                string  `json:"hypervisor_type,omitempty"`
   SegregationOsType             string  `json:"segregation_os_type,omitempty"`
   Enabled                       bool    `json:"enabled,bool"`
-
-  // BaremetalCloudBoot
   FailoverRecipeID              int     `json:"failover_recipe_id,omitempty"`
-
   HypervisorGroupID             int     `json:"hypervisor_group_id,omitempty"`
   CPUUnits                      int     `json:"cpu_units,omitempty"`
-
-  // SmartCloudBoot, BaremetalCloudBoot
-  PxeIPAddressID                int     `json:"pxe_ip_address_id,omitempty"`
-
-  // CloudBoot, SmartCloudBoot, BaremetalCloudBoot
-  // by default: virtual
-  // SmartCloudBoot: smart
-  // BaremetalCloudBoot: baremetal
-  ServerType                    string  `json:"server_type,omitempty"`
-  Backup                        bool    `json:"backup,bool"`
-
-  // only for VMware
-  ConnectionOptions             ConnectionOptions `json:"connection_options,omitempty"`
-
-  // CloudBoot, SmartCloudBoot
-  FormatDisks                   bool    `json:"format_disks,bool"`
-  PassthroughDisks              bool    `json:"passthrough_disks,bool"`
-  Storage                       Storage `json:"storage,omitempty"`
-  Mtu                           int     `json:"mtu,omitempty"`
-  StorageControllerMemorySize   int     `json:"storage_controller_memory_size,omitempty"`
-  DisksPerStorageController     int     `json:"disks_per_storage_controller,omitempty"`
-  CustomConfig                  string  `json:"custom_config,omitempty"`
-
-  // only for CloudBoot
-  CloudBootOs                   string  `json:"cloud_boot_os,omitempty"`
-
-  // only for SmartCloudBoot
-  PassthroughCustomPcis         string  `json:"passthrough_custom_pcis,omitempty"`
-  AllowUnsafeAssignedInterrupts bool    `json:"allow_unsafe_assigned_interrupts,bool"`
 }
 
 type hypervisorCreateRequestRoot struct {
@@ -236,8 +251,9 @@ func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *Hyperv
     return nil, nil, godo.NewArgError("Hypervisor createRequest", "cannot be nil")
   }
 
-  mac := "00:00:00:00:00:00"
-  path := hypervisorPath(mac, createRequest.ServerType)
+  // mac := "00:00:00:00:00:00"
+  // path := hypervisorPath(mac, createRequest.ServerType)
+  path := hypervisorBasePath + apiFormat
   rootRequest := &hypervisorCreateRequestRoot{
     HypervisorCreateRequest: createRequest,
   }

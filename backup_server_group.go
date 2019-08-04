@@ -12,7 +12,7 @@ const backupServerGroupsBasePath = "settings/backup_server_zones"
 
 // BackupServerGroupsService is an interface for interfacing with the Backup Server Groups
 // endpoints of the OnApp API
-// https://docs.onapp.com/apim/latest/backup-server-zones
+// https://docs.onapp.com/apim/latest/backup-resource-zones
 type BackupServerGroupsService interface {
   List(context.Context, *ListOptions) ([]BackupServerGroup, *Response, error)
   Get(context.Context, int) (*BackupServerGroup, *Response, error)
@@ -32,22 +32,22 @@ var _ BackupServerGroupsService = &BackupServerGroupsServiceOp{}
 
 // BackupServerGroup represents a BackupServerGroup
 type BackupServerGroup struct {
-  AdditionalFields  []AdditionalFields  `json:"additional_fields"`
-  Closed            bool                `json:"closed"`
-  CreatedAt         string              `json:"created_at"`
-  DatacenterID      int                 `json:"datacenter_id"`
-  DraasID           int                 `json:"draas_id"`
-  FederationEnabled bool                `json:"federation_enabled"`
-  FederationID      int                 `json:"federation_id"`
-  HypervisorID      int                 `json:"hypervisor_id"`
-  ID                int                 `json:"id"`
-  Identifier        string              `json:"identifier"`
-  Label             string              `json:"label"`
-  LocationGroupID   int                 `json:"location_group_id"`
-  ProviderVdcID     int                 `json:"provider_vdc_id"`
-  ServerType        string              `json:"server_type"`
-  Traded            bool                `json:"traded"`
-  UpdatedAt         string              `json:"updated_at"`
+  AdditionalFields  []AdditionalFields  `json:"additional_fields,omitempty"`
+  Closed            bool                `json:"closed,bool"`
+  CreatedAt         string              `json:"created_at,omitempty"`
+  DatacenterID      int                 `json:"datacenter_id,omitempty"`
+  DraasID           int                 `json:"draas_id,omitempty"`
+  FederationEnabled bool                `json:"federation_enabled,bool"`
+  FederationID      int                 `json:"federation_id,omitempty"`
+  HypervisorID      int                 `json:"hypervisor_id,omitempty"`
+  ID                int                 `json:"id,omitempty"`
+  Identifier        string              `json:"identifier,omitempty"`
+  Label             string              `json:"label,omitempty"`
+  LocationGroupID   int                 `json:"location_group_id,omitempty"`
+  ProviderVdcID     int                 `json:"provider_vdc_id,omitempty"`
+  ServerType        string              `json:"server_type,omitempty"`
+  Traded            bool                `json:"traded,bool"`
+  UpdatedAt         string              `json:"updated_at,omitempty"`
 }
 
 // BackupServerGroupCreateRequest represents a request to create a BackupServerGroup
@@ -134,7 +134,7 @@ func (s *BackupServerGroupsServiceOp) Create(ctx context.Context, createRequest 
     return nil, nil, err
   }
 
-  fmt.Println("\nDataStoreGroup [Create] req: ", req)
+  fmt.Println("\nBackupServerGroup [Create] req: ", req)
 
   root := new(backupServerGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
