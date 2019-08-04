@@ -40,6 +40,7 @@ type Client struct {
   apiPassword string
 
   // Services used for communicating with the API
+  Buckets                 BucketsService
   Transactions            TransactionsService
   InstancePackages        InstancePackagesService
   VirtualMachines         VirtualMachinesService
@@ -131,6 +132,7 @@ func NewClient(httpClient *http.Client) *Client {
 
   c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: userAgent}
 
+  c.Buckets               = &BucketsServiceOp{client: c}
   c.Transactions          = &TransactionsServiceOp{client: c}
   c.InstancePackages      = &InstancePackagesServiceOp{client: c}
   c.VirtualMachines       = &VirtualMachinesServiceOp{client: c}
