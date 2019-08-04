@@ -10,7 +10,10 @@ import (
 
 // Xen/KVM, VMware - CRUD
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
-const hypervisorBasePath = "settings/hypervisors"
+const hypervisorBasePath          = "settings/hypervisors"
+const hypervisorDataSoreJoins     = "settings/hypervisors/%d/data_store_joins"
+const hypervisorNetworkJoins      = "settings/hypervisors/%d/network_joins"
+const hypervisorBackupServerJoins = "settings/hypervisors/%d/backup_server_joins"
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
 const cloudBootHypervisorBasePath = "settings/assets/%s/hypervisors"
@@ -25,6 +28,11 @@ type HypervisorsService interface {
   // Delete(context.Context, int) (*Response, error)
   Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]Hypervisor, *Response, error)
+
+  // TODO: Move to the HypervisorActions later
+  DataStoreJoins(context.Context, int, int) (*Response, error)
+  NetworkJoins(context.Context, int, *HypervisorNetworkJoinCreateRequest) (*Response, error)
+  BackupServerJoins(context.Context, int, int) (*Response, error)
 }
 
 // HypervisorsServiceOp handles communication with the Hypervisor related methods of the
@@ -192,6 +200,26 @@ type hypervisorRoot struct {
   Hypervisor  *Hypervisor  `json:"hypervisor"`
 }
 
+// HypervisorDataSoreJoinCreateRequest - 
+type HypervisorDataSoreJoinCreateRequest struct {
+  DataStoreID   int   `json:"data_store_id,omitempty"`
+}
+
+// HypervisorNetworkJoinCreateRequest - 
+type HypervisorNetworkJoinCreateRequest struct {
+  NetworkID   int     `json:"network_id,omitempty"`
+  Interface   string  `json:"interface,omitempty"`
+}
+
+type hypervisorNetworkJoinCreateRequestRoot struct {
+  HypervisorNetworkJoinCreateRequest  *HypervisorNetworkJoinCreateRequest  `json:"network_join"`
+}
+
+// HypervisorBackupServerJoinCreateRequest - 
+type HypervisorBackupServerJoinCreateRequest struct {
+  BackupServerID   int     `json:"backup_server_id,omitempty"`
+}
+
 func (d HypervisorCreateRequest) String() string {
   return godo.Stringify(d)
 }
@@ -306,6 +334,87 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
 
   return lastTransaction(ctx, s.client, filter)
   // return lastTransaction(ctx, s.client, id, "Hypervisor")
+}
+
+// DataStoreJoins - add Data Store to the Hypervisor
+func (s *HypervisorsServiceOp) DataStoreJoins(ctx context.Context, hvID int, dsID int) (*Response, error) {
+  if hvID < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf(hypervisorDataSoreJoins, hvID) + apiFormat
+
+  rootRequest := &HypervisorDataSoreJoinCreateRequest {
+    DataStoreID : dsID,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+  if err != nil {
+    return nil, err
+  }
+
+  fmt.Println("\nDataStoreJoins [Create] req: ", req)
+
+  resp, err := s.client.Do(ctx, req, nil)
+  if err != nil {
+    return nil, err
+  }
+
+  return resp, err
+}
+
+// NetworkJoins - add Network to the Hypervisor
+func (s *HypervisorsServiceOp) NetworkJoins(ctx context.Context, hvID int, createRequest *HypervisorNetworkJoinCreateRequest) (*Response, error) {
+  if hvID < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf(hypervisorNetworkJoins, hvID) + apiFormat
+
+  rootRequest := &hypervisorNetworkJoinCreateRequestRoot{
+    HypervisorNetworkJoinCreateRequest: createRequest,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+  if err != nil {
+    return nil, err
+  }
+
+  fmt.Println("\nNetworkJoins [Create] req: ", req)
+
+  resp, err := s.client.Do(ctx, req, nil)
+  if err != nil {
+    return nil, err
+  }
+
+  return resp, err
+}
+
+// BackupServerJoins - add Backup Server to the Hypervisor
+func (s *HypervisorsServiceOp) BackupServerJoins(ctx context.Context, hvID int, bsID int) (*Response, error) {
+  if hvID < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf(hypervisorBackupServerJoins, hvID) + apiFormat
+
+  rootRequest := &HypervisorBackupServerJoinCreateRequest {
+    BackupServerID : bsID,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+  if err != nil {
+    return nil, err
+  }
+
+  fmt.Println("\nBackupServerJoins [Create] req: ", req)
+
+  resp, err := s.client.Do(ctx, req, nil)
+  if err != nil {
+    return nil, err
+  }
+
+  return resp, err
 }
 
 func hypervisorPath(mac string, serverType string) string {
