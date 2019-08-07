@@ -53,6 +53,8 @@ type Client struct {
   Disks                   DisksService
   Networks                NetworksService
   NetworkGroups           NetworkGroupsService
+  IPNets                  IPNetsService
+  IPRanges                IPRangesService
   BackupServers           BackupServersService
   BackupServerGroups      BackupServerGroupsService
   BackupResources         BackupResourcesService
@@ -144,6 +146,8 @@ func NewClient(httpClient *http.Client) *Client {
   c.ImageTemplates        = &ImageTemplatesServiceOp{client: c}
   c.Disks                 = &DisksServiceOp{client: c}
   c.Networks              = &NetworksServiceOp{client: c}
+  c.IPNets                = &IPNetsServiceOp{client: c}
+  c.IPRanges              = &IPRangesServiceOp{client: c}
   c.NetworkGroups         = &NetworkGroupsServiceOp{client: c}
   c.BackupServers         = &BackupServersServiceOp{client: c}
   c.BackupServerGroups    = &BackupServerGroupsServiceOp{client: c}
