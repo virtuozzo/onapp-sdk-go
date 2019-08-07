@@ -302,34 +302,4 @@ func (obj Bucket) Debug() {
   fmt.Printf("   AllowsMak: %t\n", obj.AllowsMak)
   fmt.Printf("   AllowsOwn: %t\n", obj.AllowsOwn)
   fmt.Printf("MonthlyPrice: %f\n", obj.MonthlyPrice)
-
-  // if len(obj.Roles) > 0 {
-  //   for i := range obj.Roles {
-  //     r := obj.Roles[i].Role
-  //     fmt.Printf("\n\t      Role: [%d]\n", i)
-  //     r.Debug()
-  //   }
-  // }
 }
-
-// // Debug - print formatted Role structure
-// func (obj Role) Debug() {
-//   fmt.Printf("\t        ID: %d\n", obj.ID)
-//   fmt.Printf("\tIdentifier: %s\n", obj.Identifier)
-//   fmt.Printf("\t     Label: %s\n", obj.Label)
-//   fmt.Printf("\t    System: %t\n", obj.System)
-//   fmt.Printf("\tUsersCount: %d\n", obj.UsersCount)
-
-//   if len(obj.Permissions) > 0 {
-//     for i := range obj.Permissions {
-//       p := obj.Permissions[i].Permission
-//       fmt.Printf("\t\tPersission: [%d] -> ", i)
-//       p.Debug()
-//     }
-//   }
-// }
-
-// // Debug - print formatted Permission structure
-// func (obj Permission) Debug() {
-//   fmt.Printf("ID: %d,\tIdentifier: %s\n", obj.ID, obj.Identifier)
-// }

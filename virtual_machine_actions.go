@@ -26,6 +26,10 @@ type VirtualMachineActionsService interface {
   FQDN(context.Context, int, string, string) (*Transaction, *Response, error)
 
   RebuildNetwork(context.Context, int, interface{}) (*Transaction, *Response, error)
+
+  AssignIPAddress(context.Context, int, interface{}) (*Transaction, *Response, error)
+  UnAssignIPAddress(context.Context, int, int, interface{}) (*Transaction, *Response, error)
+  ListIPAddresses(context.Context, int) (*Transaction, *Response, error)
 }
 
 // VirtualMachineActionsServiceOp handles communication with the VirtualMachine action related
@@ -139,6 +143,37 @@ func (s *VirtualMachineActionsServiceOp) RebuildNetwork(ctx context.Context, id 
   return s.doAction(ctx, id, request, nil, opts)
 }
 
+type rootIPAddress struct {
+  AssignIPAddress   *AssignIPAddress  `json:"ip_address"`
+}
+
+// AssignIPAddress - Assign IPAddress to the VirtualMachine
+func (s *VirtualMachineActionsServiceOp) AssignIPAddress(ctx context.Context, id int, params interface{}) (*Transaction, *Response, error) {
+  request := &ActionRequest{"method": http.MethodPost, "type": "assign_ip_address", "action": "ip_addresses"}
+
+  // params - must containe required parameters in AssignIPAddress structure
+  return s.doAction(ctx, id, request, params, nil)
+}
+
+// UnAssignIPAddressRequest - 
+type UnAssignIPAddressRequest struct {
+  RebuildNetwork  int   `url:"rebuild_network"`
+}
+
+// UnAssignIPAddress - UnAssign IPAddress from the VirtualMachine
+func (s *VirtualMachineActionsServiceOp) UnAssignIPAddress(ctx context.Context, id int, ipID int, opts interface{}) (*Transaction, *Response, error) {
+  request := &ActionRequest{"method": http.MethodDelete, "type": "unassign_ip_address", "action": "ip_addresses", "ip_address_id" : ipID}
+
+  // opts - must containe '?rebuild_network=1' url parameter if needed by UnAssignIPAddressRequest structure
+  return s.doAction(ctx, id, request, nil, nil)
+}
+
+// ListIPAddresses - List IPAddresses from the VirtualMachine
+func (s *VirtualMachineActionsServiceOp) ListIPAddresses(ctx context.Context, id int) (*Transaction, *Response, error) {
+  request := &ActionRequest{"method": http.MethodGet, "type": "list_ip_address", "action": "ip_addresses"}
+  return s.doAction(ctx, id, request, nil, nil)
+}
+
 func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
   request *ActionRequest, jsonParams interface{}, urlParams interface{}) (*Transaction, *Response, error) {
   if id < 1 {
@@ -193,10 +228,24 @@ func virtualMachineActionPath(id int, request *ActionRequest) (string, error) {
     return "", godo.NewArgError("type", "must be specified")
   }
 
-  path := (*request)["type"].(string)
+  rtype := (*request)["type"].(string)
+  path := rtype
 
   if (*request)["path"] != nil {
     path = (*request)["path"].(string)
+  }
+
+  if rtype == "unassign_ip_address" {
+    if (*request)["ip_address_id"] == nil {
+      return "", godo.NewArgError("ip_address_id", "must be specified")
+    }
+
+    // url - /virtual_machines/:virtual_machine_id/ip_addresses/:id.json
+    ipAddressID := (*request)["ip_address_id"].(int)
+    res := fmt.Sprintf("%s/%d/%s/%d%s", virtualMachineBasePath, id, path, ipAddressID, apiFormat)
+    fmt.Printf("%s >>> url: %s\n", rtype, res)
+
+    return res, nil
   }
 
   return fmt.Sprintf("%s/%d/%s%s", virtualMachineBasePath, id, path, apiFormat), nil

@@ -18,22 +18,32 @@ import (
 
 // IPAddress - represents an IP address
 type IPAddress struct {
-  Address         string      `json:"address,omitempty"`
-  Broadcast       string      `json:"broadcast,omitempty"`
-  CreatedAt       string      `json:"created_at,omitempty"`
-  Free            bool        `json:"free,bool"`
-  Gateway         string      `json:"gateway,omitempty"`
-  HypervisorID    int         `json:"hypervisor_id,omitempty"`
-  ID              int         `json:"id,omitempty"`
-  IPRangeID       int         `json:"ip_range_id,omitempty"`
-  IPv4            bool        `json:"ipv4,bool"`
-  LockVersion     int         `json:"lock_version,omitempty"`
-  Netmask         string      `json:"netmask,omitempty"`
-  NetworkAddress  string      `json:"network_address,omitempty"`
-  Pxe             bool        `json:"pxe,bool"`
-  Prefix          int         `json:"prefix,omitempty"`
-  UpdatedAt       string      `json:"updated_at,omitempty"`
-  UserID          int         `json:"user_id,omitempty"`
+  ID             int         `json:"id,omitempty"`
+  Address        string      `json:"address,omitempty"`
+  Prefix         int         `json:"prefix,omitempty"`
+  Broadcast      string      `json:"broadcast,omitempty"`
+  NetworkAddress string      `json:"network_address,omitempty"`
+  Gateway        string      `json:"gateway,omitempty"`
+  CreatedAt      string      `json:"created_at,omitempty"`
+  UpdatedAt      string      `json:"updated_at,omitempty"`
+  Ipv4           bool        `json:"ipv4,bool"`
+  UserID         int         `json:"user_id,omitempty"`
+  Pxe            bool        `json:"pxe,bool"`
+  HypervisorID   int         `json:"hypervisor_id,omitempty"`
+  LockVersion    int         `json:"lock_version,omitempty"`
+  IPRangeID      int         `json:"ip_range_id,omitempty"`
+  NetworkID      int         `json:"network_id,omitempty"`
+  IPNetID        int         `json:"ip_net_id,omitempty"`
+}
+
+// IPAddressJoin - 
+type IPAddressJoin struct {
+  ID                 int       `json:"id,omitempty"`
+  IPAddressID        int       `json:"ip_address_id,omitempty"`
+  NetworkInterfaceID int       `json:"network_interface_id,omitempty"`
+  CreatedAt          string    `json:"created_at,omitempty"`
+  UpdatedAt          string    `json:"updated_at,omitempty"`
+  IPAddress          IPAddress `json:"ip_address,omitempty"`
 }
 
 // Debug - print formatted IPAddress structure
@@ -42,11 +52,11 @@ func (obj IPAddress) Debug() {
   fmt.Printf("\t       Address: %s\n", obj.Address)
   fmt.Printf("\t     Broadcast: %s\n", obj.Broadcast)
   fmt.Printf("\t       Gateway: %s\n", obj.Gateway)
-  fmt.Printf("\t       Netmask: %s\n", obj.Netmask)
+  // fmt.Printf("\t       Netmask: %s\n", obj.Netmask)
   fmt.Printf("\tNetworkAddress: %s\n", obj.NetworkAddress)
   fmt.Printf("\t        UserID: %d\n", obj.UserID)
   fmt.Printf("\t     IPRangeID: %d\n", obj.IPRangeID)
-  fmt.Printf("\t          Free: %t\n", obj.Free)
+  // fmt.Printf("\t          Free: %t\n", obj.Free)
   fmt.Printf("\t  HypervisorID: %d\n", obj.HypervisorID)
   fmt.Printf("\t   LockVersion: %d\n", obj.LockVersion)
 }
@@ -166,4 +176,27 @@ func (obj FirewallRule) Debug() {
   fmt.Printf(" Command: %s\n", obj.Command)
   fmt.Printf("    Port: %d\n", obj.Port)
   fmt.Printf("Protocol: %s\n", obj.Protocol)
+}
+
+// AssignIPAddress - used for assign IPAddress to the VirtualMachine or User
+type AssignIPAddress struct {
+  Address             string  `json:"address,omitempty"`
+  NetworkInterfaceID  int     `json:"network_interface_id,omitempty"`
+  IPNetID             int     `json:"ip_net_id,omitempty"`
+  IPRangeID           int     `json:"ip_range_id,omitempty"`
+  UsedIP              int     `json:"used_ip,omitempty"`
+  OwnIP               int     `json:"own_ip,omitempty"`
+
+  // 6 or 4
+  IPVersion           int     `json:"ip_version,omitempty"`
+}
+
+// Debug - print formatted AssignIPAddress structure
+func (obj AssignIPAddress) Debug() {
+  fmt.Printf("           Address: %s\n", obj.Address)
+  fmt.Printf("NetworkInterfaceID: %d\n", obj.NetworkInterfaceID)
+  fmt.Printf("           IPNetID: %d\n", obj.IPNetID)
+  fmt.Printf("         IPRangeID: %d\n", obj.IPRangeID)
+  fmt.Printf("            UsedIP: %d\n", obj.UsedIP)
+  fmt.Printf("             OwnIP: %d\n", obj.OwnIP)
 }
