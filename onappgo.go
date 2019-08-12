@@ -10,37 +10,40 @@ import (
   "net/http"
   "net/url"
   "reflect"
+  "crypto/tls"
 
   version "github.com/onapp/onapp-sdk-go/version"
   "github.com/google/go-querystring/query"
 )
 
-var userAgent     = "onapp_sdk_go/" + version.String()
+var userAgent         = "onapp_sdk_go/" + version.String()
 
 const (
-  defaultBaseURL  = "http://69.168.237.17/"
-  mediaType       = "application/json"
-  apiFormat       = ".json"
-
-  searchTransactions = 100
+  defaultBaseURL      = "http://69.168.237.17/"
+  mediaType           = "application/json"
+  apiFormat           = ".json"
+  searchTransactions  = 100
 )
 
 // Client manages communication with OnApp API.
 type Client struct {
   // HTTP client used to communicate with the DO API.
-  client *http.Client
+  client                  *http.Client
+  transport               *http.Transport
 
   // Base URL for API requests.
-  BaseURL *url.URL
+  BaseURL                 *url.URL
 
   // User agent for client
-  UserAgent string
+  UserAgent               string
 
-  apiUser string
-  apiPassword string
+  apiUser                 string
+  apiPassword             string
 
   // Services used for communicating with the API
   Buckets                 BucketsService
+  AccessControls          AccessControlsService
+  RateCards               RateCardsService
   Transactions            TransactionsService
   InstancePackages        InstancePackagesService
   VirtualMachines         VirtualMachinesService
@@ -63,7 +66,7 @@ type Client struct {
   HypervisorZones         HypervisorZonesService
 
   // Optional function called after every successful request made to the DO APIs
-  onRequestCompleted RequestCompletionCallback
+  onRequestCompleted      RequestCompletionCallback
 }
 
 // RequestCompletionCallback defines the type of the request callback function
@@ -125,7 +128,7 @@ func addOptions(s string, opt interface{}) (string, error) {
 }
 
 // NewClient returns a new OnApp API client.
-func NewClient(httpClient *http.Client) *Client {
+func NewClient(httpClient *http.Client, allowUnverifiedSSL bool) *Client {
   if httpClient == nil {
     httpClient = http.DefaultClient
   }
@@ -134,7 +137,35 @@ func NewClient(httpClient *http.Client) *Client {
 
   c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: userAgent}
 
+  if t, ok := http.DefaultTransport.(*http.Transport); ok {
+    c.transport = &http.Transport{
+      Proxy:                 t.Proxy,
+      DialContext:           t.DialContext,
+      MaxIdleConns:          t.MaxIdleConns,
+      IdleConnTimeout:       t.IdleConnTimeout,
+      TLSHandshakeTimeout:   t.TLSHandshakeTimeout,
+      ExpectContinueTimeout: t.ExpectContinueTimeout,
+    }
+  } else {
+    c.transport = new(http.Transport)
+  }
+
+  c.transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: allowUnverifiedSSL}
+
+  // Don't bother setting DialTLS if InsecureSkipVerify=true
+  if !allowUnverifiedSSL {
+    c.transport.DialTLS = nil
+  }
+
+  c.client.Transport = c.transport
+
+  if cert := c.certificate(); cert != nil {
+    c.setCertificate(*cert)
+  }
+
   c.Buckets               = &BucketsServiceOp{client: c}
+  c.AccessControls        = &AccessControlsServiceOp{client: c}
+  c.RateCards             = &RateCardsServiceOp{client: c}
   c.Transactions          = &TransactionsServiceOp{client: c}
   c.InstancePackages      = &InstancePackagesServiceOp{client: c}
   c.VirtualMachines       = &VirtualMachinesServiceOp{client: c}
@@ -159,12 +190,27 @@ func NewClient(httpClient *http.Client) *Client {
   return c
 }
 
+func (c *Client) certificate() *tls.Certificate {
+  certs := c.transport.TLSClientConfig.Certificates
+  if len(certs) == 0 {
+    return nil
+  }
+  return &certs[0]
+}
+
+func (c *Client) setCertificate(cert tls.Certificate) {
+  t := c.client.Transport.(*http.Transport)
+
+  // Extension or HoK certificate
+  t.TLSClientConfig.Certificates = []tls.Certificate{cert}
+}
+
 // ClientOpt are options for New.
 type ClientOpt func(*Client) error
 
 // New returns a new OnApp API client instance.
-func New(httpClient *http.Client, opts ...ClientOpt) (*Client, error) {
-  c := NewClient(httpClient)
+func New(httpClient *http.Client, allowUnverifiedSSL bool, opts ...ClientOpt) (*Client, error) {
+  c := NewClient(httpClient, allowUnverifiedSSL)
   for _, opt := range opts {
     if err := opt(c); err != nil {
       return nil, err
