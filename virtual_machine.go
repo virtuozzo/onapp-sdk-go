@@ -115,6 +115,9 @@ type VirtualMachine struct {
   Vip                           string                  `json:"vip,omitempty"`
   VmwareTools                   string                  `json:"vmware_tools,omitempty"`
   XenID                         int                     `json:"xen_id,omitempty"`
+
+  // OnApp 6.1
+  VirshConsole                  bool                    `json:"virsh_console,omitempty"`
 }
 
 // CustomRecipeVariableAttributes - 
@@ -178,6 +181,9 @@ type VirtualMachineCreateRequest struct {
   TemplateID                        int       `json:"template_id,omitempty"`
   TimeZone                          string    `json:"time_zone,omitempty"`
   TypeOfFormat                      string    `json:"type_of_format,omitempty"`
+
+  // OnApp 6.1
+  VirshConsole                      bool      `json:"virsh_console,omitempty"`
 }
 
 type virtualMachineCreateRequestRoot struct {

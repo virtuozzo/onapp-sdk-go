@@ -50,6 +50,9 @@ type BackupServer struct {
   TotalMem            int         `json:"total_mem,omitempty"`
   UpdatedAt           string      `json:"updated_at,omitempty"`
   Uptime              string      `json:"uptime,omitempty"`
+
+  // OnApp 6.1
+  IntegratedStorage   int         `json:"integrated_storage,omitempty"`
 }
 
 // BackupServerCreateRequest represents a request to create a BackupServer
@@ -60,6 +63,10 @@ type BackupServerCreateRequest struct {
   IPAddress           string `json:"ip_address,omitempty"`
   BackupIPAddress     string `json:"backup_ip_address,omitempty"`
   BackupServerGroupID int    `json:"backup_server_group_id,omitempty"`
+
+  // OnApp 6.1
+  // default - 0, enable - 1
+  IntegratedStorage   int    `json:"integrated_storage,omitempty"`
 }
 
 type backupServerRoot struct {

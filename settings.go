@@ -204,4 +204,7 @@ type Settings struct {
   ComposeVappTemplateTimeout            int         `json:"compose_vapp_template_timeout,omitempty"`
   CreateSnapshotTimeout                 int         `json:"create_snapshot_timeout,omitempty"`
   CreateVdcTimeout                      int         `json:"create_vdc_timeout,omitempty"`
+
+  // OnApp 6.1
+  DefaultVirshConsolePolicy             int         `json:"default_virsh_console_policy,omitempty"`
 }

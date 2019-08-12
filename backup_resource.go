@@ -44,6 +44,10 @@ type BackupResource struct {
   Username        string            `json:"username,omitempty"`
   Password        string            `json:"password,omitempty"`
   ResourceZoneID  int               `json:"resource_zone_id,omitempty"`
+
+  // OnApp 6.1
+  DayToRunOn      int               `json:"day_to_run_on,omitempty"`
+  StartTime       string            `json:"start_time,omitempty"`
 }
 
 // BackupResourceCreateRequest represents a request to create a BackupResource
@@ -54,6 +58,11 @@ type BackupResourceCreateRequest struct {
   Username        string  `json:"username,omitempty"`
   Password        string  `json:"password,omitempty"`
   ResourceZoneID  int     `json:"resource_zone_id,omitempty"`
+
+  // OnApp 6.1
+  // 0 - Sunday, 1 - Monday, 2 - Tuesday, 3 - Wednesday, 4 - Thursday, 5 - Friday, 6 - Saturday
+  DayToRunOn      int     `json:"day_to_run_on,omitempty"`
+  StartTime       string  `json:"start_time,omitempty"`
 }
 
 type backupResourceCreateRequestRoot struct {
