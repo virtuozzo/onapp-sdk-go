@@ -103,7 +103,7 @@ func (s *IPNetsServiceOp) Get(ctx context.Context, net int, id int) (*IPNet, *Re
   }
 
   path := fmt.Sprintf(ipNetsBasePath, net)
-  path = fmt.Sprintf("%s/%d", path, id) + apiFormat
+  path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -152,7 +152,7 @@ func (s *IPNetsServiceOp) Delete(ctx context.Context, net int, id int, meta inte
   }
 
   path := fmt.Sprintf(ipNetsBasePath, net)
-  path = fmt.Sprintf("%s/%d", path, id) + apiFormat
+  path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, nil, err

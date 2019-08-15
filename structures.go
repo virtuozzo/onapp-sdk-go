@@ -200,3 +200,11 @@ func (obj AssignIPAddress) Debug() {
   fmt.Printf("            UsedIP: %d\n", obj.UsedIP)
   fmt.Printf("             OwnIP: %d\n", obj.OwnIP)
 }
+
+type LimitResourceRoots     map[string]*Limits
+
+type PriceResourceRoots     map[string]*Prices
+
+type AccessControlLimits    map[string]*LimitResourceRoots
+
+type RateCardLimits         map[string]*PriceResourceRoots
