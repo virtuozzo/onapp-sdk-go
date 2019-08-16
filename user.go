@@ -38,26 +38,25 @@ type Infoboxes struct {
 
 // Permission - 
 type Permission struct {
-  CreatedAt  string    `json:"created_at,omitempty"`
   ID         int       `json:"id,omitempty"`
   Identifier string    `json:"identifier,omitempty"`
+  CreatedAt  string    `json:"created_at,omitempty"`
   UpdatedAt  string    `json:"updated_at,omitempty"`
+  Label      string    `json:"label,omitempty"`
 }
 
-// Permissions - 
 type Permissions struct {
-  Permission Permission `json:"permission,omitempty"`
+  Permission Permission `json:"permission"`
 }
 
-// Role - 
 type Role struct {
-  CreatedAt   string        `json:"created_at,omitempty"`
-  ID          int           `json:"id,omitempty"`
-  Identifier  string        `json:"identifier,omitempty"`
+  ID          int           `json:"id",omitempty`
   Label       string        `json:"label,omitempty"`
-  System      bool          `json:"system,bool"`
+  Identifier  string        `json:"identifier,omitempty"`
+  CreatedAt   string        `json:"created_at,omitempty"`
   UpdatedAt   string        `json:"updated_at,omitempty"`
   UsersCount  int           `json:"users_count,omitempty"`
+  System      bool          `json:"system,bool"`
   Permissions []Permissions `json:"permissions,omitempty"`
 }
 
@@ -122,7 +121,8 @@ type UserCreateRequest struct {
   LastName         string             `json:"last_name,omitempty"`
   Password         string             `json:"password,omitempty"`
   UserGroupID      int                `json:"user_group_id,omitempty"`
-  BillingPlanID    int                `json:"billing_plan_id,omitempty"`
+  // BillingPlanID    int                `json:"billing_plan_id,omitempty"`
+  BucketID         int                `json:"bucket_id,omitempty"`
   RoleIds          []string           `json:"role_ids,omitempty"`
   AdditionalFields []AdditionalFields `json:"additional_fields,omitempty"`
 }
@@ -217,6 +217,11 @@ func (s *UsersServiceOp) Create(ctx context.Context, createRequest *UserCreateRe
   return root.User, resp, err
 }
 
+type DeleteUserRequest struct {
+  // Force int `url:"force"`
+  Force int `json:"force,omitempty"`
+}
+
 // Delete User.
 func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
   if id < 1 {
@@ -229,7 +234,11 @@ func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
     return nil, nil, err
   }
 
-  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+  opts := &DeleteUserRequest{
+    Force : 1,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, opts)
   if err != nil {
     return nil, nil, err
   }

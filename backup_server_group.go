@@ -32,7 +32,8 @@ var _ BackupServerGroupsService = &BackupServerGroupsServiceOp{}
 
 // BackupServerGroup represents a BackupServerGroup
 type BackupServerGroup struct {
-  AdditionalFields  []AdditionalFields  `json:"additional_fields,omitempty"`
+  // AdditionalFields  []AdditionalFields  `json:"additional_fields,omitempty"`
+  AdditionalFields  AdditionalFields    `json:"additional_fields,omitempty"`
   Closed            bool                `json:"closed,bool"`
   CreatedAt         string              `json:"created_at,omitempty"`
   DatacenterID      int                 `json:"datacenter_id,omitempty"`
