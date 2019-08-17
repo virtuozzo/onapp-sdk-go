@@ -12,11 +12,13 @@ import (
   "reflect"
   "crypto/tls"
 
-  version "github.com/onapp/onapp-sdk-go/version"
+  sdk "github.com/onapp/onapp-sdk-go/version"
+
+  "github.com/hashicorp/go-version"
   "github.com/google/go-querystring/query"
 )
 
-var userAgent         = "onapp_sdk_go/" + version.String()
+var userAgent         = "onapp_sdk_go/" + sdk.String()
 
 const (
   defaultBaseURL      = "http://69.168.237.17/"
@@ -27,7 +29,7 @@ const (
 
 // Client manages communication with OnApp API.
 type Client struct {
-  // HTTP client used to communicate with the DO API.
+  // HTTP client used to communicate with the OnApp SDK API.
   client                  *http.Client
   transport               *http.Transport
 
@@ -371,6 +373,29 @@ func CheckResponse(r *http.Response) error {
   }
 
   return errorResponse
+}
+
+// Version return OnApp endpoint version
+func (c *Client) Version() (*version.Version, error) {
+  path := fmt.Sprintf("version%s", apiFormat)
+
+  req, err := c.NewRequest(context.TODO(), http.MethodGet, path, nil)
+  if err != nil {
+    return nil, err
+  }
+
+  var res map[string]string
+  _, err = c.Do(context.TODO(), req, &res)
+  if err != nil {
+    return nil, err
+  }
+
+  ver, err := version.NewSemver(res["version"])
+  if err != nil {
+    return nil, err
+  }
+
+  return ver, err
 }
 
 // String - convert ErrorResponse to the string
