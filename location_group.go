@@ -126,8 +126,7 @@ func (s *LocationGroupsServiceOp) Create(ctx context.Context, createRequest *Loc
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nLocationGroup [Create] req: ", req)
+  fmt.Println("LocationGroup [Create] req: ", req)
 
   root := new(locationGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -154,6 +153,7 @@ func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta inter
   if err != nil {
     return nil, nil, err
   }
+  fmt.Println("LocationGroup [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

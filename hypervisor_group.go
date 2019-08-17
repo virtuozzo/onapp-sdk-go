@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -168,8 +169,7 @@ func (s *HypervisorGroupsServiceOp) Create(ctx context.Context, createRequest *H
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nHypervisorGroup [Create] req: ", req)
+  log.Println("HypervisorGroup [Create] req: ", req)
 
   root := new(hypervisorGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -196,6 +196,7 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
   if err != nil {
     return nil, nil, err
   }
+  log.Println("HypervisorGroup [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

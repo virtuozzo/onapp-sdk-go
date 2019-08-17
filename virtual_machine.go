@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -233,7 +234,6 @@ func (s *VirtualMachinesServiceOp) Get(ctx context.Context, id int) (*VirtualMac
   }
 
   path := fmt.Sprintf("%s/%d%s", virtualMachineBasePath, id, apiFormat)
-
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -255,7 +255,6 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
   }
 
   path := virtualMachineBasePath + apiFormat
-
   rootRequest := &virtualMachineCreateRequestRoot{
     VirtualMachineCreateRequest : createRequest,
   }
@@ -264,8 +263,7 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\n[Create]  req: ", req)
+  log.Println("VirtualMachine [Create]  req: ", req)
 
   root := new(virtualMachineRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -292,6 +290,7 @@ func (s *VirtualMachinesServiceOp) Delete(ctx context.Context, id int, meta inte
   if err != nil {
     return nil, nil, err
   }
+  log.Println("VirtualMachine [Delete]  req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -196,7 +197,6 @@ func (s *UsersServiceOp) Create(ctx context.Context, createRequest *UserCreateRe
   }
 
   path := userBasePath + apiFormat
-
   rootRequest := &userCreateRequestRoot{
     UserCreateRequest : createRequest,
   }
@@ -205,8 +205,7 @@ func (s *UsersServiceOp) Create(ctx context.Context, createRequest *UserCreateRe
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nUser [Create]  req: ", req)
+  log.Println("User [Create]  req: ", req)
 
   root := new(userRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -242,6 +241,7 @@ func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
   if err != nil {
     return nil, nil, err
   }
+  log.Println("User [Delete]  req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

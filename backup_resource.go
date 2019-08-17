@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -142,7 +143,7 @@ func (s *BackupResourcesServiceOp) Create(ctx context.Context, createRequest *Ba
     return nil, nil, err
   }
 
-  fmt.Println("\nBackupResource [Create] req: ", req)
+  log.Println("BackupResource [Create] req: ", req)
 
   root := new(backupResourceRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -169,6 +170,7 @@ func (s *BackupResourcesServiceOp) Delete(ctx context.Context, id int, meta inte
   if err != nil {
     return nil, nil, err
   }
+  log.Println("BackupResource [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

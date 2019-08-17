@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -125,8 +126,7 @@ func (s *IPRangesServiceOp) Create(ctx context.Context, net int, ipnet int, crea
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nIPRange [Create] req: ", req)
+  log.Println("IPRange [Create] req: ", req)
 
   root := new(ipRangeRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -154,6 +154,7 @@ func (s *IPRangesServiceOp) Delete(ctx context.Context, net int, ipnet int, id i
   if err != nil {
     return nil, nil, err
   }
+  log.Println("IPRange [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

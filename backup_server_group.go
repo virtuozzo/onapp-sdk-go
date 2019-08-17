@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -135,7 +136,7 @@ func (s *BackupServerGroupsServiceOp) Create(ctx context.Context, createRequest 
     return nil, nil, err
   }
 
-  fmt.Println("\nBackupServerGroup [Create] req: ", req)
+  log.Println("BackupServerGroup [Create] req: ", req)
 
   root := new(backupServerGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -162,6 +163,7 @@ func (s *BackupServerGroupsServiceOp) Delete(ctx context.Context, id int, meta i
   if err != nil {
     return nil, nil, err
   }
+  log.Println("BackupServerGroup [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

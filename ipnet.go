@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -133,8 +134,7 @@ func (s *IPNetsServiceOp) Create(ctx context.Context, net int, createRequest *IP
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nIPNet [Create] req: ", req)
+  log.Println("IPNet [Create] req: ", req)
 
   root := new(ipNetRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -162,6 +162,7 @@ func (s *IPNetsServiceOp) Delete(ctx context.Context, net int, id int, meta inte
   if err != nil {
     return nil, nil, err
   }
+  log.Println("IPNet [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

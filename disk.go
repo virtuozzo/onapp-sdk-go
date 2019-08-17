@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -163,8 +164,7 @@ func (s *DisksServiceOp) Create(ctx context.Context, createRequest *DiskCreateRe
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nDisk [Create]  req: ", req)
+  log.Println("Disk [Create]  req: ", req)
 
   root := new(diskRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -192,6 +192,7 @@ func (s *DisksServiceOp) Delete(ctx context.Context, id int/*, meta interface{}*
   if err != nil {
     return nil, nil, err
   }
+  log.Println("Disk [Delete]  req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

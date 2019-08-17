@@ -148,8 +148,7 @@ func (s *NetworksServiceOp) Create(ctx context.Context, createRequest *NetworkCr
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nNetwork [Create] req: ", req)
+  fmt.Println("Network [Create] req: ", req)
 
   root := new(networkRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -176,6 +175,7 @@ func (s *NetworksServiceOp) Delete(ctx context.Context, id int, meta interface{}
   if err != nil {
     return nil, nil, err
   }
+  fmt.Println("Network [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

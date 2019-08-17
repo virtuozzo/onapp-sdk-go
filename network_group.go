@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -44,7 +45,7 @@ type NetworkGroup struct {
   Identifier        string              `json:"identifier,omitempty"`
   Label             string              `json:"label,omitempty"`
   LocationGroupID   int                 `json:"location_group_id,omitempty"`
-  PreconfiguredOnly bool                `json:"preconfigured_only,omitempty"`
+  PreconfiguredOnly bool                `json:"preconfigured_only,bool"`
   ProviderVdcID     int                 `json:"provider_vdc_id,omitempty"`
   ServerType        string              `json:"server_type,omitempty"`
   Traded            bool                `json:"traded,bool"`
@@ -55,7 +56,8 @@ type NetworkGroup struct {
 type NetworkGroupCreateRequest struct {
   Label             string  `json:"label,omitempty"`
   LocationGroupID   int     `json:"location_group_id,omitempty"`
-  PreconfiguredOnly bool    `json:"preconfigured_only,omitempty"`
+  PreconfiguredOnly bool    `json:"preconfigured_only,bool"`
+  ServerType        string  `json:"server_type,omitempty"`
 }
 
 type networkZoneCreateRequestRoot struct {
@@ -134,8 +136,7 @@ func (s *NetworkGroupsServiceOp) Create(ctx context.Context, createRequest *Netw
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nNetworkGroup [Create] req: ", req)
+  log.Println("NetworkGroup [Create] req: ", req)
 
   root := new(networkZoneRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -162,6 +163,7 @@ func (s *NetworkGroupsServiceOp) Delete(ctx context.Context, id int, meta interf
   if err != nil {
     return nil, nil, err
   }
+  log.Println("NetworkGroup [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

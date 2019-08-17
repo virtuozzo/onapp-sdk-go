@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -138,8 +139,7 @@ func (s *DataStoreGroupsServiceOp) Create(ctx context.Context, createRequest *Da
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nDataStoreGroup [Create] req: ", req)
+  log.Println("DataStoreGroup [Create] req: ", req)
 
   root := new(dataStoreGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -166,6 +166,7 @@ func (s *DataStoreGroupsServiceOp) Delete(ctx context.Context, id int, meta inte
   if err != nil {
     return nil, nil, err
   }
+  log.Println("DataStoreGroup [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

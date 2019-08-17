@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -143,8 +144,7 @@ func (s *DataStoresServiceOp) Create(ctx context.Context, createRequest *DataSto
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nDataStore [Create] req: ", req)
+  log.Println("DataStore [Create] req: ", req)
 
   root := new(dataStoreRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -171,6 +171,7 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
   if err != nil {
     return nil, nil, err
   }
+  log.Println("DataStore [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
