@@ -41,11 +41,13 @@ type RateCard struct {
 }
 
 type RateCardCreateRequest struct {
-  BucketID        int     `json:"bucket_id,omitempty"`
-  ServerType      string  `json:"server_type,omitempty"`
-  TargetID       int      `json:"target_id,omitempty"`
-  Type            string  `json:"type,omitempty"`
-  Prices         *Prices  `json:"prices,omitempty"`
+  BucketID                        int     `json:"bucket_id,omitempty"`
+  ServerType                      string  `json:"server_type,omitempty"`
+  TargetID                        int     `json:"target_id,omitempty"`
+  Type                            string  `json:"type,omitempty"`
+  TimingStrategy                  string  `json:"timing_strategy,omitempty"`
+  ApplyToAllResourcesInTheBucket  bool    `json:"apply_to_all_resources_in_the_bucket,bool"`
+  Prices                          *Prices `json:"prices,omitempty"`
 }
 
 type rateCardCreateRequestRoot struct {
@@ -68,7 +70,7 @@ func (s *RateCardsServiceOp) List(ctx context.Context, id int, opt *ListOptions)
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(bucketAccessControlsBasePath, id) + apiFormat
+  path := fmt.Sprintf(bucketRateCardsBasePath, id) + apiFormat
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -96,7 +98,7 @@ func (s *RateCardsServiceOp) Create(ctx context.Context, createRequest *RateCard
     return nil, nil, godo.NewArgError("createRequest", "cannot be nil")
   }
 
-  path := fmt.Sprintf(bucketAccessControlsBasePath, createRequest.BucketID) + apiFormat
+  path := fmt.Sprintf(bucketRateCardsBasePath, createRequest.BucketID) + apiFormat
   rootRequest := &rateCardCreateRequestRoot {
     RateCardCreateRequest: createRequest,
   }
@@ -123,7 +125,7 @@ func (s *RateCardsServiceOp) Delete(ctx context.Context, deleteRequest *RateCard
     return nil, nil, godo.NewArgError("bucket_id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(bucketAccessControlsBasePath, deleteRequest.BucketID)
+  path := fmt.Sprintf(bucketRateCardsBasePath, deleteRequest.BucketID)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, nil, err

@@ -3,6 +3,7 @@ package onappgo
 import (
   "bytes"
   "context"
+  "strings"
   "encoding/json"
   "fmt"
   "io"
@@ -439,4 +440,20 @@ func StreamToString(stream io.Reader) string {
   buf := new(bytes.Buffer)
   _, _ = buf.ReadFrom(stream)
   return buf.String()
+}
+
+func StringInSlice(valid []string, k string, ignoreCase bool) bool {
+  for _, str := range valid {
+    if k == str || (ignoreCase && strings.ToLower(k) == strings.ToLower(str)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+func ServerTypesRestrictions(resourceType string, serverType string, ignoreCase bool) (string, bool) {
+  slice := SERVER_TYPES_RESTRICTIONS[serverType]
+
+  return strings.Join(slice, ", "), StringInSlice(slice, resourceType, ignoreCase)
 }
