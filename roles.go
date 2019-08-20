@@ -192,7 +192,7 @@ func (obj Role) Debug() {
   if len(obj.Permissions) > 0 {
     for i := range obj.Permissions {
       p := obj.Permissions[i].Permission
-      fmt.Printf("\t\tPersission: [%d] -> ", i)
+      fmt.Printf("\t\tPermission: [%d] -> ", i)
       p.Debug()
     }
   }
@@ -200,5 +200,6 @@ func (obj Role) Debug() {
 
 // Debug - print formatted Permission structure
 func (obj Permission) Debug() {
-  fmt.Printf("ID: %d,\tIdentifier: %s\n", obj.ID, obj.Identifier)
+  fmt.Printf("ID: %d,\tIdentifier: %s\n", obj.ID, obj.Label)
+  fmt.Printf("ID: %d,\tLabel: %s\n", obj.ID, obj.Identifier)
 }
