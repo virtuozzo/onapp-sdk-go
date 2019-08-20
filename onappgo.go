@@ -68,6 +68,7 @@ type Client struct {
   Users	                  UsersService
   HypervisorZones         HypervisorZonesService
   Licenses                LicensesService
+  Roles                   RolesService
 
   // Optional function called after every successful request made to the DO APIs
   onRequestCompleted      RequestCompletionCallback
@@ -191,6 +192,7 @@ func NewClient(httpClient *http.Client, allowUnverifiedSSL bool) *Client {
   c.Users                 = &UsersServiceOp{client: c}
   c.HypervisorZones       = &HypervisorZonesServiceOp{client: c}
   c.Licenses              = &LicensesServiceOp{client: c}
+  c.Roles                 = &RolesServiceOp{client: c}
 
   return c
 }

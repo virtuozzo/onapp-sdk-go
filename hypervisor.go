@@ -354,7 +354,7 @@ func (s *HypervisorsServiceOp) DataStoreJoins(ctx context.Context, hvID int, dsI
     return nil, err
   }
 
-  fmt.Println("\nDataStoreJoins [Create] req: ", req)
+  fmt.Println("DataStoreJoins [Create] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
@@ -381,7 +381,7 @@ func (s *HypervisorsServiceOp) NetworkJoins(ctx context.Context, hvID int, creat
     return nil, err
   }
 
-  fmt.Println("\nNetworkJoins [Create] req: ", req)
+  fmt.Println("NetworkJoins [Create] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
@@ -408,7 +408,7 @@ func (s *HypervisorsServiceOp) BackupServerJoins(ctx context.Context, hvID int, 
     return nil, err
   }
 
-  fmt.Println("\nBackupServerJoins [Create] req: ", req)
+  fmt.Println("BackupServerJoins [Create] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

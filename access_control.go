@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -49,9 +50,9 @@ type AccessControlCreateRequest struct {
   Limits          *Limits      `json:"limits,omitempty"`
 }
 
-type accessControlCreateRequestRoot struct {
-  AccessControlCreateRequest  *AccessControlCreateRequest  `json:"access_control"`
-}
+// type accessControlCreateRequestRoot struct {
+//   AccessControlCreateRequest  *AccessControlCreateRequest  `json:"access_control"`
+// }
 
 type accessControlRoot struct {
   AccessControl  *AccessControl  `json:"access_control"`
@@ -59,9 +60,9 @@ type accessControlRoot struct {
 
 type AccessControlDeleteRequest AccessControlCreateRequest
 
-type accessControlDeleteRequestRoot struct {
-  AccessControlDeleteRequest  *AccessControlDeleteRequest  `json:"access_control"`
-}
+// type accessControlDeleteRequestRoot struct {
+//   AccessControlDeleteRequest  *AccessControlDeleteRequest  `json:"access_control"`
+// }
 
 // List return AccessControls for Bucket.
 func (s *AccessControlsServiceOp) List(ctx context.Context, id int, opt *ListOptions) ([]AccessControl, *Response, error) {
@@ -98,17 +99,15 @@ func (s *AccessControlsServiceOp) Create(ctx context.Context, createRequest *Acc
   }
 
   path := fmt.Sprintf(bucketAccessControlsBasePath, createRequest.BucketID) + apiFormat
+  // rootRequest := &accessControlCreateRequestRoot {
+  //   AccessControlCreateRequest: createRequest,
+  // }
 
-  rootRequest := &accessControlCreateRequestRoot {
-    AccessControlCreateRequest: createRequest,
-  }
-
-  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, createRequest)
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nAccessControl [Create]  req: ", req)
+  log.Println("AccessControl [Create]  req: ", req)
 
   root := new(accessControlRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -131,14 +130,15 @@ func (s *AccessControlsServiceOp) Delete(ctx context.Context, deleteRequest *Acc
     return nil, nil, err
   }
 
-  rootRequest := &accessControlDeleteRequestRoot {
-    AccessControlDeleteRequest : deleteRequest,
-  }
+  // rootRequest := &accessControlDeleteRequestRoot {
+  //   AccessControlDeleteRequest : deleteRequest,
+  // }
 
-  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, rootRequest)
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, deleteRequest)
   if err != nil {
     return nil, nil, err
   }
+  log.Println("AccessControl [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

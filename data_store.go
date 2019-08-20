@@ -31,6 +31,18 @@ type DataStoresServiceOp struct {
 
 var _ DataStoresService = &DataStoresServiceOp{}
 
+type AdminAttributes struct {
+  Username string `json:"username,omitempty"`
+  Password string `json:"password,omitempty"`
+}
+
+// AccountAttributes - SolidFire account username
+type AccountAttributes struct {
+  Username        string `json:"username,omitempty"`
+  InitiatorSecret string `json:"initiator_secret,omitempty"`
+  TargetSecret    string `json:"target_secret,omitempty"`
+}
+
 // DataStore represents a DataStore
 type DataStore struct {
   ID                             int                            `json:"id,omitempty"`
@@ -59,13 +71,17 @@ type DataStore struct {
 
 // DataStoreCreateRequest represents a request to create a DataStore
 type DataStoreCreateRequest struct {
-  Label             string `json:"label,omitempty"`
-  DataStoreGroupID  int    `json:"data_store_group_id,omitempty"`
-  LocalHypervisorID int    `json:"local_hypervisor_id,omitempty"`
-  IP                string `json:"ip,omitempty"`
-  Enabled           bool   `json:"enabled,bool"`
-  DataStoreSize     int    `json:"data_store_size,omitempty"`
-  DataStoreType     string `json:"data_store_type,omitempty"`
+  Label             string            `json:"label,omitempty"`
+  DataStoreGroupID  int               `json:"data_store_group_id,omitempty"`
+  LocalHypervisorID int               `json:"local_hypervisor_id,omitempty"`
+  IP                string            `json:"ip,omitempty"`
+  Enabled           bool              `json:"enabled,bool"`
+  DataStoreSize     int               `json:"data_store_size,omitempty"`
+  DataStoreType     string            `json:"data_store_type,omitempty"`
+  IscsiIP           string            `json:"iscsi_ip,omitempty"`
+
+  AdminAttributes   AdminAttributes   `json:"admin_attributes,omitempty"`
+  AccountAttributes AccountAttributes `json:"account_attributes,omitempty"`
 }
 
 type dataStoreCreateRequestRoot struct {

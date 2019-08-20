@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -50,9 +51,9 @@ type RateCardCreateRequest struct {
   Prices                          *Prices `json:"prices,omitempty"`
 }
 
-type rateCardCreateRequestRoot struct {
-  RateCardCreateRequest  *RateCardCreateRequest  `json:"rate_card"`
-}
+// type rateCardCreateRequestRoot struct {
+//   RateCardCreateRequest  *RateCardCreateRequest  `json:"rate_card"`
+// }
 
 type rateCardRoot struct {
   RateCard  *RateCard  `json:"rate_card"`
@@ -60,9 +61,9 @@ type rateCardRoot struct {
 
 type RateCardDeleteRequest RateCardCreateRequest
 
-type rateCardDeleteRequestRoot struct {
-  RateCardDeleteRequest  *RateCardDeleteRequest  `json:"rate_card"`
-}
+// type rateCardDeleteRequestRoot struct {
+//   RateCardDeleteRequest  *RateCardDeleteRequest  `json:"rate_card"`
+// }
 
 // List return RateCards for Bucket.
 func (s *RateCardsServiceOp) List(ctx context.Context, id int, opt *ListOptions) ([]RateCard, *Response, error) {
@@ -99,16 +100,15 @@ func (s *RateCardsServiceOp) Create(ctx context.Context, createRequest *RateCard
   }
 
   path := fmt.Sprintf(bucketRateCardsBasePath, createRequest.BucketID) + apiFormat
-  rootRequest := &rateCardCreateRequestRoot {
-    RateCardCreateRequest: createRequest,
-  }
+  // rootRequest := &rateCardCreateRequestRoot {
+  //   RateCardCreateRequest: createRequest,
+  // }
 
-  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, createRequest)
   if err != nil {
     return nil, nil, err
   }
-
-  fmt.Println("\nRateCard [Create]  req: ", req)
+  log.Println("RateCard [Create]  req: ", req)
 
   root := new(rateCardRoot)
   resp, err := s.client.Do(ctx, req, root)
@@ -125,20 +125,21 @@ func (s *RateCardsServiceOp) Delete(ctx context.Context, deleteRequest *RateCard
     return nil, nil, godo.NewArgError("bucket_id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(bucketRateCardsBasePath, deleteRequest.BucketID)
+  path := fmt.Sprintf(bucketRateCardsBasePath, deleteRequest.BucketID) + apiFormat
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, nil, err
   }
 
-  rootRequest := &rateCardDeleteRequestRoot {
-    RateCardDeleteRequest: deleteRequest,
-  }
+  // rootRequest := &rateCardDeleteRequestRoot {
+  //   RateCardDeleteRequest: deleteRequest,
+  // }
 
-  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, rootRequest)
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, deleteRequest)
   if err != nil {
     return nil, nil, err
   }
+  log.Println("RateCard [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {

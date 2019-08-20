@@ -37,33 +37,9 @@ type Infoboxes struct {
   HiddenInfoboxes  []string `json:"hidden_infoboxes,omitempty"`
 }
 
-// Permission - 
-type Permission struct {
-  ID         int       `json:"id,omitempty"`
-  Identifier string    `json:"identifier,omitempty"`
-  CreatedAt  string    `json:"created_at,omitempty"`
-  UpdatedAt  string    `json:"updated_at,omitempty"`
-  Label      string    `json:"label,omitempty"`
-}
-
-type Permissions struct {
-  Permission Permission `json:"permission"`
-}
-
-type Role struct {
-  ID          int           `json:"id",omitempty`
-  Label       string        `json:"label,omitempty"`
-  Identifier  string        `json:"identifier,omitempty"`
-  CreatedAt   string        `json:"created_at,omitempty"`
-  UpdatedAt   string        `json:"updated_at,omitempty"`
-  UsersCount  int           `json:"users_count,omitempty"`
-  System      bool          `json:"system,bool"`
-  Permissions []Permissions `json:"permissions,omitempty"`
-}
-
 // Roles - 
 type Roles struct {
-  Role Role `json:"role,omitempty"`
+  Role  *Role `json:"role,omitempty"`
 }
 
 // User - 
@@ -281,26 +257,4 @@ func (obj User) Debug() {
       r.Debug()
     }
   }
-}
-
-// Debug - print formatted Role structure
-func (obj Role) Debug() {
-  fmt.Printf("\t        ID: %d\n", obj.ID)
-  fmt.Printf("\tIdentifier: %s\n", obj.Identifier)
-  fmt.Printf("\t     Label: %s\n", obj.Label)
-  fmt.Printf("\t    System: %t\n", obj.System)
-  fmt.Printf("\tUsersCount: %d\n", obj.UsersCount)
-
-  if len(obj.Permissions) > 0 {
-    for i := range obj.Permissions {
-      p := obj.Permissions[i].Permission
-      fmt.Printf("\t\tPersission: [%d] -> ", i)
-      p.Debug()
-    }
-  }
-}
-
-// Debug - print formatted Permission structure
-func (obj Permission) Debug() {
-  fmt.Printf("ID: %d,\tIdentifier: %s\n", obj.ID, obj.Identifier)
 }
