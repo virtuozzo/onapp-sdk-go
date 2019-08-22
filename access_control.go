@@ -18,8 +18,7 @@ type AccessControlsService interface {
   List(context.Context, int, *ListOptions) ([]AccessControl, *Response, error)
   // Get(context.Context, int, int) (*AccessControl, *Response, error)
   Create(context.Context, *AccessControlCreateRequest) (*AccessControl, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, *AccessControlDeleteRequest, interface{}) (*Transaction, *Response, error)
+  Delete(context.Context, *AccessControlDeleteRequest, interface{}) (*Response, error)
   // Edit(context.Context, int, *ListOptions) ([]AccessControl, *Response, error)
 }
 
@@ -119,15 +118,15 @@ func (s *AccessControlsServiceOp) Create(ctx context.Context, createRequest *Acc
 }
 
 // Delete AccessControl.
-func (s *AccessControlsServiceOp) Delete(ctx context.Context, deleteRequest *AccessControlDeleteRequest, meta interface{}) (*Transaction, *Response, error) {
+func (s *AccessControlsServiceOp) Delete(ctx context.Context, deleteRequest *AccessControlDeleteRequest, meta interface{}) (*Response, error) {
   if deleteRequest.BucketID < 1 {
-    return nil, nil, godo.NewArgError("bucketID", "cannot be less than 1")
+    return nil, godo.NewArgError("bucketID", "cannot be less than 1")
   }
 
   path := fmt.Sprintf(bucketAccessControlsBasePath, deleteRequest.BucketID) + apiFormat
   path, err := addOptions(path, meta)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
 
   // rootRequest := &accessControlDeleteRequestRoot {
@@ -136,16 +135,16 @@ func (s *AccessControlsServiceOp) Delete(ctx context.Context, deleteRequest *Acc
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, deleteRequest)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
   log.Println("AccessControl [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return nil, resp, err
+    return resp, err
   }
 
-  return nil, resp, err
+  return resp, err
 }
 
 type Limits map[string]interface{}

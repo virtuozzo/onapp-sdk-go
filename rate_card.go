@@ -18,8 +18,8 @@ type RateCardsService interface {
   List(context.Context, int, *ListOptions) ([]RateCard, *Response, error)
   // Get(context.Context, int, int) (*RateCard, *Response, error)
   Create(context.Context, *RateCardCreateRequest) (*RateCard, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, *RateCardDeleteRequest, interface{}) (*Transaction, *Response, error)
+  Delete(context.Context, *RateCardDeleteRequest, interface{}) (*Response, error)
+  // Delete(context.Context, *RateCardDeleteRequest, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]RateCard, *Response, error)
 }
 
@@ -120,15 +120,15 @@ func (s *RateCardsServiceOp) Create(ctx context.Context, createRequest *RateCard
 }
 
 // Delete RateCard.
-func (s *RateCardsServiceOp) Delete(ctx context.Context, deleteRequest *RateCardDeleteRequest, meta interface{}) (*Transaction, *Response, error) {
+func (s *RateCardsServiceOp) Delete(ctx context.Context, deleteRequest *RateCardDeleteRequest, meta interface{}) (*Response, error) {
   if deleteRequest.BucketID < 1 {
-    return nil, nil, godo.NewArgError("bucket_id", "cannot be less than 1")
+    return nil, godo.NewArgError("bucket_id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf(bucketRateCardsBasePath, deleteRequest.BucketID) + apiFormat
   path, err := addOptions(path, meta)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
 
   // rootRequest := &rateCardDeleteRequestRoot {
@@ -137,16 +137,16 @@ func (s *RateCardsServiceOp) Delete(ctx context.Context, deleteRequest *RateCard
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, deleteRequest)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
   log.Println("RateCard [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return nil, resp, err
+    return resp, err
   }
 
-  return nil, resp, err
+  return resp, err
 }
 
 type Prices map[string]interface{}

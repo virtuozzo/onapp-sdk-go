@@ -18,7 +18,6 @@ type VirtualMachinesService interface {
   List(context.Context, *ListOptions) ([]VirtualMachine, *Response, error)
   Get(context.Context, int) (*VirtualMachine, *Response, error)
   Create(context.Context, *VirtualMachineCreateRequest) (*VirtualMachine, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
   Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]VirtualMachine, *Response, error)
 

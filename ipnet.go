@@ -18,8 +18,7 @@ type IPNetsService interface {
   List(context.Context, int, *ListOptions) ([]IPNet, *Response, error)
   Get(context.Context, int, int) (*IPNet, *Response, error)
   Create(context.Context, int, *IPNetCreateRequest) (*IPNet, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, int, interface{}) (*Transaction, *Response, error)
+  Delete(context.Context, int, int, interface{}) (*Response, error)
   // Edit(context.Context, int, *ListOptions) ([]IPNet, *Response, error)
 }
 
@@ -146,39 +145,30 @@ func (s *IPNetsServiceOp) Create(ctx context.Context, net int, createRequest *IP
 }
 
 // Delete IPNet.
-func (s *IPNetsServiceOp) Delete(ctx context.Context, net int, id int, meta interface{}) (*Transaction, *Response, error) {
+func (s *IPNetsServiceOp) Delete(ctx context.Context, net int, id int, meta interface{}) (*Response, error) {
   if id < 1 {
-    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+    return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf(ipNetsBasePath, net)
   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
   log.Println("IPNet [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return nil, resp, err
+    return resp, err
   }
 
-  filter := struct{
-    ParentID    int
-    ParentType  string
-  }{
-    ParentID    : id,
-    ParentType  : "IPNet",
-  }
-
-  return lastTransaction(ctx, s.client, filter)
-  // return lastTransaction(ctx, s.client, id, "IPNet")
+  return resp, err
 }
 
 // Debug - print formatted IPNet structure

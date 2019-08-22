@@ -18,8 +18,7 @@ type BackupServersService interface {
   List(context.Context, *ListOptions) ([]BackupServer, *Response, error)
   Get(context.Context, int) (*BackupServer, *Response, error)
   Create(context.Context, *BackupServerCreateRequest) (*BackupServer, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
+  Delete(context.Context, int, interface{}) (*Response, error)
   // Edit(context.Context, int, *ListOptions) ([]BackupServer, *Response, error)
 }
 
@@ -159,38 +158,29 @@ func (s *BackupServersServiceOp) Create(ctx context.Context, createRequest *Back
 }
 
 // Delete BackupServer.
-func (s *BackupServersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
+func (s *BackupServersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Response, error) {
   if id < 1 {
-    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+    return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf("%s/%d%s", backupServersBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
   log.Println("BackupServer [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return nil, resp, err
+    return resp, err
   }
 
-  filter := struct{
-    AssociatedObjectID    int
-    AssociatedObjectType  string
-  }{
-    AssociatedObjectID    : id,
-    AssociatedObjectType  : "BackupServer",
-  }
-
-  return lastTransaction(ctx, s.client, filter)
-  // return lastTransaction(ctx, s.client, id, "BackupServer")
+  return resp, err
 }
 
 // Debug - print formatted BackupServer structure

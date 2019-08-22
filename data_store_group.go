@@ -18,8 +18,7 @@ type DataStoreGroupsService interface {
   List(context.Context, *ListOptions) ([]DataStoreGroup, *Response, error)
   Get(context.Context, int) (*DataStoreGroup, *Response, error)
   Create(context.Context, *DataStoreGroupCreateRequest) (*DataStoreGroup, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
+  Delete(context.Context, int, interface{}) (*Response, error)
   // Edit(context.Context, int, *ListOptions) ([]DataStoreGroup, *Response, error)
 }
 
@@ -151,38 +150,29 @@ func (s *DataStoreGroupsServiceOp) Create(ctx context.Context, createRequest *Da
 }
 
 // Delete DataStoreGroup.
-func (s *DataStoreGroupsServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
+func (s *DataStoreGroupsServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Response, error) {
   if id < 1 {
-    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+    return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf("%s/%d%s", dataStoreGroupsBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
   log.Println("DataStoreGroup [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return nil, resp, err
+    return resp, err
   }
 
-  filter := struct{
-    ParentID    int
-    ParentType  string
-  }{
-    ParentID    : id,
-    ParentType  : "DataStoreGroup",
-  }
-
-  return lastTransaction(ctx, s.client, filter)
-  // return lastTransaction(ctx, s.client, id, "DataStoreGroup")
+  return resp, err
 }
 
 // Debug - print formatted DataStoreGroup structure

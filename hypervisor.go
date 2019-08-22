@@ -26,8 +26,7 @@ type HypervisorsService interface {
   List(context.Context, *ListOptions) ([]Hypervisor, *Response, error)
   Get(context.Context, int) (*Hypervisor, *Response, error)
   Create(context.Context, *HypervisorCreateRequest) (*Hypervisor, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
+  Delete(context.Context, int, interface{}) (*Response, error)
   // Edit(context.Context, int, *ListOptions) ([]Hypervisor, *Response, error)
 
   // TODO: Move to the HypervisorActions later
@@ -303,38 +302,29 @@ func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *Hyperv
 }
 
 // Delete Hypervisor.
-func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
+func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Response, error) {
   if id < 1 {
-    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+    return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf("%s/%d%s", hypervisorBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
   log.Println("Hypervisor [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return nil, resp, err
+    return resp, err
   }
 
-  filter := struct{
-    ParentID    int
-    ParentType  string
-  }{
-    ParentID    : id,
-    ParentType  : "Hypervisor",
-  }
-
-  return lastTransaction(ctx, s.client, filter)
-  // return lastTransaction(ctx, s.client, id, "Hypervisor")
+  return resp, err
 }
 
 // DataStoreJoins - add Data Store to the Hypervisor

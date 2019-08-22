@@ -18,8 +18,7 @@ type IPRangesService interface {
   List(context.Context, int, int, *ListOptions) ([]IPRange, *Response, error)
   Get(context.Context, int, int, int) (*IPRange, *Response, error)
   Create(context.Context, int, int, *IPRangeCreateRequest) (*IPRange, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, int, int, interface{}) (*Transaction, *Response, error)
+  Delete(context.Context, int, int, int, interface{}) (*Response, error)
   // Edit(context.Context, int, *ListOptions) ([]Network, *Response, error)
 }
 
@@ -138,39 +137,30 @@ func (s *IPRangesServiceOp) Create(ctx context.Context, net int, ipnet int, crea
 }
 
 // Delete IPRange.
-func (s *IPRangesServiceOp) Delete(ctx context.Context, net int, ipnet int, id int, meta interface{}) (*Transaction, *Response, error) {
+func (s *IPRangesServiceOp) Delete(ctx context.Context, net int, ipnet int, id int, meta interface{}) (*Response, error) {
   if id < 1 {
-    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+    return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf(ipRangeBasePath, net, ipnet)
   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
   log.Println("IPRange [Delete] req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return nil, resp, err
+    return resp, err
   }
 
-  filter := struct{
-    ParentID    int
-    ParentType  string
-  }{
-    ParentID    : id,
-    ParentType  : "IPRange",
-  }
-
-  return lastTransaction(ctx, s.client, filter)
-  // return lastTransaction(ctx, s.client, id, "IPRange")
+  return resp, err
 }
 
 // Debug - print formatted IPRange structure
