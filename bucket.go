@@ -19,7 +19,7 @@ type BucketsService interface {
   Get(context.Context, int) (*Bucket, *Response, error)
   Create(context.Context, *BucketCreateRequest) (*Bucket, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]Bucket, *Response, error)
+  Edit(context.Context, int, *BucketEditRequest) (*Response, error)
 }
 
 // BucketsServiceOp handles communication with the Bucket related methods of the
@@ -57,6 +57,8 @@ type BucketCreateRequest struct {
 type bucketCreateRequestRoot struct {
   BucketCreateRequest  *BucketCreateRequest  `json:"bucket"`
 }
+
+type BucketEditRequest BucketCreateRequest
 
 type bucketRoot struct {
   Bucket  *Bucket  `json:"bucket"`
@@ -160,6 +162,24 @@ func (s *BucketsServiceOp) Delete(ctx context.Context, id int, meta interface{})
     return nil, err
   }
   log.Println("Bucket [Delete]  req: ", req)
+
+  resp, err := s.client.Do(ctx, req, nil)
+  if err != nil {
+    return resp, err
+  }
+
+  return resp, err
+}
+
+// Edit Bucket.
+func (s *BucketsServiceOp) Edit(ctx context.Context, id int, editRequest *BucketEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", bucketBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("Bucket [Edit]  req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
