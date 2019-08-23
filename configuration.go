@@ -48,7 +48,7 @@ type Configuration struct {
   YubikeyAPIID                          string      `json:"yubikey_api_id,omitempty"`
   Localdomain                           string      `json:"localdomain,omitempty"`
   RabbitmqHost                          string      `json:"rabbitmq_host,omitempty"`
-  RabbitmqPort                          int         `json:"rabbitmq_port"`
+  RabbitmqPort                          int         `json:"rabbitmq_port,omitempty"`
   RabbitmqVhost                         string      `json:"rabbitmq_vhost,omitempty"`
   RabbitmqLogin                         string      `json:"rabbitmq_login,omitempty"`
   RabbitmqPassword                      string      `json:"rabbitmq_password,omitempty"`
@@ -64,7 +64,7 @@ type Configuration struct {
   DataPath                              string      `json:"data_path,omitempty"`
   UpdateServerURL                       string      `json:"update_server_url,omitempty"`
   DeleteTemplateSourceAfterInstall      bool        `json:"delete_template_source_after_install,bool"`
-  LicenseKey                            string      `json:"configuration_key,omitempty"`
+  LicenseKey                            string      `json:"license_key,omitempty"`
   GenerateComment                       string      `json:"generate_comment,omitempty"`
   SimultaneousBackups                   int         `json:"simultaneous_backups,omitempty"`
   SimultaneousBackupsPerDatastore       int         `json:"simultaneous_backups_per_datastore,omitempty"`
@@ -120,12 +120,13 @@ type Configuration struct {
   PasswordSymbols                       bool        `json:"password_symbols,bool"`
   PasswordForceUnique                   bool        `json:"password_force_unique,bool"`
   PasswordLockoutAttempts               int         `json:"password_lockout_attempts,omitempty"`
-  PasswordExpiry                        int         `json:"password_expiry,omitempty,omitempty"`
+  PasswordExpiry                        int         `json:"password_expiry,omitempty"`
   PasswordHistoryLength                 int         `json:"password_history_length,omitempty"`
   CloudBootEnabled                      bool        `json:"cloud_boot_enabled,bool"`
   IoLimitingEnabled                     bool        `json:"io_limiting_enabled,bool"`
   NfsRootIP                             string      `json:"nfs_root_ip,omitempty"`
   CloudBootTarget                       string      `json:"cloud_boot_target,omitempty"`
+  DefaultAccelerationPolicy             bool        `json:"default_acceleration_policy,bool"`
   NumberOfNotificationsToShow           int         `json:"number_of_notifications_to_show,omitempty"`
   NotificationSubjectPrefix             string      `json:"notification_subject_prefix,omitempty"`
   MaxIPAddressesToAssignSimultaneously  int         `json:"max_ip_addresses_to_assign_simultaneously,omitempty"`
@@ -173,13 +174,13 @@ type Configuration struct {
   MaximumPendingTasks                   int         `json:"maximum_pending_tasks,omitempty"`
   MaxUploadSize                         int         `json:"max_upload_size,omitempty"`
   TransactionStandbyPeriod              int         `json:"transaction_standby_period,omitempty"`
-  LogCleanupPeriod                      string      `json:"log_cleanup_period,omitempty"`
+  LogCleanupPeriod                      int         `json:"log_cleanup_period,omitempty"`
   LogCleanupEnabled                     bool        `json:"log_cleanup_enabled,bool"`
   LogLevel                              string      `json:"log_level,omitempty"`
-  CdnMaxResultsPerGetPage               int         `json:"cdn_max_results_per_get_page"`
-  InstancePackagesThresholdNum          string      `json:"instance_packages_threshold_num"`
-  AmountOfServiceInstances              int         `json:"amount_of_service_instances"`
-  GracefulStopTimeout                   int         `json:"graceful_stop_timeout"`
+  CdnMaxResultsPerGetPage               int         `json:"cdn_max_results_per_get_page,omitempty"`
+  InstancePackagesThresholdNum          int         `json:"instance_packages_threshold_num,omitempty"`
+  AmountOfServiceInstances              int         `json:"amount_of_service_instances,omitempty"`
+  GracefulStopTimeout                   int         `json:"graceful_stop_timeout,omitempty"`
   AllowToCollectErrors                  bool        `json:"allow_to_collect_errors,bool"`
   PasswordProtectionForDeleting         bool        `json:"password_protection_for_deleting,bool"`
   DraasEnabled                          bool        `json:"draas_enabled,bool"`
@@ -207,7 +208,7 @@ type Configuration struct {
   SnmpStatsLevel3Period                 int         `json:"snmp_stats_level3_period,omitempty"`
   ActionGlobalLockExpirationTimeout     int         `json:"action_global_lock_expiration_timeout,omitempty"`
   ActionGlobalLockRetryDelay            int         `json:"action_global_lock_retry_delay,omitempty"`
-  IsolatedLicense                       bool        `json:"isolated_configuration,bool"`
+  IsolatedLicense                       bool        `json:"isolated_license,bool"`
   PaginationDashboardPagesLimit         int         `json:"pagination_dashboard_pages_limit,omitempty"`
   TrustedProxies                        []string    `json:"trusted_proxies,omitempty"`
   DefaultTimeout                        int         `json:"default_timeout,omitempty"`
@@ -228,13 +229,14 @@ type Configuration struct {
   ComposeVappTemplateTimeout            int         `json:"compose_vapp_template_timeout,omitempty"`
   CreateSnapshotTimeout                 int         `json:"create_snapshot_timeout,omitempty"`
   CreateVdcTimeout                      int         `json:"create_vdc_timeout,omitempty"`
-
-  // OnApp 6.1
-  DefaultVirshConsolePolicy             int         `json:"default_virsh_console_policy,omitempty"`
 }
 
 type configurationEditRequestRoot struct {
   Configuration  *Configuration  `json:"configuration"`
+}
+
+type configurationRoot struct {
+  Configuration  *Configuration  `json:"settings"`
 }
 
 // Get individual Configuration.
@@ -246,7 +248,7 @@ func (s *ConfigurationsServiceOp) Get(ctx context.Context) (*Configuration, *Res
     return nil, nil, err
   }
 
-  root := new(configurationEditRequestRoot)
+  root := new(configurationRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
     return nil, resp, err
