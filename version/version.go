@@ -1,7 +1,7 @@
 // Package version provides a location to set the release versions for all
 // packages to consume, without creating import cycles.
 //
-// This package should not import any other OnApp SDK packages.
+// This package should not import any other OnApp packages.
 package version
 
 import (
@@ -27,9 +27,9 @@ func init() {
   SemVer = version.Must(version.NewVersion(Version))
 }
 
-// Header is the header name used to send the current OnApp SDK Go version
+// Header is the header name used to send the current OnApp Go version
 // in http requests.
-const Header = "OnAppSDKGo-Version"
+const Header = "OnAppGo-Version"
 
 // String returns the complete version string, including prerelease
 func String() string {

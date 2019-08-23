@@ -1,8 +1,32 @@
 package onappgo
 
-// Settings - represent configuration settings of OnApp installation.
-// https://docs.onapp.com/apim/latest/system-configuration
-type Settings struct {
+import (
+  "context"
+  "net/http"
+  "fmt"
+)
+
+const configurationsBasePath      = "settings/configuration"
+const configurationsEditBasePath  = "settings"
+
+// ConfigurationsService is an interface for interfacing with the Configurations
+// endpoints of the OnApp API
+// See: https://docs.onapp.com/apim/latest/system-configuration
+type ConfigurationsService interface {
+  Get(context.Context) (*Configuration, *Response, error)
+  Edit(context.Context, *Configuration) (*Response, error)
+}
+
+// ConfigurationServicesOp handles communication with the Configuration related methods of the
+// OnApp API.
+type ConfigurationsServiceOp struct {
+  client *Client
+}
+
+var _ ConfigurationsService = &ConfigurationsServiceOp{}
+
+// Configuration - represent configuration settings of OnApp installation.
+type Configuration struct {
   ForceSamlLoginOnly                    bool        `json:"force_saml_login_only,bool"`
   SystemEmail                           string      `json:"system_email,omitempty"`
   SystemHost                            string      `json:"system_host,omitempty"`
@@ -40,7 +64,7 @@ type Settings struct {
   DataPath                              string      `json:"data_path,omitempty"`
   UpdateServerURL                       string      `json:"update_server_url,omitempty"`
   DeleteTemplateSourceAfterInstall      bool        `json:"delete_template_source_after_install,bool"`
-  LicenseKey                            string      `json:"license_key,omitempty"`
+  LicenseKey                            string      `json:"configuration_key,omitempty"`
   GenerateComment                       string      `json:"generate_comment,omitempty"`
   SimultaneousBackups                   int         `json:"simultaneous_backups,omitempty"`
   SimultaneousBackupsPerDatastore       int         `json:"simultaneous_backups_per_datastore,omitempty"`
@@ -183,7 +207,7 @@ type Settings struct {
   SnmpStatsLevel3Period                 int         `json:"snmp_stats_level3_period,omitempty"`
   ActionGlobalLockExpirationTimeout     int         `json:"action_global_lock_expiration_timeout,omitempty"`
   ActionGlobalLockRetryDelay            int         `json:"action_global_lock_retry_delay,omitempty"`
-  IsolatedLicense                       bool        `json:"isolated_license,bool,omitempty"`
+  IsolatedLicense                       bool        `json:"isolated_configuration,bool"`
   PaginationDashboardPagesLimit         int         `json:"pagination_dashboard_pages_limit,omitempty"`
   TrustedProxies                        []string    `json:"trusted_proxies,omitempty"`
   DefaultTimeout                        int         `json:"default_timeout,omitempty"`
@@ -207,4 +231,47 @@ type Settings struct {
 
   // OnApp 6.1
   DefaultVirshConsolePolicy             int         `json:"default_virsh_console_policy,omitempty"`
+}
+
+type configurationEditRequestRoot struct {
+  Configuration  *Configuration  `json:"configuration"`
+}
+
+// Get individual Configuration.
+func (s *ConfigurationsServiceOp) Get(ctx context.Context) (*Configuration, *Response, error) {
+  path := fmt.Sprintf("%s%s", configurationsBasePath, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+  if err != nil {
+    return nil, nil, err
+  }
+
+  root := new(configurationEditRequestRoot)
+  resp, err := s.client.Do(ctx, req, root)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  return root.Configuration, resp, err
+}
+
+// Edit individual Configuration.
+func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *Configuration) (*Response, error) {
+  path := fmt.Sprintf("%s%s", configurationsEditBasePath, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, nil)
+  if err != nil {
+    return nil, err
+  }
+
+  rootRequest := &configurationEditRequestRoot{
+    Configuration : editRequest,
+  }
+
+  resp, err := s.client.Do(ctx, req, rootRequest)
+  if err != nil {
+    return resp, err
+  }
+
+  return resp, err
 }

@@ -52,7 +52,7 @@ type BackupServer struct {
   Uptime              string      `json:"uptime,omitempty"`
 
   // OnApp 6.1
-  IntegratedStorage   bool        `json:"integrated_storage,omitempty"`
+  IntegratedStorage   bool        `json:"integrated_storage,bool"`
 }
 
 // BackupServerCreateRequest represents a request to create a BackupServer
@@ -66,7 +66,7 @@ type BackupServerCreateRequest struct {
 
   // OnApp 6.1
   // default - false, enable - true
-  IntegratedStorage   bool   `json:"integrated_storage,omitempty"`
+  IntegratedStorage   bool   `json:"integrated_storage,bool"`
 }
 
 type backupServerRoot struct {

@@ -4,8 +4,6 @@ import (
   "context"
   "net/http"
   "fmt"
-
-  // "github.com/digitalocean/godo"
 )
 
 const licensesBasePath      = "settings/license"
@@ -84,7 +82,11 @@ func (s *LicensesServiceOp) Edit(ctx context.Context, editRequest *LicenseEditRe
     return nil, err
   }
 
-  resp, err := s.client.Do(ctx, req, nil)
+  rootRequest := &licenseEditRequestRoot{
+    LicenseEditRequest : editRequest,
+  }
+
+  resp, err := s.client.Do(ctx, req, rootRequest)
   if err != nil {
     return resp, err
   }

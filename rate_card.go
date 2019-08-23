@@ -19,7 +19,6 @@ type RateCardsService interface {
   // Get(context.Context, int, int) (*RateCard, *Response, error)
   Create(context.Context, *RateCardCreateRequest) (*RateCard, *Response, error)
   Delete(context.Context, *RateCardDeleteRequest, interface{}) (*Response, error)
-  // Delete(context.Context, *RateCardDeleteRequest, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]RateCard, *Response, error)
 }
 

@@ -19,7 +19,7 @@ import (
   "github.com/google/go-querystring/query"
 )
 
-var userAgent         = "onapp_sdk_go/" + sdk.String()
+var userAgent         = "onappgo/" + sdk.String()
 
 const (
   defaultBaseURL      = "http://69.168.237.17/"
@@ -69,6 +69,7 @@ type Client struct {
   HypervisorZones         HypervisorZonesService
   Licenses                LicensesService
   Roles                   RolesService
+  Configurations          ConfigurationsService
 
   // Optional function called after every successful request made to the DO APIs
   onRequestCompleted      RequestCompletionCallback
@@ -193,6 +194,7 @@ func NewClient(httpClient *http.Client, allowUnverifiedSSL bool) *Client {
   c.HypervisorZones       = &HypervisorZonesServiceOp{client: c}
   c.Licenses              = &LicensesServiceOp{client: c}
   c.Roles                 = &RolesServiceOp{client: c}
+  c.Configurations        = &ConfigurationsServiceOp{client: c}
 
   return c
 }
