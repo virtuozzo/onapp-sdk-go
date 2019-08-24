@@ -19,7 +19,7 @@ type InstancePackagesService interface {
   Get(context.Context, int) (*InstancePackage, *Response, error)
   Create(context.Context, *InstancePackageCreateRequest) (*InstancePackage, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]InstancePackage, *Response, error)
+  Edit(context.Context, int, *InstancePackageEditRequest) (*Response, error)
 }
 
 // InstancePackagesServiceOp handles communication with the Instance Package related methods of the
@@ -33,7 +33,7 @@ var _ InstancePackagesService = &InstancePackagesServiceOp{}
 // InstancePackage represents a InstancePackage
 type InstancePackage struct {
   Bandwidth      int         `json:"bandwidth,omitempty"`
-  BillingPlanIds []int       `json:"billing_plan_ids,omitempty"`
+  // BillingPlanIds []int       `json:"billing_plan_ids,omitempty"`
   BucketsIds     []int       `json:"buckets_ids,omitempty"`
   Cpus           int         `json:"cpus,omitempty"`
   CreatedAt      string      `json:"created_at,omitempty"`
@@ -48,11 +48,13 @@ type InstancePackage struct {
 // InstancePackageCreateRequest represents a request to create a InstancePackage
 type InstancePackageCreateRequest struct {
   Label     string `json:"label,omitempty"`
-  Cpus      string `json:"cpus,omitempty"`
-  Memory    string `json:"memory,omitempty"`
-  DiskSize  string `json:"disk_size,omitempty"`
-  Bandwidth string `json:"bandwidth,omitempty"`
+  Cpus      int    `json:"cpus,omitempty"`
+  Memory    int    `json:"memory,omitempty"`
+  DiskSize  int    `json:"disk_size,omitempty"`
+  Bandwidth int    `json:"bandwidth,omitempty"`
 }
+
+type InstancePackageEditRequest InstancePackageCreateRequest
 
 type instancePackageCreateRequestRoot struct {
   InstancePackageCreateRequest  *InstancePackageCreateRequest  `json:"instance_package"`
@@ -158,6 +160,24 @@ func (s *InstancePackagesServiceOp) Delete(ctx context.Context, id int, meta int
     return nil, err
   }
   log.Println("InstancePackage [Delete] req: ", req)
+
+  resp, err := s.client.Do(ctx, req, nil)
+  if err != nil {
+    return resp, err
+  }
+
+  return resp, err
+}
+
+// Edit InstancePackage.
+func (s *InstancePackagesServiceOp) Edit(ctx context.Context, id int, editRequest *InstancePackageEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", instancePackagesBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("InstancePackage [Edit]  req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
