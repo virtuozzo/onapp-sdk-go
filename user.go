@@ -46,7 +46,6 @@ type Roles struct {
 type User struct {
   ActivatedAt             string             `json:"activated_at,omitempty"`
   Avatar                  interface{}        `json:"avatar,omitempty"`
-  BillingPlanID           int                `json:"billing_plan_id,omitempty"`
   CdnAccountStatus        string             `json:"cdn_account_status,omitempty"`
   CdnStatus               string             `json:"cdn_status,omitempty"`
   CreatedAt               string             `json:"created_at,omitempty"`
@@ -98,7 +97,6 @@ type UserCreateRequest struct {
   LastName         string             `json:"last_name,omitempty"`
   Password         string             `json:"password,omitempty"`
   UserGroupID      int                `json:"user_group_id,omitempty"`
-  // BillingPlanID    int                `json:"billing_plan_id,omitempty"`
   BucketID         int                `json:"bucket_id,omitempty"`
   RoleIds          []string           `json:"role_ids,omitempty"`
   AdditionalFields []AdditionalFields `json:"additional_fields,omitempty"`
