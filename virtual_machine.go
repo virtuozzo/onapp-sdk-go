@@ -267,7 +267,7 @@ func (s *VirtualMachinesServiceOp) Create(ctx context.Context, createRequest *Vi
   root := new(virtualMachineRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.VirtualMachine, resp, err
@@ -466,24 +466,4 @@ func (s *VirtualMachinesServiceOp) ListFirewallRules(ctx context.Context, id int
   }
 
   return fwr, resp, err
-}
-
-// Debug - print formatted VirtualMachine structure
-func (obj VirtualMachine) Debug() {
-  fmt.Printf("                 ID: %d\n", obj.ID)
-  fmt.Printf("         Identifier: %s\n", obj.Identifier)
-  fmt.Printf("              Label: %s\n", obj.Label)
-  fmt.Printf("InitialRootPassword: %s\n", obj.InitialRootPassword)
-  fmt.Printf("      TemplateLabel: %s\n", obj.TemplateLabel)
-  fmt.Printf("          CreatedAt: %s\n", obj.CreatedAt)
-  fmt.Printf("              State: %s\n", obj.State)
-  fmt.Printf("              Built: %t\n", obj.Built)
-  fmt.Printf("             Booted: %t\n", obj.Booted)
-
-  for i := range obj.IPAddresses {
-    ip := obj.IPAddresses[i]["ip_address"]
-    fmt.Printf("\t   IPAddresses: [%d]\n", i)
-    ip.Debug()
-    fmt.Println("")
-  }
 }

@@ -17,7 +17,7 @@ type ConfigurationsService interface {
   Edit(context.Context, *Configuration) (*Response, error)
 }
 
-// ConfigurationServicesOp handles communication with the Configuration related methods of the
+// ConfigurationsServiceOp handles communication with the Configuration related methods of the
 // OnApp API.
 type ConfigurationsServiceOp struct {
   client *Client
@@ -272,7 +272,7 @@ func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *Configu
 
   resp, err := s.client.Do(ctx, req, rootRequest)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err

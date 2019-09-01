@@ -11,8 +11,8 @@ This OnApp Go is maintained by:
 Requirements
 ------------
 
--	[Terraform](https://www.terraform.io/downloads.html) 0.12+
--	[Go](https://golang.org/doc/install) 1.12.0 or higher
+* [Terraform](https://www.terraform.io/downloads.html) 0.12+
+* [Go](https://golang.org/doc/install) 1.12.0 or higher
 
 Developing the OnApp Go
 -----------------------

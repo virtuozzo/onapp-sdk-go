@@ -22,7 +22,7 @@ type AccessControlsService interface {
   // Edit(context.Context, int, *ListOptions) ([]AccessControl, *Response, error)
 }
 
-// AccessControlServicesOp handles communication with the AccessControl related methods of the
+// AccessControlsServiceOp handles communication with the AccessControl related methods of the
 // OnApp API.
 type AccessControlsServiceOp struct {
   client *Client
@@ -63,6 +63,10 @@ type AccessControlDeleteRequest AccessControlCreateRequest
 //   AccessControlDeleteRequest  *AccessControlDeleteRequest  `json:"access_control"`
 // }
 
+func (d AccessControlCreateRequest) String() string {
+  return godo.Stringify(d)
+}
+
 // List return AccessControls for Bucket.
 func (s *AccessControlsServiceOp) List(ctx context.Context, id int, opt *ListOptions) ([]AccessControl, *Response, error) {
   if id < 1 {
@@ -78,7 +82,6 @@ func (s *AccessControlsServiceOp) List(ctx context.Context, id int, opt *ListOpt
 
   var out []map[string]AccessControl
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -141,7 +144,7 @@ func (s *AccessControlsServiceOp) Delete(ctx context.Context, deleteRequest *Acc
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
@@ -321,11 +324,3 @@ func initializeAccessControlLimits() *AccessControlLimits {
   }
 }
 
-func (obj AccessControl) Debug() {
-  fmt.Printf("      BucketID: %d\n", obj.BucketID)
-  fmt.Printf("    ServerType: %s\n", obj.ServerType)
-  fmt.Printf("      TargetID: %d\n", obj.TargetID)
-  fmt.Printf("          Type: %s\n", obj.Type)
-  fmt.Printf("TimingStrategy: %s\n", obj.TimingStrategy)
-  fmt.Printf("    TargetName: %s\n", obj.TargetName)
-}

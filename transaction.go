@@ -165,7 +165,6 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
     parentType = v2.String()
   }
 
-
   trx, resp, err := s.client.Transactions.List(ctx, opt)
   if err != nil {
     return nil, resp, fmt.Errorf("ListByGroup.trx: %s", err)
@@ -339,20 +338,4 @@ func (trx Transaction) Unlucky() bool {
 // 'complete' or 'failed' or 'cancelled'
 func (trx Transaction) Finished() bool {
   return trx.Complete() || trx.Unlucky()
-}
-
-// Debug - print formatted Transaction structure
-func (trx Transaction) Debug() {
-  fmt.Printf("                    ID: %d\n", trx.ID)
-  fmt.Printf("            Identifier: %s\n", trx.Identifier)
-  fmt.Printf("                Action: %s\n", trx.Action)
-  fmt.Printf("    AssociatedObjectID: %d\n", trx.AssociatedObjectID)
-  fmt.Printf("  AssociatedObjectType: %s\n", trx.AssociatedObjectType)
-  fmt.Printf("                Status: %s\n", trx.Status)
-  fmt.Printf("             CreatedAt: %s\n", trx.CreatedAt)
-  fmt.Printf("              ParentID: %d\n", trx.ParentID)
-  fmt.Printf("            ParentType: %s\n", trx.ParentType)
-  fmt.Printf("               ChainID: %d\n", trx.ChainID)
-  fmt.Printf("DependentTransactionID: %d\n", trx.DependentTransactionID)
-  fmt.Printf("                Params: %+v\n", trx.Params)
 }

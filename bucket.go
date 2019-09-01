@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const bucketBasePath                = "billing/buckets"
+const bucketBasePath  = "billing/buckets"
 
 // BucketsService is an interface for interfacing with the Bucket
 // endpoints of the OnApp API
@@ -83,7 +83,6 @@ func (s *BucketsServiceOp) List(ctx context.Context, opt *ListOptions) ([]Bucket
 
   var out []map[string]Bucket
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -139,7 +138,7 @@ func (s *BucketsServiceOp) Create(ctx context.Context, createRequest *BucketCrea
   root := new(bucketRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.Bucket, resp, err
@@ -165,7 +164,7 @@ func (s *BucketsServiceOp) Delete(ctx context.Context, id int, meta interface{})
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
@@ -183,20 +182,8 @@ func (s *BucketsServiceOp) Edit(ctx context.Context, id int, editRequest *Bucket
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted Bucket structure
-func (obj Bucket) Debug() {
-  fmt.Printf("          ID: %d\n", obj.ID)
-  fmt.Printf("       Label: %s\n", obj.Label)
-  fmt.Printf("CurrencyCode: %s\n", obj.CurrencyCode)
-  fmt.Printf("   ShowPrice: %t\n", obj.ShowPrice)
-  fmt.Printf("   AllowsKms: %t\n", obj.AllowsKms)
-  fmt.Printf("   AllowsMak: %t\n", obj.AllowsMak)
-  fmt.Printf("   AllowsOwn: %t\n", obj.AllowsOwn)
-  fmt.Printf("MonthlyPrice: %f\n", obj.MonthlyPrice)
 }

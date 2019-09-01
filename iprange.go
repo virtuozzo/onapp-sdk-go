@@ -75,7 +75,6 @@ func (s *IPRangesServiceOp) List(ctx context.Context, net int, ipnet int, opt *L
 
   var out []map[string]IPRange
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -130,7 +129,7 @@ func (s *IPRangesServiceOp) Create(ctx context.Context, net int, ipnet int, crea
   root := new(ipRangeRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.IPRange, resp, err
@@ -157,19 +156,8 @@ func (s *IPRangesServiceOp) Delete(ctx context.Context, net int, ipnet int, id i
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted IPRange structure
-func (obj IPRange) Debug() {
-  fmt.Printf("            ID: %d\n", obj.ID)
-  fmt.Printf("  StartAddress: %s\n", obj.StartAddress)
-  fmt.Printf("    EndAddress: %s\n", obj.EndAddress)
-  fmt.Printf("DefaultGateway: %s\n", obj.DefaultGateway)
-  fmt.Printf("          Ipv4: %t\n", obj.Ipv4)
-  fmt.Printf("          Kind: %s\n", obj.Kind)
-  fmt.Printf("      IPNet.ID: %d\n", obj.IPNet.ID)
 }

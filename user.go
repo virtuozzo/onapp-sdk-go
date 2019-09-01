@@ -18,8 +18,7 @@ type UsersService interface {
   List(context.Context, *ListOptions) ([]User, *Response, error)
   Get(context.Context, int) (*User, *Response, error)
   Create(context.Context, *UserCreateRequest) (*User, *Response, error)
-  // Delete(context.Context, int) (*Response, error)
-  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
+  Delete(context.Context, int, interface{}) (*Response, error)
   // Edit(context.Context, int, *ListOptions) ([]User, *Response, error)
 }
 
@@ -103,7 +102,7 @@ type UserCreateRequest struct {
 }
 
 type userCreateRequestRoot struct {
-  UserCreateRequest  *UserCreateRequest  `json:"user"`
+  UserCreateRequest  *UserCreateRequest `json:"user"`
 }
 
 type userRoot struct {
@@ -129,7 +128,6 @@ func (s *UsersServiceOp) List(ctx context.Context, opt *ListOptions) ([]User, *R
 
   var out []map[string]User
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -184,75 +182,43 @@ func (s *UsersServiceOp) Create(ctx context.Context, createRequest *UserCreateRe
   root := new(userRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.User, resp, err
 }
 
-type DeleteUserRequest struct {
+type UserDeleteRequest struct {
   // Force int `url:"force"`
   Force int `json:"force,omitempty"`
 }
 
 // Delete User.
-func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
+func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Response, error) {
   if id < 1 {
-    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+    return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf("%s/%d%s", userBasePath, id, apiFormat)
-  path, err := addOptions(path, meta)
+  path, err := addOptions(path, nil)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
 
-  opts := &DeleteUserRequest{
+  opts := &UserDeleteRequest{
     Force : 1,
   }
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, opts)
   if err != nil {
-    return nil, nil, err
+    return nil, err
   }
   log.Println("User [Delete]  req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return nil, resp, err
+    return nil, err
   }
 
-  filter := struct{
-    ParentID    int
-    ParentType  string
-  }{
-    ParentID    : id,
-    ParentType  : "User",
-  }
-
-  return lastTransaction(ctx, s.client, filter)
-  // return lastTransaction(ctx, s.client, id, "User")
-}
-
-// Debug - print formatted User structure
-func (obj User) Debug() {
-  fmt.Printf("           ID: %d\n", obj.ID)
-  fmt.Printf("    FirstName: %s\n", obj.FirstName)
-  fmt.Printf("     LastName: %s\n", obj.LastName)
-  fmt.Printf("        Email: %s\n", obj.Email)
-  fmt.Printf("        Login: %s\n", obj.Login)
-  fmt.Printf("   Identifier: %s\n", obj.Identifier)
-  fmt.Printf("    CreatedAt: %s\n", obj.CreatedAt)
-  fmt.Printf("     UsedCpus: %d\n", obj.UsedCpus)
-  fmt.Printf("   UsedMemory: %d\n", obj.UsedMemory)
-  fmt.Printf("UsedCPUShares: %d\n", obj.UsedCPUShares)
-  fmt.Printf(" UsedDiskSize: %d\n", obj.UsedDiskSize)
-
-  if len(obj.Roles) > 0 {
-    for i := range obj.Roles {
-      r := obj.Roles[i].Role
-      fmt.Printf("\n\t      Role: [%d]\n", i)
-      r.Debug()
-    }
-  }
+  return resp, err
 }

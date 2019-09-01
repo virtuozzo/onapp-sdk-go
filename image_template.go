@@ -90,7 +90,6 @@ func (s *ImageTemplatesServiceOp) List(ctx context.Context, opt *ListOptions) ([
 
   var out []map[string]ImageTemplate
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -144,21 +143,8 @@ func (s *ImageTemplatesServiceOp) Delete(ctx context.Context, id int, meta inter
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted ImageTemplate structure
-func (obj ImageTemplate) Debug() {
-  fmt.Printf("                   ID: %d\n", obj.ID)
-  fmt.Printf("                Label: %s\n", obj.Label)
-  fmt.Printf("OperatingSystemDistro: %s\n", obj.OperatingSystemDistro)
-  fmt.Printf("              Version: %s\n", obj.Version)
-  fmt.Printf("             FileName: %s\n", obj.FileName)
-  fmt.Printf("            UpdatedAt: %s\n", obj.UpdatedAt)
-  fmt.Printf("                State: %s\n", obj.State)
-  fmt.Printf("            ManagerID: %s\n", obj.ManagerID)
-  fmt.Printf("               Locked: %t\n", obj.Locked)
 }

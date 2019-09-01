@@ -74,7 +74,6 @@ func (s *LocationGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([
 
   var out []map[string]LocationGroup
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -103,7 +102,7 @@ func (s *LocationGroupsServiceOp) Get(ctx context.Context, id int) (*LocationGro
   root := new(locationGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, resp, err
+    return nil, nil, err
   }
 
   return root.LocationGroup, resp, err
@@ -130,7 +129,7 @@ func (s *LocationGroupsServiceOp) Create(ctx context.Context, createRequest *Loc
   root := new(locationGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.LocationGroup, resp, err
@@ -156,19 +155,8 @@ func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta inter
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted LocationGroup structure
-func (obj LocationGroup) Debug() {
-  fmt.Printf("        ID: %d\n", obj.ID)
-  fmt.Printf("   Country: %s\n", obj.Country)
-  fmt.Printf("      City: %s\n", obj.City)
-  fmt.Printf("       Lat: %f\n", obj.Lat)
-  fmt.Printf("       Lng: %f\n", obj.Lng)
-  fmt.Printf("CdnEnabled: %t\n", obj.CdnEnabled)
-  fmt.Printf(" Federated: %t\n", obj.Federated)
 }

@@ -1,7 +1,7 @@
 package onappgo
 
 import (
-  "fmt"
+  // "fmt"
 )
 
 // Represent common structures for onappgo package
@@ -44,21 +44,6 @@ type IPAddressJoin struct {
   CreatedAt          string    `json:"created_at,omitempty"`
   UpdatedAt          string    `json:"updated_at,omitempty"`
   IPAddress          IPAddress `json:"ip_address,omitempty"`
-}
-
-// Debug - print formatted IPAddress structure
-func (obj IPAddress) Debug() {
-  fmt.Printf("\t            ID: %d\n", obj.ID)
-  fmt.Printf("\t       Address: %s\n", obj.Address)
-  fmt.Printf("\t     Broadcast: %s\n", obj.Broadcast)
-  fmt.Printf("\t       Gateway: %s\n", obj.Gateway)
-  // fmt.Printf("\t       Netmask: %s\n", obj.Netmask)
-  fmt.Printf("\tNetworkAddress: %s\n", obj.NetworkAddress)
-  fmt.Printf("\t        UserID: %d\n", obj.UserID)
-  fmt.Printf("\t     IPRangeID: %d\n", obj.IPRangeID)
-  // fmt.Printf("\t          Free: %t\n", obj.Free)
-  fmt.Printf("\t  HypervisorID: %d\n", obj.HypervisorID)
-  fmt.Printf("\t   LockVersion: %d\n", obj.LockVersion)
 }
 
 // ConnectionOptions for VMware hypervisor
@@ -142,18 +127,6 @@ type NetworkInterface struct {
   AdapterType         string      `json:"adapter_type,omitempty"`
 }
 
-// Debug - print formatted NetworkInterface structure
-func (obj NetworkInterface) Debug() {
-  fmt.Printf("                 ID: %d\n", obj.ID)
-  fmt.Printf("   VirtualMachineID: %d\n", obj.VirtualMachineID)
-  fmt.Printf("              Label: %s\n", obj.Label)
-  fmt.Printf("         Identifier: %s\n", obj.Identifier)
-  fmt.Printf("         MacAddress: %s\n", obj.MacAddress)
-  fmt.Printf("        AdapterType: %s\n", obj.AdapterType)
-  fmt.Printf("            Primary: %t\n", obj.Primary)
-  fmt.Printf("DefaultFirewallRule: %s\n", obj.DefaultFirewallRule)
-}
-
 // FirewallRule - 
 // https://docs.onapp.com/apim/latest/firewall-rules-for-vss
 type FirewallRule struct {
@@ -168,16 +141,6 @@ type FirewallRule struct {
   NetworkInterfaceID  int         `json:"network_interface_id,omitempty"`
 }
 
-// Debug - print formatted FirewallRule structure
-func (obj FirewallRule) Debug() {
-  fmt.Printf("      ID: %d\n", obj.ID)
-  fmt.Printf("Position: %d\n", obj.Position)
-  fmt.Printf(" Address: %s\n", obj.Address)
-  fmt.Printf(" Command: %s\n", obj.Command)
-  fmt.Printf("    Port: %d\n", obj.Port)
-  fmt.Printf("Protocol: %s\n", obj.Protocol)
-}
-
 // AssignIPAddress - used for assign IPAddress to the VirtualMachine or User
 type AssignIPAddress struct {
   Address             string  `json:"address,omitempty"`
@@ -189,16 +152,6 @@ type AssignIPAddress struct {
 
   // 6 or 4
   IPVersion           int     `json:"ip_version,omitempty"`
-}
-
-// Debug - print formatted AssignIPAddress structure
-func (obj AssignIPAddress) Debug() {
-  fmt.Printf("           Address: %s\n", obj.Address)
-  fmt.Printf("NetworkInterfaceID: %d\n", obj.NetworkInterfaceID)
-  fmt.Printf("           IPNetID: %d\n", obj.IPNetID)
-  fmt.Printf("         IPRangeID: %d\n", obj.IPRangeID)
-  fmt.Printf("            UsedIP: %d\n", obj.UsedIP)
-  fmt.Printf("             OwnIP: %d\n", obj.OwnIP)
 }
 
 type LimitResourceRoots     map[string]*Limits

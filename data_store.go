@@ -79,8 +79,8 @@ type DataStoreCreateRequest struct {
   DataStoreType     string            `json:"data_store_type,omitempty"`
   IscsiIP           string            `json:"iscsi_ip,omitempty"`
 
-  AdminAttributes   AdminAttributes   `json:"admin_attributes,omitempty"`
-  AccountAttributes AccountAttributes `json:"account_attributes,omitempty"`
+  // AdminAttributes   AdminAttributes   `json:"admin_attributes,omitempty"`
+  // AccountAttributes AccountAttributes `json:"account_attributes,omitempty"`
 }
 
 type dataStoreCreateRequestRoot struct {
@@ -110,7 +110,6 @@ func (s *DataStoresServiceOp) List(ctx context.Context, opt *ListOptions) ([]Dat
 
   var out []map[string]DataStore
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -164,7 +163,7 @@ func (s *DataStoresServiceOp) Create(ctx context.Context, createRequest *DataSto
   root := new(dataStoreRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.DataStore, resp, err
@@ -190,20 +189,8 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted DataStore structure
-func (obj DataStore) Debug() {
-  fmt.Printf("           ID: %d\n", obj.ID)
-  fmt.Printf("        Label: %s\n", obj.Label)
-  fmt.Printf("   Identifier: %s\n", obj.Identifier)
-  fmt.Printf("           IP: %s\n", obj.IP)
-  fmt.Printf("DataStoreType: %s\n", obj.DataStoreType)
-  fmt.Printf("      Default: %t\n", obj.Default)
-  fmt.Printf("      Enabled: %t\n", obj.Enabled)
-  fmt.Printf("DataStoreSize: %d\n", obj.DataStoreSize)
 }

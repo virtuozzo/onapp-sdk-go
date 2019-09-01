@@ -64,6 +64,10 @@ type RateCardDeleteRequest RateCardCreateRequest
 //   RateCardDeleteRequest  *RateCardDeleteRequest  `json:"rate_card"`
 // }
 
+func (d RateCardCreateRequest) String() string {
+  return godo.Stringify(d)
+}
+
 // List return RateCards for Bucket.
 func (s *RateCardsServiceOp) List(ctx context.Context, id int, opt *ListOptions) ([]RateCard, *Response, error) {
   if id < 1 {
@@ -79,7 +83,6 @@ func (s *RateCardsServiceOp) List(ctx context.Context, id int, opt *ListOptions)
 
   var out []map[string]RateCard
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -112,7 +115,7 @@ func (s *RateCardsServiceOp) Create(ctx context.Context, createRequest *RateCard
   root := new(rateCardRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.RateCard, resp, err
@@ -142,7 +145,7 @@ func (s *RateCardsServiceOp) Delete(ctx context.Context, deleteRequest *RateCard
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
@@ -382,11 +385,3 @@ func initializeRateCardsLimits() *RateCardLimits {
   }
 }
 
-func (obj RateCard) Debug() {
-  fmt.Printf("      BucketID: %d\n", obj.BucketID)
-  fmt.Printf("    ServerType: %s\n", obj.ServerType)
-  fmt.Printf("      TargetID: %d\n", obj.TargetID)
-  fmt.Printf("          Type: %s\n", obj.Type)
-  fmt.Printf("TimingStrategy: %s\n", obj.TimingStrategy)
-  fmt.Printf("    TargetName: %s\n", obj.TargetName)
-}

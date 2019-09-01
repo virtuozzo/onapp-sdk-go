@@ -117,7 +117,6 @@ func (s *HypervisorGroupsServiceOp) List(ctx context.Context, opt *ListOptions) 
 
   var out []map[string]HypervisorGroup
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -173,7 +172,7 @@ func (s *HypervisorGroupsServiceOp) Create(ctx context.Context, createRequest *H
   root := new(hypervisorGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.HypervisorGroup, resp, err
@@ -199,20 +198,8 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted HypervisorGroup structure
-func (obj HypervisorGroup) Debug() {
-  fmt.Printf("               ID: %d\n", obj.ID)
-  fmt.Printf("       Identifier: %s\n", obj.Identifier)
-  fmt.Printf("            Label: %s\n", obj.Label)
-  fmt.Printf("       ServerType: %s\n", obj.ServerType)
-  fmt.Printf("FederationEnabled: %t\n", obj.FederationEnabled)
-  fmt.Printf("     FederationID: %s\n", obj.FederationID)
-  fmt.Printf(" SupplierProvider: %s\n", obj.SupplierProvider)
-  fmt.Printf("  SupplierVersion: %s\n", obj.SupplierVersion)
 }

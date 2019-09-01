@@ -85,7 +85,6 @@ func (s *RolesServiceOp) List(ctx context.Context, opt *ListOptions) ([]Role, *R
 
   var out []map[string]Role
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -139,7 +138,7 @@ func (s *RolesServiceOp) Create(ctx context.Context, createRequest *RoleCreateRe
   root := new(roleRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.Role, resp, err
@@ -165,31 +164,8 @@ func (s *RolesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted Role structure
-func (obj Role) Debug() {
-  fmt.Printf("        ID: %d\n", obj.ID)
-  fmt.Printf("     Label: %s\n", obj.Label)
-  fmt.Printf("Identifier: %s\n", obj.Identifier)
-  fmt.Printf("UsersCount: %d\n", obj.UsersCount)
-  fmt.Printf("   Enabled: %t\n", obj.System)
-
-  if len(obj.Permissions) > 0 {
-    for i := range obj.Permissions {
-      p := obj.Permissions[i].Permission
-      fmt.Printf("\t\tPermission: [%d] -> ", i)
-      p.Debug()
-    }
-  }
-}
-
-// Debug - print formatted Permission structure
-func (obj Permission) Debug() {
-  fmt.Printf("ID: %d,\tIdentifier: %s\n", obj.ID, obj.Label)
-  fmt.Printf("ID: %d,\tLabel: %s\n", obj.ID, obj.Identifier)
 }

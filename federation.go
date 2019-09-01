@@ -134,63 +134,6 @@ type HypervisorZone struct {
   UserVirtualServerPricing UserVirtualServerPricing `json:"user_virtual_server_pricing,omitempty"`
 }
 
-// type HypervisorZonePricingAttributes struct {
-//   CPUMax         string `json:"cpu_max,omitempty"`
-//   CPUOn          string `json:"cpu_on,omitempty"`
-//   CPUOff         string `json:"cpu_off,omitempty"`
-//   CPUPriorityMax string `json:"cpu_priority_max,omitempty"`
-//   CPUPriorityOn  string `json:"cpu_priority_on,omitempty"`
-//   CPUPriorityOff string `json:"cpu_priority_off,omitempty"`
-//   MemoryMax      string `json:"memory_max,omitempty"`
-//   MemoryOn       string `json:"memory_on,omitempty"`
-//   MemoryOff      string `json:"memory_off,omitempty"`
-// }
-
-// type DataStoreZonePricingAttributes struct {
-//   DiskSizeMax    string `json:"disk_size_max,omitempty"`
-//   DiskSizeOn     string `json:"disk_size_on,omitempty"`
-//   DiskSizeOff    string `json:"disk_size_off,omitempty"`
-//   DataRead       string `json:"data_read,omitempty"`
-//   DataWrite      string `json:"data_write,omitempty"`
-//   InputRequests  string `json:"input_requests,omitempty"`
-//   OutputRequests string `json:"output_requests,omitempty"`
-// }
-
-// type NetworkZonePricingAttributes struct {
-//   IPAddressesMax string `json:"ip_addresses_max,omitempty"`
-//   IPAddressesOn  string `json:"ip_addresses_on,omitempty"`
-//   IPAddressesOff string `json:"ip_addresses_off,omitempty"`
-//   PortSpeedMax   string `json:"port_speed_max,omitempty"`
-//   PortSpeed      string `json:"port_speed,omitempty"`
-//   DataRxed       string `json:"data_rxed,omitempty"`
-//   DataSent       string `json:"data_sent,omitempty"`
-// }
-
-// type UserVirtualServerPricingAttributes struct {
-//   AutoScalingMax         string `json:"auto_scaling_max,omitempty"`
-//   AutoScaling            string `json:"auto_scaling,omitempty"`
-//   TemplateBackupStoreMax string `json:"template_backup_store_max,omitempty"`
-//   TemplateBackupStore    string `json:"template_backup_store,omitempty"`
-//   BackupDiskSizeMax      string `json:"backup_disk_size_max,omitempty"`
-//   BackupDiskSize         string `json:"backup_disk_size,omitempty"`
-//   TemplateDiskSizeMax    string `json:"template_disk_size_max,omitempty"`
-//   TemplateDiskSize       string `json:"template_disk_size,omitempty"`
-// }
-
-// type HypervisorZoneCreateRequest struct {
-//   Label                              string                             `json:"label,omitempty"`
-//   NetworkZoneLabel                   string                             `json:"network_zone_label,omitempty"`
-//   DataStoreZoneLabel                 string                             `json:"data_store_zone_label,omitempty"`
-//   NetworkZoneID                      int                                `json:"network_zone_id,omitempty"`
-//   DataStoreZoneID                    int                                `json:"data_store_zone_id,omitempty"`
-//   TemplateGroupID                    int                                `json:"template_group_id,omitempty"`
-//   Description                        string                             `json:"description,omitempty"`
-//   HypervisorZonePricingAttributes    HypervisorZonePricingAttributes    `json:"hypervisor_zone_pricing_attributes,omitempty"`
-//   DataStoreZonePricingAttributes     DataStoreZonePricingAttributes     `json:"data_store_zone_pricing_attributes,omitempty"`
-//   NetworkZonePricingAttributes       NetworkZonePricingAttributes       `json:"network_zone_pricing_attributes,omitempty"`
-//   UserVirtualServerPricingAttributes UserVirtualServerPricingAttributes `json:"user_virtual_server_pricing_attributes,omitempty"`
-// }
-
 type hypervisorZonesRoot struct {
   HypervisorZone  *HypervisorZone  `json:"hypervisor_zone"`
 }
@@ -210,7 +153,6 @@ func (s *HypervisorZonesServiceOp) List(ctx context.Context, opt *ListOptions) (
 
   var out []map[string]HypervisorZone
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -277,27 +219,4 @@ func (s *HypervisorZonesServiceOp) Delete(ctx context.Context, id int, meta inte
 
   return lastTransaction(ctx, s.client, filter)
   // return lastTransaction(ctx, s.client, id, "HypervisorZone")
-}
-
-// Debug - print formatted HypervisorZone structure
-func (obj HypervisorZone) Debug() {
-  fmt.Printf("           Label: %s\n", obj.Label)
-  fmt.Printf("    ProviderName: %s\n", obj.ProviderName)
-  fmt.Printf("         Country: %s\n", obj.Country)
-  fmt.Printf("            City: %s\n", obj.City)
-  fmt.Printf("UptimePercentage: %d\n", obj.UptimePercentage)
-  fmt.Printf("    FederationID: %s\n", obj.FederationID)
-
-  for i := range obj.Certificates {
-    cert := obj.Certificates[i].Certificate
-    fmt.Printf("\tCertificate: [%d]\n", i)
-    cert.Debug()
-    fmt.Println("")
-  }
-}
-
-// Debug - print formatted Certificate structure
-func (obj Certificate) Debug() {
-  fmt.Printf("\t       Name: %s\n", obj.Name)
-  fmt.Printf("\t   ExpireAt: %s\n", obj.ExpireAt)
 }

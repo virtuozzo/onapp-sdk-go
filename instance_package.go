@@ -33,7 +33,6 @@ var _ InstancePackagesService = &InstancePackagesServiceOp{}
 // InstancePackage represents a InstancePackage
 type InstancePackage struct {
   Bandwidth      int         `json:"bandwidth,omitempty"`
-  // BillingPlanIds []int       `json:"billing_plan_ids,omitempty"`
   BucketsIds     []int       `json:"buckets_ids,omitempty"`
   Cpus           int         `json:"cpus,omitempty"`
   CreatedAt      string      `json:"created_at,omitempty"`
@@ -83,7 +82,6 @@ func (s *InstancePackagesServiceOp) List(ctx context.Context, opt *ListOptions) 
 
   var out []map[string]InstancePackage
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -137,7 +135,7 @@ func (s *InstancePackagesServiceOp) Create(ctx context.Context, createRequest *I
   root := new(instancePackageRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.InstancePackage, resp, err
@@ -163,7 +161,7 @@ func (s *InstancePackagesServiceOp) Delete(ctx context.Context, id int, meta int
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
@@ -181,18 +179,8 @@ func (s *InstancePackagesServiceOp) Edit(ctx context.Context, id int, editReques
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted InstancePackage structure
-func (obj InstancePackage) Debug() {
-  fmt.Printf("             ID: %d\n", obj.ID)
-  fmt.Printf("          Label: %s\n", obj.Label)
-  fmt.Printf("      Bandwidth: %d\n", obj.Bandwidth)
-  fmt.Printf("           Cpus: %d\n", obj.Cpus)
-  fmt.Printf("       DiskSize: %d\n", obj.DiskSize)
-  fmt.Printf("         Memory: %d\n", obj.Memory)
 }

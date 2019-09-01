@@ -239,7 +239,6 @@ func (s *HypervisorsServiceOp) List(ctx context.Context, opt *ListOptions) ([]Hy
 
   var out []map[string]Hypervisor
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -295,7 +294,7 @@ func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *Hyperv
   root := new(hypervisorRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.Hypervisor, resp, err
@@ -321,7 +320,7 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
@@ -420,17 +419,3 @@ func hypervisorPath(mac string, serverType string) string {
   return ""
 }
 
-// Debug - print formatted Hypervisor structure
-func (obj Hypervisor) Debug() {
-  fmt.Printf("            ID: %d\n", obj.ID)
-  fmt.Printf("         Label: %s\n", obj.Label)
-  fmt.Printf("     IPAddress: %s\n", obj.IPAddress)
-  fmt.Printf("    ServerType: %s\n", obj.ServerType)
-  fmt.Printf("HypervisorType: %s\n", obj.HypervisorType)
-  fmt.Printf("          Host: %s\n", obj.Host)
-  fmt.Printf("           Mac: %s\n", obj.Mac)
-  fmt.Printf("        Online: %t\n", obj.Online)
-  fmt.Printf("     TotalCpus: %d\n", obj.TotalCpus)
-  fmt.Printf("      TotalMem: %d\n", obj.TotalMem)
-  fmt.Printf("        Uptime: %s\n", obj.Uptime)
-}

@@ -92,7 +92,6 @@ func (s *BackupResourcesServiceOp) List(ctx context.Context, opt *ListOptions) (
 
   var out []map[string]BackupResource
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -173,18 +172,8 @@ func (s *BackupResourcesServiceOp) Delete(ctx context.Context, id int, meta inte
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted BackupResource structure
-func (obj BackupResource) Debug() {
-  fmt.Printf("            ID: %d\n", obj.ID)
-  fmt.Printf("         Label: %s\n", obj.Label)
-  fmt.Printf("   PrimaryHost: %s\n", obj.PrimaryHost)
-  fmt.Printf("      Username: %s\n", obj.Username)
-  fmt.Printf("ResourceZoneID: %d\n", obj.ResourceZoneID)
-  fmt.Printf("       Enabled: %t\n", obj.Enabled)
 }

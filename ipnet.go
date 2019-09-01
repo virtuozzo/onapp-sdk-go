@@ -83,7 +83,6 @@ func (s *IPNetsServiceOp) List(ctx context.Context, net int, opt *ListOptions) (
 
   var out []map[string]IPNet
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -138,7 +137,7 @@ func (s *IPNetsServiceOp) Create(ctx context.Context, net int, createRequest *IP
   root := new(ipNetRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.IPNet, resp, err
@@ -165,21 +164,8 @@ func (s *IPNetsServiceOp) Delete(ctx context.Context, net int, id int, meta inte
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted IPNet structure
-func (obj IPNet) Debug() {
-  fmt.Printf("            ID: %d\n", obj.ID)
-  fmt.Printf("NetworkAddress: %s\n", obj.NetworkAddress)
-  fmt.Printf("   NetworkMask: %d\n", obj.NetworkMask)
-  fmt.Printf("DefaultGateway: %s\n", obj.DefaultGateway)
-  fmt.Printf("         Label: %s\n", obj.Label)
-  fmt.Printf("          Ipv4: %t\n", obj.Ipv4)
-  fmt.Printf("          Kind: %s\n", obj.Kind)
-  fmt.Printf("       Enabled: %t\n", obj.Enabled)
-  fmt.Printf("    Network.ID: %d\n", obj.Network.ID)
 }

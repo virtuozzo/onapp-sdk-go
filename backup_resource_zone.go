@@ -153,15 +153,8 @@ func (s *BackupResourceZonesServiceOp) Delete(ctx context.Context, id int, meta 
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted BackupResourceZone structure
-func (obj BackupResourceZone) Debug() {
-  fmt.Printf("             ID: %d\n", obj.ID)
-  fmt.Printf("          Label: %s\n", obj.Label)
-  fmt.Printf("LocationGroupID: %d\n", obj.LocationGroupID)
 }

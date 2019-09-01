@@ -18,7 +18,7 @@ type DisksService interface {
   List(context.Context, *ListOptions) ([]Disk, *Response, error)
   Get(context.Context, int) (*Disk, *Response, error)
   Create(context.Context, *DiskCreateRequest) (*Disk, *Response, error)
-  Delete(context.Context, int) (*Response, error)
+  Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
   // Edit(context.Context, int, *ListOptions) ([]Disk, *Response, error)
 }
 
@@ -112,7 +112,6 @@ func (s *DisksServiceOp) List(ctx context.Context, opt *ListOptions) ([]Disk, *R
 
   var out []map[string]Disk
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -168,52 +167,43 @@ func (s *DisksServiceOp) Create(ctx context.Context, createRequest *DiskCreateRe
   root := new(diskRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.Disk, resp, err
 }
 
 // Delete Disk.
-func (s *DisksServiceOp) Delete(ctx context.Context, id int/*, meta interface{}*/) (*Response, error) {
+func (s *DisksServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Transaction, *Response, error) {
   if id < 1 {
-    return nil, godo.NewArgError("id", "cannot be less than 1")
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf("%s/%d%s", diskBasePath, id, apiFormat)
 
-  // path, err := addOptions(path, meta)
-  // if err != nil {
-  //   return nil, err
-  // }
+  path, err := addOptions(path, meta)
+  if err != nil {
+    return nil, nil, err
+  }
 
   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
   if err != nil {
-    return nil, err
+    return nil, nil, err
   }
   log.Println("Disk [Delete]  req: ", req)
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, resp, err
   }
 
-  return resp, err
-}
+  filter := struct{
+    ParentID    int
+    ParentType  string
+  }{
+    ParentID    : id,
+    ParentType  : "Disk",
+  }
 
-// Debug - print formatted Disk structure
-func (obj Disk) Debug() {
-  fmt.Printf("              ID: %d\n", obj.ID)
-  fmt.Printf("      Identifier: %s\n", obj.Identifier)
-  fmt.Printf("VirtualMachineID: %d\n", obj.VirtualMachineID)
-  fmt.Printf("     DataStoreID: %d\n", obj.DataStoreID)
-  fmt.Printf("           Built: %t\n", obj.Built)
-  fmt.Printf("           Label: %s\n", obj.Label)
-  fmt.Printf("      FileSystem: %s\n", obj.FileSystem)
-  fmt.Printf("       CreatedAt: %s\n", obj.CreatedAt)
-  fmt.Printf("          Locked: %t\n", obj.Locked)
-  fmt.Printf("        DiskSize: %d\n", obj.DiskSize)
-  fmt.Printf("    DiskVMNumber: %d\n", obj.DiskVMNumber)
-  fmt.Printf("      MountPoint: %s\n", obj.MountPoint)
-  fmt.Printf("         Mounted: %t\n", obj.Mounted)
+  return lastTransaction(ctx, s.client, filter)
 }

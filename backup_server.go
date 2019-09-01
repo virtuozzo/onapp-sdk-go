@@ -96,7 +96,6 @@ func (s *BackupServersServiceOp) List(ctx context.Context, opt *ListOptions) ([]
 
   var out []map[string]BackupServer
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -151,7 +150,7 @@ func (s *BackupServersServiceOp) Create(ctx context.Context, createRequest *Back
   root := new(backupServerRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.BackupServer, resp, err
@@ -177,20 +176,9 @@ func (s *BackupServersServiceOp) Delete(ctx context.Context, id int, meta interf
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
 }
 
-// Debug - print formatted BackupServer structure
-func (obj BackupServer) Debug() {
-  fmt.Printf("             ID: %d\n", obj.ID)
-  fmt.Printf("          Label: %s\n", obj.Label)
-  fmt.Printf("       Capacity: %d\n", obj.Capacity)
-  fmt.Printf("      IPAddress: %s\n", obj.IPAddress)
-  fmt.Printf("BackupIPAddress: %s\n", obj.BackupIPAddress)
-  fmt.Printf("        Enabled: %t\n", obj.Enabled)
-  fmt.Printf("         Uptime: %s\n", obj.Uptime)
-  fmt.Printf("      UpdatedAt: %s\n", obj.UpdatedAt)
-}

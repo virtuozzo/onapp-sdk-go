@@ -89,7 +89,6 @@ func (s *DataStoreGroupsServiceOp) List(ctx context.Context, opt *ListOptions) (
 
   var out []map[string]DataStoreGroup
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -143,7 +142,7 @@ func (s *DataStoreGroupsServiceOp) Create(ctx context.Context, createRequest *Da
   root := new(dataStoreGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.DataStoreGroup, resp, err
@@ -169,20 +168,8 @@ func (s *DataStoreGroupsServiceOp) Delete(ctx context.Context, id int, meta inte
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted DataStoreGroup structure
-func (obj DataStoreGroup) Debug() {
-  fmt.Printf("               ID: %d\n", obj.ID)
-  fmt.Printf("            Label: %s\n", obj.Label)
-  fmt.Printf("       Identifier: %s\n", obj.Identifier)
-  fmt.Printf("       ServerType: %s\n", obj.ServerType)
-  fmt.Printf(" DefaultBurstIops: %d\n", obj.DefaultBurstIops)
-  fmt.Printf("      MinDiskSize: %d\n", obj.MinDiskSize)
-  fmt.Printf("FederationEnabled: %t\n", obj.FederationEnabled)
-  fmt.Printf("           Closed: %t\n", obj.Closed)
 }

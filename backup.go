@@ -1,7 +1,6 @@
 package onappgo
 
 import (
-  "fmt"
 )
 
 // Backup represent VirtualMachine backup
@@ -34,19 +33,4 @@ type Backup struct {
   UpdatedAt                string      `json:"updated_at,omitempty"`
   UserID                   int         `json:"user_id,omitempty"`
   VolumeID                 int         `json:"volume_id,omitempty"`
-}
-
-// Debug - print formatted Backup structure
-func (obj Backup) Debug() {
-  fmt.Printf("                   ID: %d\n",   obj.ID)
-  fmt.Printf("               UserID: %d\n",   obj.UserID)
-  fmt.Printf("           Identifier: %s\n",   obj.Identifier)
-  fmt.Printf("          MinDiskSize: %dGB\n", obj.MinDiskSize)
-  fmt.Printf("      OperatingSystem: %s\n",   obj.OperatingSystem)
-  fmt.Printf("OperatingSystemDistro: %s\n",   obj.OperatingSystemDistro)
-  fmt.Printf("            CreatedAt: %s\n",   obj.CreatedAt)
-  fmt.Printf("           TemplateID: %d\n",   obj.TemplateID)
-  fmt.Printf("        DataStoreType: %s\n",   obj.DataStoreType)
-  fmt.Printf("           BackupSize: %d\n",   obj.BackupSize)
-  fmt.Printf("            Initiated: %s\n",   obj.Initiated)
 }

@@ -85,7 +85,6 @@ func (s *BackupServerGroupsServiceOp) List(ctx context.Context, opt *ListOptions
 
   var out []map[string]BackupServerGroup
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -140,7 +139,7 @@ func (s *BackupServerGroupsServiceOp) Create(ctx context.Context, createRequest 
   root := new(backupServerGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.BackupServerGroup, resp, err
@@ -166,20 +165,8 @@ func (s *BackupServerGroupsServiceOp) Delete(ctx context.Context, id int, meta i
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted BackupServerGroup structure
-func (obj BackupServerGroup) Debug() {
-  fmt.Printf("             ID: %d\n", obj.ID)
-  fmt.Printf("          Label: %s\n", obj.Label)
-  fmt.Printf("     Identifier: %s\n", obj.Identifier)
-  fmt.Printf("     ServerType: %s\n", obj.ServerType)
-  fmt.Printf("   HypervisorID: %d\n", obj.HypervisorID)
-  fmt.Printf("   FederationID: %d\n", obj.FederationID)
-  fmt.Printf("LocationGroupID: %d\n", obj.LocationGroupID)
-  fmt.Printf("         Traded: %t\n", obj.Traded)
 }

@@ -98,7 +98,6 @@ func (s *NetworksServiceOp) List(ctx context.Context, opt *ListOptions) ([]Netwo
 
   var out []map[string]Network
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -152,7 +151,7 @@ func (s *NetworksServiceOp) Create(ctx context.Context, createRequest *NetworkCr
   root := new(networkRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.Network, resp, err
@@ -178,20 +177,8 @@ func (s *NetworksServiceOp) Delete(ctx context.Context, id int, meta interface{}
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted Network structure
-func (obj Network) Debug() {
-  fmt.Printf("        ID: %d\n", obj.ID)
-  fmt.Printf("     Label: %s\n", obj.Label)
-  fmt.Printf("Identifier: %s\n", obj.Identifier)
-  fmt.Printf("   Gateway: %s\n", obj.Gateway)
-  fmt.Printf("   Netmask: %s\n", obj.Netmask)
-  fmt.Printf("      Type: %s\n", obj.Type)
-  fmt.Printf("   Enabled: %t\n", obj.Enabled)
-  fmt.Printf("   IsNated: %t\n", obj.IsNated)
 }

@@ -86,7 +86,6 @@ func (s *NetworkGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([]
 
   var out []map[string]NetworkGroup
   resp, err := s.client.Do(ctx, req, &out)
-
   if err != nil {
     return nil, resp, err
   }
@@ -114,7 +113,7 @@ func (s *NetworkGroupsServiceOp) Get(ctx context.Context, id int) (*NetworkGroup
   root := new(networkZoneRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, resp, err
+    return nil, nil, err
   }
 
   return root.NetworkGroup, resp, err
@@ -140,7 +139,7 @@ func (s *NetworkGroupsServiceOp) Create(ctx context.Context, createRequest *Netw
   root := new(networkZoneRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.NetworkGroup, resp, err
@@ -166,22 +165,8 @@ func (s *NetworkGroupsServiceOp) Delete(ctx context.Context, id int, meta interf
 
   resp, err := s.client.Do(ctx, req, nil)
   if err != nil {
-    return resp, err
+    return nil, err
   }
 
   return resp, err
-}
-
-// Debug - print formatted NetworkGroup structure
-func (obj NetworkGroup) Debug() {
-  fmt.Printf("               ID: %d\n", obj.ID)
-  fmt.Printf("            Label: %s\n", obj.Label)
-  fmt.Printf("       Identifier: %s\n", obj.Identifier)
-  fmt.Printf("     HypervisorID: %d\n", obj.HypervisorID)
-  fmt.Printf("     FederationID: %d\n", obj.FederationID)
-  fmt.Printf("       ServerType: %s\n", obj.ServerType)
-  fmt.Printf("           Closed: %t\n", obj.Closed)
-  fmt.Printf("           Traded: %t\n", obj.Traded)
-  fmt.Printf("PreconfiguredOnly: %t\n", obj.PreconfiguredOnly)
-  fmt.Printf("        UpdatedAt: %s\n", obj.UpdatedAt)
 }
