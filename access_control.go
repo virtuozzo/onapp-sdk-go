@@ -114,7 +114,7 @@ func (s *AccessControlsServiceOp) Create(ctx context.Context, createRequest *Acc
   root := new(accessControlRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.AccessControl, resp, err
@@ -142,12 +142,7 @@ func (s *AccessControlsServiceOp) Delete(ctx context.Context, deleteRequest *Acc
   }
   log.Println("AccessControl [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }
 
 type Limits map[string]interface{}

@@ -318,12 +318,7 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
   }
   log.Println("Hypervisor [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }
 
 // DataStoreJoins - add Data Store to the Hypervisor
@@ -399,12 +394,7 @@ func (s *HypervisorsServiceOp) BackupServerJoins(ctx context.Context, hvID int, 
 
   fmt.Println("BackupServerJoins [Create] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }
 
 func hypervisorPath(mac string, serverType string) string {

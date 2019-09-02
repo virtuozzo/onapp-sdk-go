@@ -127,7 +127,7 @@ func (s *BackupResourceZonesServiceOp) Create(ctx context.Context, createRequest
   root := new(backupResourceZoneRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.BackupResourceZone, resp, err
@@ -151,10 +151,5 @@ func (s *BackupResourceZonesServiceOp) Delete(ctx context.Context, id int, meta 
   }
   log.Println("BackupResourceZone [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }

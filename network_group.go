@@ -113,7 +113,7 @@ func (s *NetworkGroupsServiceOp) Get(ctx context.Context, id int) (*NetworkGroup
   root := new(networkZoneRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.NetworkGroup, resp, err
@@ -163,10 +163,5 @@ func (s *NetworkGroupsServiceOp) Delete(ctx context.Context, id int, meta interf
   }
   log.Println("NetworkGroup [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }

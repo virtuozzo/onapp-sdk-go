@@ -154,10 +154,5 @@ func (s *IPRangesServiceOp) Delete(ctx context.Context, net int, ipnet int, id i
   }
   log.Println("IPRange [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }

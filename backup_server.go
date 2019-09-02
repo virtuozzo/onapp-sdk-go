@@ -174,11 +174,6 @@ func (s *BackupServersServiceOp) Delete(ctx context.Context, id int, meta interf
   }
   log.Println("BackupServer [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }
 

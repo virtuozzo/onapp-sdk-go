@@ -102,7 +102,7 @@ func (s *LocationGroupsServiceOp) Get(ctx context.Context, id int) (*LocationGro
   root := new(locationGroupRoot)
   resp, err := s.client.Do(ctx, req, root)
   if err != nil {
-    return nil, nil, err
+    return nil, resp, err
   }
 
   return root.LocationGroup, resp, err
@@ -153,10 +153,5 @@ func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta inter
   }
   fmt.Println("LocationGroup [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }

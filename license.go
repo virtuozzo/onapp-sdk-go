@@ -86,10 +86,5 @@ func (s *LicensesServiceOp) Edit(ctx context.Context, editRequest *LicenseEditRe
     LicenseEditRequest : editRequest,
   }
 
-  resp, err := s.client.Do(ctx, req, rootRequest)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, rootRequest)
 }

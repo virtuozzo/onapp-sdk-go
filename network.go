@@ -175,10 +175,5 @@ func (s *NetworksServiceOp) Delete(ctx context.Context, id int, meta interface{}
   }
   fmt.Println("Network [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }

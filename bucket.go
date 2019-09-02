@@ -162,12 +162,7 @@ func (s *BucketsServiceOp) Delete(ctx context.Context, id int, meta interface{})
   }
   log.Println("Bucket [Delete]  req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }
 
 // Edit Bucket.
@@ -180,10 +175,5 @@ func (s *BucketsServiceOp) Edit(ctx context.Context, id int, editRequest *Bucket
   }
   log.Println("Bucket [Edit]  req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }

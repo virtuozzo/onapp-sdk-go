@@ -187,10 +187,5 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
   }
   log.Println("DataStore [Delete] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
-  if err != nil {
-    return nil, err
-  }
-
-  return resp, err
+  return s.client.Do(ctx, req, nil)
 }
