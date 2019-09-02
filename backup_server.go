@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const backupServersBasePath = "settings/backup_servers"
+const backupServersBasePath string = "settings/backup_servers"
 
 // BackupServersService is an interface for interfacing with the Backup Server
 // endpoints of the OnApp API

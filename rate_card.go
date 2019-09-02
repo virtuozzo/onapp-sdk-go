@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const bucketRateCardsBasePath = "billing/buckets/%d/rate_cards"
+const bucketRateCardsBasePath string = "billing/buckets/%d/rate_cards"
 
 // RateCardsService is an interface for interfacing with the RateCard
 // endpoints of the OnApp API

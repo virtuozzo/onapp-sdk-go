@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const ipRangeBasePath = "settings/networks/%d/ip_nets/%d/ip_ranges"
+const ipRangesBasePath string = "settings/networks/%d/ip_nets/%d/ip_ranges"
 
 // IPRangesService is an interface for interfacing with the IPRange
 // endpoints of the OnApp API
@@ -62,7 +62,7 @@ func (d IPRangeCreateRequest) String() string {
 
 // List all IPRanges.
 func (s *IPRangesServiceOp) List(ctx context.Context, net int, ipnet int, opt *ListOptions) ([]IPRange, *Response, error) {
-  path := fmt.Sprintf(ipRangeBasePath, net, ipnet) + apiFormat
+  path := fmt.Sprintf(ipRangesBasePath, net, ipnet) + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -93,7 +93,7 @@ func (s *IPRangesServiceOp) Get(ctx context.Context, net int, ipnet int, id int)
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
   
-  path := fmt.Sprintf(ipRangeBasePath, net, ipnet)
+  path := fmt.Sprintf(ipRangesBasePath, net, ipnet)
   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -115,7 +115,7 @@ func (s *IPRangesServiceOp) Create(ctx context.Context, net int, ipnet int, crea
     return nil, nil, godo.NewArgError("Network createRequest", "cannot be nil")
   }
 
-  path := fmt.Sprintf(ipRangeBasePath, net, ipnet)
+  path := fmt.Sprintf(ipRangesBasePath, net, ipnet)
   rootRequest := &ipRangeCreateRequestRoot {
     IPRangeCreateRequest: createRequest,
   }
@@ -141,7 +141,7 @@ func (s *IPRangesServiceOp) Delete(ctx context.Context, net int, ipnet int, id i
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(ipRangeBasePath, net, ipnet)
+  path := fmt.Sprintf(ipRangesBasePath, net, ipnet)
   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {

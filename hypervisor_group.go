@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const hypervisorGroupBasePath = "settings/hypervisor_zones"
+const hypervisorGroupsBasePath string = "settings/hypervisor_zones"
 
 // HypervisorGroupsService is an interface for interfacing with the Compute Zone
 // endpoints of the OnApp API
@@ -104,7 +104,7 @@ func (d HypervisorGroupCreateRequest) String() string {
 
 // List all HypervisorGroup.
 func (s *HypervisorGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([]HypervisorGroup, *Response, error) {
-  path := hypervisorGroupBasePath + apiFormat
+  path := hypervisorGroupsBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -135,7 +135,7 @@ func (s *HypervisorGroupsServiceOp) Get(ctx context.Context, id int) (*Hyperviso
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", hypervisorGroupBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", hypervisorGroupsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -157,7 +157,7 @@ func (s *HypervisorGroupsServiceOp) Create(ctx context.Context, createRequest *H
     return nil, nil, godo.NewArgError("HypervisorZone createRequest", "cannot be nil")
   }
 
-  path := hypervisorGroupBasePath + apiFormat
+  path := hypervisorGroupsBasePath + apiFormat
 
   rootRequest := &hypervisorGroupCreateRequestRoot{
     HypervisorGroupCreateRequest : createRequest,
@@ -184,7 +184,7 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", hypervisorGroupBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", hypervisorGroupsBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err

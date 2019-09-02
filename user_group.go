@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const userGroupsBasePath = "user_groups"
+const userGroupsBasePath string = "user_groups"
 
 // UserGroupsService is an interface for interfacing with the UserGroup
 // endpoints of the OnApp API
@@ -102,7 +102,7 @@ func (s *UserGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([]Use
 
   arr := make([]UserGroup, len(out))
   for i := range arr {
-    arr[i] = out[i]["user"]
+    arr[i] = out[i]["user_group"]
   }
 
   return arr, resp, err

@@ -6,8 +6,8 @@ import (
   "fmt"
 )
 
-const configurationsBasePath      = "settings/configuration"
-const configurationsEditBasePath  = "settings"
+const configurationsBasePath      string = "settings/configuration"
+const configurationsEditBasePath  string = "settings"
 
 // ConfigurationsService is an interface for interfacing with the Configurations
 // endpoints of the OnApp API

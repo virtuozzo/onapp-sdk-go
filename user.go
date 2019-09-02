@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const userBasePath = "users"
+const usersBasePath string = "users"
 
 // UsersService is an interface for interfacing with the User
 // endpoints of the OnApp API
@@ -115,7 +115,7 @@ func (d UserCreateRequest) String() string {
 
 // List all Users.
 func (s *UsersServiceOp) List(ctx context.Context, opt *ListOptions) ([]User, *Response, error) {
-  path := userBasePath + apiFormat
+  path := usersBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -146,7 +146,7 @@ func (s *UsersServiceOp) Get(ctx context.Context, id int) (*User, *Response, err
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", userBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", usersBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -168,7 +168,7 @@ func (s *UsersServiceOp) Create(ctx context.Context, createRequest *UserCreateRe
     return nil, nil, godo.NewArgError("createRequest", "cannot be nil")
   }
 
-  path := userBasePath + apiFormat
+  path := usersBasePath + apiFormat
   rootRequest := &userCreateRequestRoot{
     UserCreateRequest : createRequest,
   }
@@ -199,7 +199,7 @@ func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", userBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", usersBasePath, id, apiFormat)
   path, err := addOptions(path, nil)
   if err != nil {
     return nil, err

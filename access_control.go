@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const bucketAccessControlsBasePath  = "billing/buckets/%d/access_controls"
+const bucketAccessControlsBasePath string = "billing/buckets/%d/access_controls"
 
 // AccessControlsService is an interface for interfacing with the AccessControls
 // endpoints of the OnApp API

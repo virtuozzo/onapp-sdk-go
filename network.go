@@ -8,7 +8,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const networkBasePath = "settings/networks"
+const networksBasePath string = "settings/networks"
 
 // NetworksService is an interface for interfacing with the Network
 // endpoints of the OnApp API
@@ -85,7 +85,7 @@ func (d NetworkCreateRequest) String() string {
 
 // List all Networks.
 func (s *NetworksServiceOp) List(ctx context.Context, opt *ListOptions) ([]Network, *Response, error) {
-  path := networkBasePath + apiFormat
+  path := networksBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -116,7 +116,7 @@ func (s *NetworksServiceOp) Get(ctx context.Context, id int) (*Network, *Respons
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", networkBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", networksBasePath, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -137,7 +137,7 @@ func (s *NetworksServiceOp) Create(ctx context.Context, createRequest *NetworkCr
     return nil, nil, godo.NewArgError("Network createRequest", "cannot be nil")
   }
 
-  path := networkBasePath + apiFormat
+  path := networksBasePath + apiFormat
   rootRequest := &networkCreateRequestRoot{
     NetworkCreateRequest: createRequest,
   }
@@ -163,7 +163,7 @@ func (s *NetworksServiceOp) Delete(ctx context.Context, id int, meta interface{}
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", networkBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", networksBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err

@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const ipNetsBasePath = "settings/networks/%d/ip_nets"
+const ipNetsBasePath string = "settings/networks/%d/ip_nets"
 
 // IPNetsService is an interface for interfacing with the IPNet
 // endpoints of the OnApp API

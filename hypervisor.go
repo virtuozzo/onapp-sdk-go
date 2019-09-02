@@ -11,13 +11,13 @@ import (
 
 // Xen/KVM, VMware - CRUD
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
-const hypervisorBasePath          = "settings/hypervisors"
-const hypervisorDataSoreJoins     = "settings/hypervisors/%d/data_store_joins"
-const hypervisorNetworkJoins      = "settings/hypervisors/%d/network_joins"
-const hypervisorBackupServerJoins = "settings/hypervisors/%d/backup_server_joins"
+const hypervisorsBasePath          string = "settings/hypervisors"
+const hypervisorsDataSoreJoins     string = "settings/hypervisors/%d/data_store_joins"
+const hypervisorsNetworkJoins      string = "settings/hypervisors/%d/network_joins"
+const hypervisorsBackupServerJoins string = "settings/hypervisors/%d/backup_server_joins"
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
-const cloudBootHypervisorBasePath = "settings/assets/%s/hypervisors"
+const cloudBootHypervisorsBasePath string = "settings/assets/%s/hypervisors"
 
 // HypervisorsService is an interface for interfacing with the Hypervisor
 // endpoints of the OnApp API
@@ -226,7 +226,7 @@ func (d HypervisorCreateRequest) String() string {
 
 // List all Hypervisors.
 func (s *HypervisorsServiceOp) List(ctx context.Context, opt *ListOptions) ([]Hypervisor, *Response, error) {
-  path := hypervisorBasePath + apiFormat
+  path := hypervisorsBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -257,7 +257,7 @@ func (s *HypervisorsServiceOp) Get(ctx context.Context, id int) (*Hypervisor, *R
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", hypervisorBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", hypervisorsBasePath, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -280,7 +280,7 @@ func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *Hyperv
 
   // mac := "00:00:00:00:00:00"
   // path := hypervisorPath(mac, createRequest.ServerType)
-  path := hypervisorBasePath + apiFormat
+  path := hypervisorsBasePath + apiFormat
   rootRequest := &hypervisorCreateRequestRoot{
     HypervisorCreateRequest: createRequest,
   }
@@ -306,7 +306,7 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", hypervisorBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", hypervisorsBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err
@@ -327,7 +327,7 @@ func (s *HypervisorsServiceOp) DataStoreJoins(ctx context.Context, hvID int, dsI
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(hypervisorDataSoreJoins, hvID) + apiFormat
+  path := fmt.Sprintf(hypervisorsDataSoreJoins, hvID) + apiFormat
 
   rootRequest := &HypervisorDataSoreJoinCreateRequest {
     DataStoreID : dsID,
@@ -354,7 +354,7 @@ func (s *HypervisorsServiceOp) NetworkJoins(ctx context.Context, hvID int, creat
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(hypervisorNetworkJoins, hvID) + apiFormat
+  path := fmt.Sprintf(hypervisorsNetworkJoins, hvID) + apiFormat
 
   rootRequest := &hypervisorNetworkJoinCreateRequestRoot{
     HypervisorNetworkJoinCreateRequest: createRequest,
@@ -381,7 +381,7 @@ func (s *HypervisorsServiceOp) BackupServerJoins(ctx context.Context, hvID int, 
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(hypervisorBackupServerJoins, hvID) + apiFormat
+  path := fmt.Sprintf(hypervisorsBackupServerJoins, hvID) + apiFormat
 
   rootRequest := &HypervisorBackupServerJoinCreateRequest {
     BackupServerID : bsID,
@@ -399,10 +399,10 @@ func (s *HypervisorsServiceOp) BackupServerJoins(ctx context.Context, hvID int, 
 
 func hypervisorPath(mac string, serverType string) string {
   if serverType == "virtual" {
-    path := hypervisorBasePath + apiFormat
+    path := hypervisorsBasePath + apiFormat
     return path
   } else if serverType == "smart" || serverType == "baremetal" {
-    path := cloudBootHypervisorBasePath + apiFormat
+    path := cloudBootHypervisorsBasePath + apiFormat
     return fmt.Sprintf(path, mac)
   }
 

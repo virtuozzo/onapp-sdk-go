@@ -8,7 +8,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const locationGroupBasePath = "settings/location_groups"
+const locationGroupsBasePath string = "settings/location_groups"
 
 // LocationGroupsService is an interface for interfacing with the LocationGroup
 // endpoints of the OnApp API
@@ -61,7 +61,7 @@ func (d LocationGroupCreateRequest) String() string {
 
 // List all LocationGroups.
 func (s *LocationGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([]LocationGroup, *Response, error) {
-  path := locationGroupBasePath + apiFormat
+  path := locationGroupsBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -92,7 +92,7 @@ func (s *LocationGroupsServiceOp) Get(ctx context.Context, id int) (*LocationGro
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", locationGroupBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", locationGroupsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -114,7 +114,7 @@ func (s *LocationGroupsServiceOp) Create(ctx context.Context, createRequest *Loc
     return nil, nil, godo.NewArgError("LocationGroup createRequest", "cannot be nil")
   }
 
-  path := locationGroupBasePath + apiFormat
+  path := locationGroupsBasePath + apiFormat
 
   rootRequest := &locationGroupCreateRequestRoot{
     LocationGroupCreateRequest : createRequest,
@@ -141,7 +141,7 @@ func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta inter
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", locationGroupBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", locationGroupsBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err

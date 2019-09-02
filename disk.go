@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const diskBasePath = "settings/disks"
+const disksBasePath string = "settings/disks"
 
 // DisksService is an interface for interfacing with the Disk
 // endpoints of the OnApp API
@@ -99,7 +99,7 @@ func (d DiskCreateRequest) String() string {
 
 // List all Disks in the cloud.
 func (s *DisksServiceOp) List(ctx context.Context, opt *ListOptions) ([]Disk, *Response, error) {
-  path := diskBasePath + apiFormat
+  path := disksBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -130,7 +130,7 @@ func (s *DisksServiceOp) Get(ctx context.Context, id int) (*Disk, *Response, err
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", diskBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", disksBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -179,7 +179,7 @@ func (s *DisksServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", diskBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", disksBasePath, id, apiFormat)
 
   path, err := addOptions(path, meta)
   if err != nil {

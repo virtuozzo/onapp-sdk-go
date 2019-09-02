@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const dataStoreGroupsBasePath = "settings/data_store_zones"
+const dataStoresGroupsBasePath string = "settings/data_store_zones"
 
 // DataStoreGroupsService is an interface for interfacing with the Data Store Zones
 // endpoints of the OnApp API
@@ -76,7 +76,7 @@ func (d DataStoreGroupCreateRequest) String() string {
 
 // List all DataStoreGroups.
 func (s *DataStoreGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([]DataStoreGroup, *Response, error) {
-  path := dataStoreGroupsBasePath + apiFormat
+  path := dataStoresGroupsBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -107,7 +107,7 @@ func (s *DataStoreGroupsServiceOp) Get(ctx context.Context, id int) (*DataStoreG
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", dataStoreGroupsBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", dataStoresGroupsBasePath, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -128,7 +128,7 @@ func (s *DataStoreGroupsServiceOp) Create(ctx context.Context, createRequest *Da
     return nil, nil, godo.NewArgError("DataStoreGroup createRequest", "cannot be nil")
   }
 
-  path := dataStoreGroupsBasePath + apiFormat
+  path := dataStoresGroupsBasePath + apiFormat
   rootRequest := &dataStoreGroupCreateRequestRoot{
     DataStoreGroupCreateRequest: createRequest,
   }
@@ -154,7 +154,7 @@ func (s *DataStoreGroupsServiceOp) Delete(ctx context.Context, id int, meta inte
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", dataStoreGroupsBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", dataStoresGroupsBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err

@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const backupResourceZonesBasePath = "settings/backups/resource_zones"
+const backupResourceZonesBasePath string = "settings/backups/resource_zones"
 
 // BackupResourceZonesService is an interface for interfacing with the Backup Resource Zones
 // endpoints of the OnApp API

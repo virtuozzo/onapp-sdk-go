@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const networkZoneBasePath = "settings/network_zones"
+const networkZonesBasePath string = "settings/network_zones"
 
 // NetworkGroupsService is an interface for interfacing with the NetworkGroup
 // endpoints of the OnApp API
@@ -73,7 +73,7 @@ func (d NetworkGroupCreateRequest) String() string {
 
 // List all NetworkGroups.
 func (s *NetworkGroupsServiceOp) List(ctx context.Context, opt *ListOptions) ([]NetworkGroup, *Response, error) {
-  path := networkZoneBasePath + apiFormat
+  path := networkZonesBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -104,7 +104,7 @@ func (s *NetworkGroupsServiceOp) Get(ctx context.Context, id int) (*NetworkGroup
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", networkZoneBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", networkZonesBasePath, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -125,7 +125,7 @@ func (s *NetworkGroupsServiceOp) Create(ctx context.Context, createRequest *Netw
     return nil, nil, godo.NewArgError("NetworkGroup createRequest", "cannot be nil")
   }
 
-  path := networkZoneBasePath + apiFormat
+  path := networkZonesBasePath + apiFormat
   rootRequest := &networkZoneCreateRequestRoot{
     NetworkGroupCreateRequest: createRequest,
   }
@@ -151,7 +151,7 @@ func (s *NetworkGroupsServiceOp) Delete(ctx context.Context, id int, meta interf
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", networkZoneBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", networkZonesBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err

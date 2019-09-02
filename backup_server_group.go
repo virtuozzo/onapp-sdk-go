@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const backupServerGroupsBasePath = "settings/backup_server_zones"
+const backupServerGroupsBasePath string = "settings/backup_server_zones"
 
 // BackupServerGroupsService is an interface for interfacing with the Backup Server Groups
 // endpoints of the OnApp API

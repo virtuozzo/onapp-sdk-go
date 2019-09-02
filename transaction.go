@@ -11,7 +11,7 @@ import (
 )
 
 const (
-  transactionsBasePath = "transactions"
+  transactionsBasePath string = "transactions"
 
   // TransactionRunning is a running transaction status
   TransactionRunning = "running"

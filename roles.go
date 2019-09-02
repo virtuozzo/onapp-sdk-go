@@ -8,7 +8,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const roleBasePath = "roles"
+const rolesBasePath string = "roles"
 
 // RolesService is an interface for interfacing with the Role
 // endpoints of the OnApp API
@@ -72,7 +72,7 @@ func (d RoleCreateRequest) String() string {
 
 // List all Roles.
 func (s *RolesServiceOp) List(ctx context.Context, opt *ListOptions) ([]Role, *Response, error) {
-  path := roleBasePath + apiFormat
+  path := rolesBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -103,7 +103,7 @@ func (s *RolesServiceOp) Get(ctx context.Context, id int) (*Role, *Response, err
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", roleBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", rolesBasePath, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -124,7 +124,7 @@ func (s *RolesServiceOp) Create(ctx context.Context, createRequest *RoleCreateRe
     return nil, nil, godo.NewArgError("Role createRequest", "cannot be nil")
   }
 
-  path := roleBasePath + apiFormat
+  path := rolesBasePath + apiFormat
   rootRequest := &roleCreateRequestRoot{
     RoleCreateRequest: createRequest,
   }
@@ -150,7 +150,7 @@ func (s *RolesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", roleBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", rolesBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err

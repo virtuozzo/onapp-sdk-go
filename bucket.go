@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const bucketBasePath  = "billing/buckets"
+const bucketsBasePath string = "billing/buckets"
 
 // BucketsService is an interface for interfacing with the Bucket
 // endpoints of the OnApp API
@@ -70,7 +70,7 @@ func (d BucketCreateRequest) String() string {
 
 // List all Buckets.
 func (s *BucketsServiceOp) List(ctx context.Context, opt *ListOptions) ([]Bucket, *Response, error) {
-  path := bucketBasePath + apiFormat
+  path := bucketsBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -101,7 +101,7 @@ func (s *BucketsServiceOp) Get(ctx context.Context, id int) (*Bucket, *Response,
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", bucketBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", bucketsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -123,7 +123,7 @@ func (s *BucketsServiceOp) Create(ctx context.Context, createRequest *BucketCrea
     return nil, nil, godo.NewArgError("createRequest", "cannot be nil")
   }
 
-  path := bucketBasePath + apiFormat
+  path := bucketsBasePath + apiFormat
 
   rootRequest := &bucketCreateRequestRoot{
     BucketCreateRequest : createRequest,
@@ -150,7 +150,7 @@ func (s *BucketsServiceOp) Delete(ctx context.Context, id int, meta interface{})
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", bucketBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", bucketsBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err
@@ -167,7 +167,7 @@ func (s *BucketsServiceOp) Delete(ctx context.Context, id int, meta interface{})
 
 // Edit Bucket.
 func (s *BucketsServiceOp) Edit(ctx context.Context, id int, editRequest *BucketEditRequest) (*Response, error) {
-  path := fmt.Sprintf("%s/%d%s", bucketBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", bucketsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
   if err != nil {

@@ -8,7 +8,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const imageTemplateBasePath = "templates"
+const imageTemplatesBasePath string = "templates"
 
 // ImageTemplatesService is an interface for interfacing with the ImageTemplate
 // endpoints of the OnApp API
@@ -77,7 +77,7 @@ type imageTemplatesRoot struct {
 
 // List all ImageTemplates.
 func (s *ImageTemplatesServiceOp) List(ctx context.Context, opt *ListOptions) ([]ImageTemplate, *Response, error) {
-  path := imageTemplateBasePath + apiFormat
+  path := imageTemplatesBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -108,7 +108,7 @@ func (s *ImageTemplatesServiceOp) Get(ctx context.Context, id int) (*ImageTempla
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", imageTemplateBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", imageTemplatesBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -130,7 +130,7 @@ func (s *ImageTemplatesServiceOp) Delete(ctx context.Context, id int, meta inter
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", imageTemplateBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", imageTemplatesBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err

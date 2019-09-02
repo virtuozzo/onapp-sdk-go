@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const instancePackagesBasePath = "instance_packages"
+const instancePackagesBasePath string = "instance_packages"
 
 // InstancePackagesService is an interface for interfacing with the Instance Packages
 // endpoints of the OnApp API

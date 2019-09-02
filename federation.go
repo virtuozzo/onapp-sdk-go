@@ -8,7 +8,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const hypervisorZoneBasePath = "federation/hypervisor_zones/unsubscribed"
+const hypervisorZonesBasePath string = "federation/hypervisor_zones/unsubscribed"
 
 // HypervisorZonesService is an interface for interfacing with the HypervisorZone
 // endpoints of the OnApp API
@@ -140,7 +140,7 @@ type hypervisorZonesRoot struct {
 
 // List all HypervisorZones.
 func (s *HypervisorZonesServiceOp) List(ctx context.Context, opt *ListOptions) ([]HypervisorZone, *Response, error) {
-  path := hypervisorZoneBasePath + apiFormat
+  path := hypervisorZonesBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -171,7 +171,7 @@ func (s *HypervisorZonesServiceOp) Get(ctx context.Context, id int) (*Hypervisor
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", hypervisorZoneBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", hypervisorZonesBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -193,7 +193,7 @@ func (s *HypervisorZonesServiceOp) Delete(ctx context.Context, id int, meta inte
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", hypervisorZoneBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", hypervisorZonesBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, nil, err

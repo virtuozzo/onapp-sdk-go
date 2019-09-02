@@ -6,8 +6,8 @@ import (
   "fmt"
 )
 
-const licensesBasePath      = "settings/license"
-const licensesEditBasePath  = "settings"
+const licensesBasePath      string = "settings/license"
+const licensesEditBasePath  string = "settings"
 
 // LicensesService is an interface for interfacing with the Licenses
 // endpoints of the OnApp API

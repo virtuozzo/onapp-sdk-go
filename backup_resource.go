@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const backupResourcesBasePath = "settings/backups/resources"
+const backupResourcesBasePath string = "settings/backups/resources"
 
 // BackupResourcesService is an interface for interfacing with the Backup Resources
 // endpoints of the OnApp API

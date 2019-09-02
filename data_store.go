@@ -9,7 +9,7 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const dataStoreBasePath = "settings/data_stores"
+const dataStoresBasePath string = "settings/data_stores"
 
 // DataStoresService is an interface for interfacing with the DataStore
 // endpoints of the OnApp API
@@ -97,7 +97,7 @@ func (d DataStoreCreateRequest) String() string {
 
 // List all DataStores.
 func (s *DataStoresServiceOp) List(ctx context.Context, opt *ListOptions) ([]DataStore, *Response, error) {
-  path := dataStoreBasePath + apiFormat
+  path := dataStoresBasePath + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -128,7 +128,7 @@ func (s *DataStoresServiceOp) Get(ctx context.Context, id int) (*DataStore, *Res
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", dataStoreBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", dataStoresBasePath, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
     return nil, nil, err
@@ -149,7 +149,7 @@ func (s *DataStoresServiceOp) Create(ctx context.Context, createRequest *DataSto
     return nil, nil, godo.NewArgError("DataStore createRequest", "cannot be nil")
   }
 
-  path := dataStoreBasePath + apiFormat
+  path := dataStoresBasePath + apiFormat
   rootRequest := &dataStoreCreateRequestRoot{
     DataStoreCreateRequest: createRequest,
   }
@@ -175,7 +175,7 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf("%s/%d%s", dataStoreBasePath, id, apiFormat)
+  path := fmt.Sprintf("%s/%d%s", dataStoresBasePath, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
     return nil, err
