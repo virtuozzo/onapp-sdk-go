@@ -19,7 +19,7 @@ type BackupServersService interface {
   Get(context.Context, int) (*BackupServer, *Response, error)
   Create(context.Context, *BackupServerCreateRequest) (*BackupServer, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]BackupServer, *Response, error)
+  Edit(context.Context, int, *BackupServerEditRequest) (*Response, error)
 }
 
 // BackupServersServiceOp handles communication with the Backup Server related methods of the
@@ -66,6 +66,16 @@ type BackupServerCreateRequest struct {
 
   // OnApp 6.1
   // default - false, enable - true
+  IntegratedStorage   bool   `json:"integrated_storage,bool"`
+}
+
+// BackupServerEditRequest represents a request to edit a BackupServer
+type BackupServerEditRequest struct {
+  Label               string `json:"label,omitempty"`
+  Enabled             bool   `json:"enabled,bool"`
+  Capacity            int    `json:"capacity,omitempty"`
+  IPAddress           string `json:"ip_address,omitempty"`
+  BackupIPAddress     string `json:"backup_ip_address,omitempty"`
   IntegratedStorage   bool   `json:"integrated_storage,bool"`
 }
 
@@ -177,3 +187,15 @@ func (s *BackupServersServiceOp) Delete(ctx context.Context, id int, meta interf
   return s.client.Do(ctx, req, nil)
 }
 
+// Edit BackupServer.
+func (s *BackupServersServiceOp) Edit(ctx context.Context, id int, editRequest *BackupServerEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", backupServersBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("BackupServer [Edit]  req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
