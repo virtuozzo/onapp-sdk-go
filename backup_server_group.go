@@ -19,7 +19,7 @@ type BackupServerGroupsService interface {
   Get(context.Context, int) (*BackupServerGroup, *Response, error)
   Create(context.Context, *BackupServerGroupCreateRequest) (*BackupServerGroup, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]BackupServerGroup, *Response, error)
+  Edit(context.Context, int, *BackupServerGroupEditRequest) (*Response, error)
 }
 
 // BackupServerGroupsServiceOp handles communication with the Backup Server Group related methods of the
@@ -32,8 +32,8 @@ var _ BackupServerGroupsService = &BackupServerGroupsServiceOp{}
 
 // BackupServerGroup represents a BackupServerGroup
 type BackupServerGroup struct {
-  // AdditionalFields  []AdditionalFields  `json:"additional_fields,omitempty"`
-  AdditionalFields  AdditionalFields    `json:"additional_fields,omitempty"`
+  AdditionalFields  []AdditionalFields  `json:"additional_fields,omitempty"`
+  // AdditionalFields  AdditionalFields    `json:"additional_fields,omitempty"`
   Closed            bool                `json:"closed,bool"`
   CreatedAt         string              `json:"created_at,omitempty"`
   DatacenterID      int                 `json:"datacenter_id,omitempty"`
@@ -56,6 +56,12 @@ type BackupServerGroupCreateRequest struct {
   Label             string  `json:"label,omitempty"`
   LocationGroupID   int     `json:"location_group_id,omitempty"`
   ServerType        string  `json:"server_type,omitempty"`
+}
+
+// BackupServerGroupEditRequest represents a request to edit a BackupServerGroup
+type BackupServerGroupEditRequest struct {
+  Label             string  `json:"label,omitempty"`
+  LocationGroupID   int     `json:"location_group_id,omitempty"`
 }
 
 type backupServerGroupCreateRequestRoot struct {
@@ -162,6 +168,19 @@ func (s *BackupServerGroupsServiceOp) Delete(ctx context.Context, id int, meta i
     return nil, err
   }
   log.Println("BackupServerGroup [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit BackupServerGroup.
+func (s *BackupServerGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *BackupServerGroupEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", backupServerGroupsBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("BackupServerGroup [Edit]  req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }
