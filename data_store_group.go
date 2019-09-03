@@ -19,7 +19,7 @@ type DataStoreGroupsService interface {
   Get(context.Context, int) (*DataStoreGroup, *Response, error)
   Create(context.Context, *DataStoreGroupCreateRequest) (*DataStoreGroup, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]DataStoreGroup, *Response, error)
+  Edit(context.Context, int, *DataStoreGroupEditRequest) (*Response, error)
 }
 
 // DataStoreGroupsServiceOp handles communication with the Data Store related methods of the
@@ -60,6 +60,13 @@ type DataStoreGroupCreateRequest struct {
   LocationGroupID   int     `json:"location_group_id,omitempty"`
   PreconfiguredOnly bool    `json:"preconfigured_only,bool"`
   ServerType        string  `json:"server_type,omitempty"`
+}
+
+// DataStoreGroupEditRequest represents a request to edit a DataStoreGroup
+type DataStoreGroupEditRequest struct {
+  Label             string  `json:"label,omitempty"`
+  LocationGroupID   int     `json:"location_group_id,omitempty"`
+  PreconfiguredOnly bool    `json:"preconfigured_only,bool"`
 }
 
 type dataStoreGroupCreateRequestRoot struct {
@@ -165,6 +172,19 @@ func (s *DataStoreGroupsServiceOp) Delete(ctx context.Context, id int, meta inte
     return nil, err
   }
   log.Println("DataStoreGroup [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit DataStoreGroup.
+func (s *DataStoreGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *DataStoreGroupEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", dataStoresBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("DataStoreGroup [Edit]  req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }
