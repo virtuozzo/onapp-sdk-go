@@ -9,7 +9,8 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const dataStoresBasePath string = "settings/data_stores"
+const dataStoresBasePath string      = "settings/data_stores"
+const dataStoresIoLimitsBasePath string  = "settings/data_stores/%d/io_limits"
 
 // DataStoresService is an interface for interfacing with the DataStore
 // endpoints of the OnApp API
@@ -19,7 +20,9 @@ type DataStoresService interface {
   Get(context.Context, int) (*DataStore, *Response, error)
   Create(context.Context, *DataStoreCreateRequest) (*DataStore, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]DataStore, *Response, error)
+  Edit(context.Context, int, *DataStoreEditRequest) (*Response, error)
+
+  IoLimits(context.Context, int, *IoLimits) (*Response, error)
 }
 
 // DataStoresServiceOp handles communication with the Data Store related methods of the
@@ -60,12 +63,16 @@ type DataStore struct {
   HypervisorGroupID              int                            `json:"hypervisor_group_id,omitempty"`
   VdcID                          int                            `json:"vdc_id,omitempty"`
   IntegratedStorageCacheEnabled  bool                           `json:"integrated_storage_cache_enabled,bool"`
-  IntegratedStorageCacheSettings IntegratedStorageCacheSettings `json:"integrated_storage_cache_settings,omitempty"`
+  // IntegratedStorageCacheSettings IntegratedStorageCacheSettings `json:"integrated_storage_cache_settings,omitempty"`
+  IntegratedStorageCacheSettings interface{}                    `json:"integrated_storage_cache_settings,omitempty"`
   AutoHealing                    bool                           `json:"auto_healing,bool"`
   IoLimits                       IoLimits                       `json:"io_limits,omitempty"`
   Epoch                          bool                           `json:"epoch,bool"`
   Default                        bool                           `json:"default,bool"`
   Usage                          int                            `json:"usage,omitempty"`
+
+  // OnApp 6.1
+  Trim                           bool                           `json:"trim,bool"`
 }
 
 // DataStoreCreateRequest represents a request to create a DataStore
@@ -78,9 +85,38 @@ type DataStoreCreateRequest struct {
   DataStoreSize     int               `json:"data_store_size,omitempty"`
   DataStoreType     string            `json:"data_store_type,omitempty"`
   IscsiIP           string            `json:"iscsi_ip,omitempty"`
+}
 
-  // AdminAttributes   AdminAttributes   `json:"admin_attributes,omitempty"`
-  // AccountAttributes AccountAttributes `json:"account_attributes,omitempty"`
+// DataStoreSolidFireCreateRequest represents a request to create a SolidFire DataStore
+type DataStoreSolidFireCreateRequest struct {
+  Label             string            `json:"label,omitempty"`
+  DataStoreGroupID  int               `json:"data_store_group_id,omitempty"`
+  LocalHypervisorID int               `json:"local_hypervisor_id,omitempty"`
+  IP                string            `json:"ip,omitempty"`
+  Enabled           bool              `json:"enabled,bool"`
+  DataStoreSize     int               `json:"data_store_size,omitempty"`
+  DataStoreType     string            `json:"data_store_type,omitempty"`
+  IscsiIP           string            `json:"iscsi_ip,omitempty"`
+
+  AdminAttributes   AdminAttributes   `json:"admin_attributes,omitempty"`
+  AccountAttributes AccountAttributes `json:"account_attributes,omitempty"`
+}
+
+// DataStoreEditRequest represents a request to edit a DataStore
+type DataStoreEditRequest struct {
+  Label             string            `json:"label,omitempty"`
+  DataStoreGroupID  int               `json:"data_store_group_id,omitempty"`
+  LocalHypervisorID int               `json:"local_hypervisor_id,omitempty"`
+  IP                string            `json:"ip,omitempty"`
+  Enabled           bool              `json:"enabled,bool"`
+  DataStoreSize     int               `json:"data_store_size,omitempty"`
+  DataStoreType     string            `json:"data_store_type,omitempty"`
+  IscsiIP           string            `json:"iscsi_ip,omitempty"`
+  Trim              bool              `json:"trim,bool"`
+}
+
+type rootIoLimits struct {
+  IoLimits  *IoLimits  `json:"io_limits"`
 }
 
 type dataStoreCreateRequestRoot struct {
@@ -186,6 +222,36 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
     return nil, err
   }
   log.Println("DataStore [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit DataStore.
+func (s *DataStoresServiceOp) Edit(ctx context.Context, id int, editRequest *DataStoreEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", dataStoresBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("DataStore [Edit]  req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// IoLimits edit io limits for DataStore.
+func (s *DataStoresServiceOp) IoLimits(ctx context.Context, id int, editRequest *IoLimits) (*Response, error) {
+  path := fmt.Sprintf(dataStoresIoLimitsBasePath, id) + apiFormat
+
+  rootRequest := &rootIoLimits{
+    IoLimits: editRequest,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, rootRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("DataStore [IoLimits]  req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }

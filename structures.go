@@ -86,6 +86,10 @@ type IntegratedStorageCacheSettings struct {
 
 // IoLimits - 
 type IoLimits struct {
+  ReadIops          int `json:"read_iops,omitempty"`
+  WriteIops         int `json:"write_iops,omitempty"`
+  ReadThroughput    int `json:"read_throughput,omitempty"`
+  WriteThroughput   int `json:"write_throughput,omitempty"`
 }
 
 // AdditionalField - 
