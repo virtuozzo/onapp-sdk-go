@@ -19,7 +19,7 @@ type NetworkGroupsService interface {
   Get(context.Context, int) (*NetworkGroup, *Response, error)
   Create(context.Context, *NetworkGroupCreateRequest) (*NetworkGroup, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]NetworkGroup, *Response, error)
+  Edit(context.Context, int, *NetworkGroupEditRequest) (*Response, error)
 }
 
 // NetworkGroupsServiceOp handles communication with the NetworkGroups related methods of the
@@ -57,6 +57,13 @@ type NetworkGroupCreateRequest struct {
   LocationGroupID   int     `json:"location_group_id,omitempty"`
   PreconfiguredOnly bool    `json:"preconfigured_only,bool"`
   ServerType        string  `json:"server_type,omitempty"`
+}
+
+// NetworkGroupEditRequest represents a request to edit a NetworkGroup
+type NetworkGroupEditRequest struct {
+  Label             string  `json:"label,omitempty"`
+  LocationGroupID   int     `json:"location_group_id,omitempty"`
+  PreconfiguredOnly bool    `json:"preconfigured_only,bool"`
 }
 
 type networkZoneCreateRequestRoot struct {
@@ -162,6 +169,19 @@ func (s *NetworkGroupsServiceOp) Delete(ctx context.Context, id int, meta interf
     return nil, err
   }
   log.Println("NetworkGroup [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit Hypervisor.
+func (s *NetworkGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *NetworkGroupEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", networkZonesBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("NetworkGroup [Edit]  req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }

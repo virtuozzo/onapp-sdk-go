@@ -19,7 +19,7 @@ type HypervisorGroupsService interface {
   Get(context.Context, int) (*HypervisorGroup, *Response, error)
   Create(context.Context, *HypervisorGroupCreateRequest) (*HypervisorGroup, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]HypervisorGroup, *Response, error)
+  Edit(context.Context, int, *HypervisorGroupEditRequest) (*Response, error)
 }
 
 // HypervisorGroupsServiceOp handles communication with the Compute Zone
@@ -62,7 +62,7 @@ type HypervisorGroup struct {
   SupplierVersion             string              `json:"supplier_version,omitempty"`
   SupplierProvider            string              `json:"supplier_provider,omitempty"`
   ProviderName                string              `json:"provider_name,omitempty"`
-  ScheduledForDeletion        int                 `json:"scheduled_for_deletion,omitempty"`
+  ScheduledForDeletion        string              `json:"scheduled_for_deletion,omitempty"`
   CPUFlagsEnabled             bool                `json:"cpu_flags_enabled,bool"`
   CPUFlags                    []string            `json:"cpu_flags,omitempty"`
   Tier                        string              `json:"tier,omitempty"`
@@ -72,22 +72,51 @@ type HypervisorGroup struct {
 
 // HypervisorGroupCreateRequest represents a request to create a Compute Zone
 type HypervisorGroupCreateRequest struct {
-  CPUFlagsEnabled     bool   `json:"cpu_flags_enabled,bool"`
-  CPUUnits            int    `json:"cpu_units,omitempty"`
-  CustomConfig        string `json:"custom_config,omitempty"`
-  FailoverTimeout     int    `json:"failover_timeout,omitempty"`
-  Label               string `json:"label,omitempty"`
-  LocationGroupID     int    `json:"location_group_id,omitempty"`
-  MaxVmsStartAtOnce   int    `json:"max_vms_start_at_once,omitempty"`
-  PreconfiguredOnly   bool   `json:"preconfigured_only,bool"`
-  RecoveryType        string `json:"recovery_type,omitempty"`
-  ReleaseResourceType string `json:"release_resource_type,omitempty"`
-  RunSysprep          bool   `json:"run_sysprep,bool"`
-  ServerType          string `json:"server_type,omitempty"`
+  CPUFlagsEnabled     bool    `json:"cpu_flags_enabled,bool"`
+  CPUUnits            int     `json:"cpu_units,omitempty"`
+  CustomConfig        string  `json:"custom_config,omitempty"`
+  FailoverTimeout     int     `json:"failover_timeout,omitempty"`
+  Label               string  `json:"label,omitempty"`
+  LocationGroupID     int     `json:"location_group_id,omitempty"`
+  MaxVmsStartAtOnce   int     `json:"max_vms_start_at_once,omitempty"`
+  PreconfiguredOnly   bool    `json:"preconfigured_only,bool"`
+
+  // roundrobin, fillnext
+  RecoveryType        string  `json:"recovery_type,omitempty"`
+
+  // memory_guarantee, ballooning
+  ReleaseResourceType string  `json:"release_resource_type,omitempty"`
+  RunSysprep          bool    `json:"run_sysprep,bool"`
+  ServerType          string  `json:"server_type,omitempty"`
 
   // VMware parameters:
-  DefaultGateway      string `json:"default_gateway,omitempty"`
-  Vlan                string `json:"vlan,omitempty"`
+  DefaultGateway      string  `json:"default_gateway,omitempty"`
+  Vlan                string  `json:"vlan,omitempty"`
+}
+
+// HypervisorGroupEditRequest represents a request to edit a Compute Zone
+type HypervisorGroupEditRequest struct {
+  CPUFlagsEnabled     bool    `json:"cpu_flags_enabled,bool"`
+  CPUUnits            int     `json:"cpu_units,omitempty"`
+  CustomConfig        string  `json:"custom_config,omitempty"`
+  FailoverTimeout     int     `json:"failover_timeout,omitempty"`
+  Label               string  `json:"label,omitempty"`
+  LocationGroupID     int     `json:"location_group_id,omitempty"`
+  MaxVmsStartAtOnce   int     `json:"max_vms_start_at_once,omitempty"`
+  PreconfiguredOnly   bool    `json:"preconfigured_only,bool"`
+
+  // roundrobin, fillnext
+  RecoveryType        string  `json:"recovery_type,omitempty"`
+
+  // memory_guarantee, ballooning
+  ReleaseResourceType string  `json:"release_resource_type,omitempty"`
+  RunSysprep          bool    `json:"run_sysprep,bool"`
+  ServerType          string  `json:"server_type,omitempty"`
+
+  OnlyStartedVms      int     `json:"only_started_vms,omitempty"`
+  PreferLocalReads    int     `json:"prefer_local_reads,omitempty"`
+  UpdateCPUUnits      int     `json:"update_cpu_units,omitempty"`
+  СPUGuarantee        int     `json:"cpu_guarantee,omitempty"`
 }
 
 type hypervisorGroupCreateRequestRoot struct {
@@ -195,6 +224,19 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
     return nil, err
   }
   log.Println("HypervisorGroup [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit HypervisorGroup.
+func (s *HypervisorGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *HypervisorGroupEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", hypervisorGroupsBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("HypervisorGroup [Edit]  req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }

@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -18,7 +19,7 @@ type NetworksService interface {
   Get(context.Context, int) (*Network, *Response, error)
   Create(context.Context, *NetworkCreateRequest) (*Network, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]Network, *Response, error)
+  Edit(context.Context, int, *NetworkEditRequest) (*Response, error)
 }
 
 // NetworksServiceOp handles communication with the Networks related methods of the
@@ -69,6 +70,13 @@ type NetworkCreateRequest struct {
 
   // Must be set as default value: "Networking::Network"
   Type           string `json:"type,omitempty"`
+}
+
+// NetworkEditRequest represents a request to edit a Network
+type NetworkEditRequest struct {
+  Label          string `json:"label,omitempty"`
+  NetworkGroupID int    `json:"network_group_id,omitempty"`
+  Vlan           int    `json:"vlan,omitempty"`
 }
 
 type networkCreateRequestRoot struct {
@@ -174,6 +182,19 @@ func (s *NetworksServiceOp) Delete(ctx context.Context, id int, meta interface{}
     return nil, err
   }
   fmt.Println("Network [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit Network.
+func (s *NetworksServiceOp) Edit(ctx context.Context, id int, editRequest *NetworkEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", networksBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("Network [Edit]  req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }

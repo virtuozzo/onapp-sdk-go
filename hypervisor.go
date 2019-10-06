@@ -27,7 +27,7 @@ type HypervisorsService interface {
   Get(context.Context, int) (*Hypervisor, *Response, error)
   Create(context.Context, *HypervisorCreateRequest) (*Hypervisor, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]Hypervisor, *Response, error)
+  Edit(context.Context, int, *HypervisorEditRequest) (*Response, error)
 
   // TODO: Move to the HypervisorActions later
   DataStoreJoins(context.Context, int, int) (*Response, error)
@@ -192,6 +192,18 @@ type HypervisorCreateRequest struct {
   CPUUnits                      int     `json:"cpu_units,omitempty"`
 }
 
+// HypervisorEditRequest represents a request to edit a Hypervisor
+type HypervisorEditRequest struct {
+  Label                         string  `json:"label,omitempty"`
+  IPAddress                     string  `json:"ip_address,omitempty"`
+  BackupIPAddress               string  `json:"backup_ip_address,omitempty"`
+  SegregationOsType             string  `json:"segregation_os_type,omitempty"`
+  Enabled                       bool    `json:"enabled,bool"`
+  FailoverRecipeID              int     `json:"failover_recipe_id,omitempty"`
+  HypervisorGroupID             int     `json:"hypervisor_group_id,omitempty"`
+  CPUUnits                      int     `json:"cpu_units,omitempty"`
+}
+
 type hypervisorCreateRequestRoot struct {
   HypervisorCreateRequest  *HypervisorCreateRequest  `json:"hypervisor"`
 }
@@ -321,6 +333,19 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
   return s.client.Do(ctx, req, nil)
 }
 
+// Edit Hypervisor.
+func (s *HypervisorsServiceOp) Edit(ctx context.Context, id int, editRequest *HypervisorEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", hypervisorsBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("Hypervisor [Edit]  req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
 // DataStoreJoins - add Data Store to the Hypervisor
 func (s *HypervisorsServiceOp) DataStoreJoins(ctx context.Context, hvID int, dsID int) (*Response, error) {
   if hvID < 1 {
@@ -408,4 +433,3 @@ func hypervisorPath(mac string, serverType string) string {
 
   return ""
 }
-

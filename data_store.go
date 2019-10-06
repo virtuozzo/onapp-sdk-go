@@ -9,8 +9,8 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const dataStoresBasePath string      = "settings/data_stores"
-const dataStoresIoLimitsBasePath string  = "settings/data_stores/%d/io_limits"
+const dataStoresBasePath          string  = "settings/data_stores"
+const dataStoresIoLimitsBasePath  string  = "settings/data_stores/%d/io_limits"
 
 // DataStoresService is an interface for interfacing with the DataStore
 // endpoints of the OnApp API
