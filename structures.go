@@ -100,7 +100,7 @@ type AdditionalField struct {
 
 // AdditionalFields - 
 type AdditionalFields struct {
-  AdditionalField AdditionalField `json:"additional_field,omitempty"`
+  AdditionalField *AdditionalField `json:"additional_field,omitempty"`
 }
 
 // AdvancedOptions - 

@@ -19,7 +19,7 @@ type UsersService interface {
   Get(context.Context, int) (*User, *Response, error)
   Create(context.Context, *UserCreateRequest) (*User, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]User, *Response, error)
+  Edit(context.Context, int, *UserEditRequest) (*Response, error)
 }
 
 // UsersServiceOp handles communication with the User related methods of the
@@ -84,7 +84,7 @@ type User struct {
   TotalAmount             float64            `json:"total_amount,omitempty"`
   DiscountDueToFree       float64            `json:"discount_due_to_free,omitempty"`
   TotalAmountWithDiscount float64            `json:"total_amount_with_discount,omitempty"`
-  AdditionalFields        []AdditionalFields `json:"additional_fields,omitempty"`
+  AdditionalFields        []*AdditionalFields `json:"additional_fields,omitempty"`
   UsedIPAddresses         []IPAddress        `json:"used_ip_addresses,omitempty"`
 }
 
@@ -98,7 +98,21 @@ type UserCreateRequest struct {
   UserGroupID      int                `json:"user_group_id,omitempty"`
   BucketID         int                `json:"bucket_id,omitempty"`
   RoleIds          []string           `json:"role_ids,omitempty"`
-  AdditionalFields []AdditionalFields `json:"additional_fields,omitempty"`
+  AdditionalFields []*AdditionalFields `json:"additional_fields,omitempty"`
+}
+
+// UserEditRequest - 
+type UserEditRequest struct {
+  Email             string             `json:"email,omitempty"`
+  FirstName         string             `json:"first_name,omitempty"`
+  LastName          string             `json:"last_name,omitempty"`
+  Password          string             `json:"password,omitempty"`
+  UserGroupID       int                `json:"user_group_id,omitempty"`
+  BucketID          int                `json:"bucket_id,omitempty"`
+  RoleIds           []string           `json:"role_ids,omitempty"`
+  AdditionalFields  []*AdditionalFields `json:"additional_fields,omitempty"`
+  SuspendAt         string             `json:"suspend_at,omitempty"`
+  RegisteredYubikey bool               `json:"registered_yubikey,bool"`
 }
 
 type userCreateRequestRoot struct {
@@ -214,6 +228,19 @@ func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
     return nil, err
   }
   log.Println("User [Delete]  req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit Network.
+func (s *UsersServiceOp) Edit(ctx context.Context, id int, editRequest *UserEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", usersBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("User [Edit]  req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }
