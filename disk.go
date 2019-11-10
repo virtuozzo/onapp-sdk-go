@@ -19,7 +19,7 @@ type DisksService interface {
   Get(context.Context, int) (*Disk, *Response, error)
   Create(context.Context, *DiskCreateRequest) (*Disk, *Response, error)
   Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]Disk, *Response, error)
+  Edit(context.Context, int, *DiskEditRequest) (*Response, error)
 }
 
 // DisksServiceOp handles communication with the Disk related methods of the
@@ -69,20 +69,35 @@ type Disk struct {
 
 // DiskCreateRequest - data for creating Disk
 type DiskCreateRequest struct {
-  Primary           bool   `json:"primary,bool"`
-  DiskSize          int    `json:"disk_size,omitempty"`
+  Primary           bool    `json:"primary,bool"`
+  DiskSize          int     `json:"disk_size,omitempty"`
   // "ext3","ext4"
-  FileSystem        string `json:"file_system,omitempty"`
-  DataStoreID       int    `json:"data_store_id,omitempty"`
-  Label             string `json:"label,omitempty"`
-  RequireFormatDisk bool   `json:"require_format_disk,bool"`
-  MountPoint        string `json:"mount_point,omitempty"`
-  HotAttach         bool   `json:"hot_attach,bool"`
-  MinIops           int    `json:"min_iops,omitempty"`
-  Mounted           bool   `json:"mounted,bool"`
+  FileSystem        string  `json:"file_system,omitempty"`
+  DataStoreID       int     `json:"data_store_id,omitempty"`
+  Label             string  `json:"label,omitempty"`
+  RequireFormatDisk bool    `json:"require_format_disk,bool"`
+  MountPoint        string  `json:"mount_point,omitempty"`
+  HotAttach         bool    `json:"hot_attach,bool"`
+  MinIops           int     `json:"min_iops,omitempty"`
+  Mounted           bool    `json:"mounted,bool"`
 
   // Additional field to determine Virtual Machine to create disk
   VirtualMachineID  int    `json:"-"`
+}
+
+// DiskEditRequest - data for editing Disk
+type DiskEditRequest struct {
+  AddToLinuxFstab   bool    `json:"add_to_linux_fstab,bool"`
+  AddToFreebsdFstab bool    `json:"add_to_freebsd_fstab,bool"`
+  DiskSize          int     `json:"disk_size,omitempty"`
+  // "ext3","ext4"
+  FileSystem        string  `json:"file_system,omitempty"`
+  DataStoreID       int     `json:"data_store_id,omitempty"`
+  Label             string  `json:"label,omitempty"`
+  RequireFormatDisk bool    `json:"require_format_disk,bool"`
+  MountPoint        string  `json:"mount_point,omitempty"`
+  MinIops           int     `json:"min_iops,omitempty"`
+  Mounted           string  `json:"mounted,omitempty"`
 }
 
 type diskCreateRequestRoot struct {
@@ -206,4 +221,17 @@ func (s *DisksServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
   }
 
   return lastTransaction(ctx, s.client, filter)
+}
+
+// Edit Disk.
+func (s *DisksServiceOp) Edit(ctx context.Context, id int, editRequest *DiskEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", disksBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("Disk [Edit]  req: ", req)
+
+  return s.client.Do(ctx, req, nil)
 }

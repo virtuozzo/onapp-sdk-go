@@ -17,7 +17,7 @@ type LicensesService interface {
   Edit(context.Context, *LicenseEditRequest) (*Response, error)
 }
 
-// LicenseServicesOp handles communication with the License related methods of the
+// LicensesServiceOp handles communication with the License related methods of the
 // OnApp API.
 type LicensesServiceOp struct {
   client *Client

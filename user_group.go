@@ -19,7 +19,7 @@ type UserGroupsService interface {
   Get(context.Context, int) (*UserGroup, *Response, error)
   Create(context.Context, *UserGroupCreateRequest) (*UserGroup, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]UserGroup, *Response, error)
+  Edit(context.Context, int, *UserGroupEditRequest) (*Response, error)
 }
 
 // UserGroupsServiceOp handles communication with the UserGroup related methods of the
@@ -67,6 +67,14 @@ type UserGroup struct {
 type UserGroupCreateRequest struct {
   Label             string  `json:"label,omitempty"`
   BucketIds         []int   `json:"bucket_ids,omitempty"`
+}
+
+// UserGroupEditRequest - 
+type UserGroupEditRequest struct {
+  Label     string  `json:"label,omitempty"`
+
+  RoleID    int     `json:"role_id,omitempty"`
+  BucketID  int     `json:"bucket_id,omitempty"`
 }
 
 type userGroupCreateRequestRoot struct {
@@ -173,6 +181,19 @@ func (s *UserGroupsServiceOp) Delete(ctx context.Context, id int, meta interface
     return nil, err
   }
   log.Println("UserGroup [Delete]  req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit UserGroup.
+func (s *UserGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *UserGroupEditRequest) (*Response, error) {
+  path := fmt.Sprintf("%s/%d%s", userGroupsBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("UserGroup [Edit]  req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }
