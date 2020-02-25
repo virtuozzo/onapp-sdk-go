@@ -30,9 +30,13 @@ type HypervisorsService interface {
   Edit(context.Context, int, *HypervisorEditRequest) (*Response, error)
 
   // TODO: Move to the HypervisorActions later
-  DataStoreJoins(context.Context, int, int) (*Response, error)
-  NetworkJoins(context.Context, int, *HypervisorNetworkJoinCreateRequest) (*Response, error)
-  BackupServerJoins(context.Context, int, int) (*Response, error)
+  AddDataStoreJoins(context.Context, int, int) (*Response, error)
+  AddNetworkJoins(context.Context, int, *HypervisorNetworkJoinCreateRequest) (*Response, error)
+  AddBackupServerJoins(context.Context, int, int) (*Response, error)
+
+  DeleteDataStoreJoins(context.Context, int, int) (*Response, error)
+  DeleteNetworkJoins(context.Context, int, int) (*Response, error)
+  DeleteBackupServerJoins(context.Context, int, int) (*Response, error)
 }
 
 // HypervisorsServiceOp handles communication with the Hypervisor related methods of the
@@ -346,8 +350,8 @@ func (s *HypervisorsServiceOp) Edit(ctx context.Context, id int, editRequest *Hy
   return s.client.Do(ctx, req, nil)
 }
 
-// DataStoreJoins - add Data Store to the Hypervisor
-func (s *HypervisorsServiceOp) DataStoreJoins(ctx context.Context, hvID int, dsID int) (*Response, error) {
+// AddDataStoreJoins - add Data Store Joins to the Hypervisor
+func (s *HypervisorsServiceOp) AddDataStoreJoins(ctx context.Context, hvID int, dsID int) (*Response, error) {
   if hvID < 1 {
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -363,18 +367,32 @@ func (s *HypervisorsServiceOp) DataStoreJoins(ctx context.Context, hvID int, dsI
     return nil, err
   }
 
-  fmt.Println("DataStoreJoins [Create] req: ", req)
+  log.Println("DataStoreJoins [Create] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
+  return s.client.Do(ctx, req, nil)
+}
+
+// DeleteDataStoreJoins - delete Data Store Joins from the Hypervisor
+func (s *HypervisorsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvID int, id int) (*Response, error) {
+  if hvID < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf(hypervisorsDataSoreJoins, hvID)
+  path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
   if err != nil {
     return nil, err
   }
 
-  return resp, err
+  log.Println("Delete DataStore Joins from Hypervisor [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
 }
 
-// NetworkJoins - add Network to the Hypervisor
-func (s *HypervisorsServiceOp) NetworkJoins(ctx context.Context, hvID int, createRequest *HypervisorNetworkJoinCreateRequest) (*Response, error) {
+// AddNetworkJoins - add Network Joins to the Hypervisor
+func (s *HypervisorsServiceOp) AddNetworkJoins(ctx context.Context, hvID int, createRequest *HypervisorNetworkJoinCreateRequest) (*Response, error) {
   if hvID < 1 {
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -390,18 +408,32 @@ func (s *HypervisorsServiceOp) NetworkJoins(ctx context.Context, hvID int, creat
     return nil, err
   }
 
-  fmt.Println("NetworkJoins [Create] req: ", req)
+  log.Println("NetworkJoins [Create] req: ", req)
 
-  resp, err := s.client.Do(ctx, req, nil)
+  return s.client.Do(ctx, req, nil)
+}
+
+// DeleteNetworkJoins - delete Network Joins from the Hypervisor
+func (s *HypervisorsServiceOp) DeleteNetworkJoins(ctx context.Context, hvID int, id int) (*Response, error) {
+  if hvID < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf(hypervisorsNetworkJoins, hvID)
+  path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
   if err != nil {
     return nil, err
   }
 
-  return resp, err
+  log.Println("Delete Network Joins from Hypervisor [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
 }
 
-// BackupServerJoins - add Backup Server to the Hypervisor
-func (s *HypervisorsServiceOp) BackupServerJoins(ctx context.Context, hvID int, bsID int) (*Response, error) {
+// AddBackupServerJoins - add Backup Server Joins to the Hypervisor
+func (s *HypervisorsServiceOp) AddBackupServerJoins(ctx context.Context, hvID int, bsID int) (*Response, error) {
   if hvID < 1 {
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -417,7 +449,26 @@ func (s *HypervisorsServiceOp) BackupServerJoins(ctx context.Context, hvID int, 
     return nil, err
   }
 
-  fmt.Println("BackupServerJoins [Create] req: ", req)
+  log.Println("BackupServerJoins [Create] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// DeleteBackupServerJoins - delete Backup Server Joins from the Hypervisor
+func (s *HypervisorsServiceOp) DeleteBackupServerJoins(ctx context.Context, hvID int, id int) (*Response, error) {
+  if hvID < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf(hypervisorsBackupServerJoins, hvID)
+  path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+  if err != nil {
+    return nil, err
+  }
+
+  log.Println("Delete Backup Server Joins from Hypervisor [Delete] req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }
