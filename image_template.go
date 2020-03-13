@@ -65,7 +65,7 @@ type ImageTemplate struct {
   // ResizeWithoutRebootPolicy interface{} `json:"resize_without_reboot_policy,omitempty"`
   ApplicationServer         bool        `json:"application_server,bool"`
   Draas                     bool        `json:"draas,bool"`
-  Properties                string      `json:"properties,omitempty"`
+  Properties                interface{} `json:"properties,omitempty"`
   Locked                    bool        `json:"locked,bool"`
   OpenstackID               int         `json:"openstack_id,omitempty"`
   Type                      string      `json:"type,omitempty"`

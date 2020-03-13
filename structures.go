@@ -34,6 +34,14 @@ type IPAddress struct {
   IPRangeID      int         `json:"ip_range_id,omitempty"`
   NetworkID      int         `json:"network_id,omitempty"`
   IPNetID        int         `json:"ip_net_id,omitempty"`
+
+  // OnApp 6.2
+  // ExternalAddress interface{} `json:"external_address,omitempty"`
+}
+
+// IPAddresses - 
+type IPAddresses struct {
+  IPAddress IPAddress `json:"ip_address,omitempty"`
 }
 
 // IPAddressJoin - 
@@ -92,43 +100,14 @@ type IoLimits struct {
   WriteThroughput   int `json:"write_throughput,omitempty"`
 }
 
-// AdditionalField - 
-type AdditionalField struct {
+// AdditionalFields - 
+type AdditionalFields struct {
   Name  string `json:"name,omitempty"`
   Value string `json:"value,omitempty"`
 }
 
-// AdditionalFields - 
-type AdditionalFields struct {
-  AdditionalField *AdditionalField `json:"additional_field,omitempty"`
-}
-
 // AdvancedOptions - 
 type AdvancedOptions struct {
-}
-
-// NetworkInterface - 
-// https://docs.onapp.com/apim/latest/network-interfaces
-type NetworkInterface struct {
-  ID                  int         `json:"id,omitempty"`
-  VirtualMachineID    int         `json:"virtual_machine_id,omitempty"`
-  Label               string      `json:"label,omitempty"`
-  Identifier          string      `json:"identifier,omitempty"`
-  CreatedAt           string      `json:"created_at,omitempty"`
-  UpdatedAt           string      `json:"updated_at,omitempty"`
-  Primary             bool        `json:"primary,bool"`
-  MacAddress          string      `json:"mac_address,omitempty"`
-  NetworkJoinID       int         `json:"network_join_id,omitempty"`
-  Usage               float64     `json:"usage,omitempty"`
-  UsageLastResetAt    string      `json:"usage_last_reset_at,omitempty"`
-  UsageMonthRolledAt  string      `json:"usage_month_rolled_at,omitempty"`
-  RateLimit           int         `json:"rate_limit,omitempty"`
-  DefaultFirewallRule string      `json:"default_firewall_rule,omitempty"`
-  Connected           bool        `json:"connected,bool"`
-  EdgeGatewayID       int         `json:"edge_gateway_id,omitempty"`
-  UseAsGateway        bool        `json:"use_as_gateway,bool"`
-  OpenstackID         int         `json:"openstack_id,omitempty"`
-  AdapterType         string      `json:"adapter_type,omitempty"`
 }
 
 // FirewallRule - 

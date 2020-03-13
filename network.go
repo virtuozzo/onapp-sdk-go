@@ -60,6 +60,11 @@ type Network struct {
   ParentNetworkID           int         `json:"parent_network_id,omitempty"`
   OpenstackID               int         `json:"openstack_id,omitempty"`
   DvSwitchID                int         `json:"dv_switch_id,omitempty"`
+
+  // OnApp 6.2
+  VdcGroupID                int         `json:"vdc_group_id,omitempty"`
+  UniversalRouterID         int         `json:"universal_router_id,omitempty"`
+  AssignedUser              int         `json:"assigned_user,omitempty"`
 }
 
 // NetworkCreateRequest represents a request to create a Network

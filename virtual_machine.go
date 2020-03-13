@@ -76,7 +76,7 @@ type VirtualMachine struct {
   InitialRootPassword           string                  `json:"initial_root_password,omitempty"`
   InitialRootPasswordEncrypted  bool                    `json:"initial_root_password_encrypted,bool"`
   InstancePackageID             int                     `json:"instance_package_id,omitempty"`
-  IPAddresses                   []map[string]IPAddress  `json:"ip_addresses,omitempty"`
+  IPAddresses                   []IPAddresses           `json:"ip_addresses,omitempty"`
   IsoID                         int                     `json:"iso_id,omitempty"`
   Label                         string                  `json:"label,omitempty"`
   LocalRemoteAccessIPAddress    string                  `json:"local_remote_access_ip_address,omitempty"`
@@ -117,7 +117,10 @@ type VirtualMachine struct {
   XenID                         int                     `json:"xen_id,omitempty"`
 
   // OnApp 6.1
-  VirshConsole                  bool                    `json:"virsh_console,omitempty"`
+  VirshConsole                  bool                    `json:"virsh_console,bool"`
+
+  // OnApp 6.2
+  TrimDisabled                  bool                    `json:"trim_disabled,bool"`
 }
 
 // CustomRecipeVariableAttributes - 
@@ -183,7 +186,7 @@ type VirtualMachineCreateRequest struct {
   TypeOfFormat                      string    `json:"type_of_format,omitempty"`
 
   // OnApp 6.1
-  VirshConsole                      bool      `json:"virsh_console,omitempty"`
+  VirshConsole                      bool      `json:"virsh_console,bool"`
 }
 
 type virtualMachineCreateRequestRoot struct {
