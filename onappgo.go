@@ -58,6 +58,8 @@ type Client struct {
   ImageTemplates          ImageTemplatesService
   Disks                   DisksService
   Networks                NetworksService
+  NetworkInterfaces       NetworkInterfacesService
+  NetworkJoins            NetworkJoinsService
   NetworkGroups           NetworkGroupsService
   IPNets                  IPNetsService
   IPRanges                IPRangesService
@@ -187,6 +189,8 @@ func NewClient(httpClient *http.Client, allowUnverifiedSSL bool) *Client {
   c.IPNets                = &IPNetsServiceOp{client: c}
   c.IPRanges              = &IPRangesServiceOp{client: c}
   c.NetworkGroups         = &NetworkGroupsServiceOp{client: c}
+  c.NetworkInterfaces     = &NetworkInterfacesServiceOp{client: c}
+  c.NetworkJoins          = &NetworkJoinsServiceOp{client: c}
   c.BackupServers         = &BackupServersServiceOp{client: c}
   c.BackupServerGroups    = &BackupServerGroupsServiceOp{client: c}
   c.BackupResources       = &BackupResourcesServiceOp{client: c}
@@ -448,6 +452,7 @@ func StreamToString(stream io.Reader) string {
   return buf.String()
 }
 
+// StringInSlice - 
 func StringInSlice(valid []string, k string, ignoreCase bool) bool {
   for _, str := range valid {
     if k == str || (ignoreCase && strings.ToLower(k) == strings.ToLower(str)) {
@@ -458,6 +463,7 @@ func StringInSlice(valid []string, k string, ignoreCase bool) bool {
   return false
 }
 
+// ServerTypesRestrictions - 
 func ServerTypesRestrictions(resourceType string, serverType string, ignoreCase bool) (string, bool) {
   slice := SERVER_TYPES_RESTRICTIONS[serverType]
 

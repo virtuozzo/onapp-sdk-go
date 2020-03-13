@@ -12,6 +12,9 @@ import (
 // Xen/KVM, VMware - CRUD
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
 const hypervisorsBasePath          string = "settings/hypervisors"
+
+// TODO: maybe later remove this because will be DataSoreJoins, NetworkJoins
+// BackupServerJoins objects
 const hypervisorsDataSoreJoins     string = "settings/hypervisors/%d/data_store_joins"
 const hypervisorsNetworkJoins      string = "settings/hypervisors/%d/network_joins"
 const hypervisorsBackupServerJoins string = "settings/hypervisors/%d/backup_server_joins"
@@ -29,7 +32,8 @@ type HypervisorsService interface {
   Delete(context.Context, int, interface{}) (*Response, error)
   Edit(context.Context, int, *HypervisorEditRequest) (*Response, error)
 
-  // TODO: Move to the HypervisorActions later
+  // TODO: maybe later remove this because will be DataSoreJoins, NetworkJoins
+  // BackupServerJoins objects
   AddDataStoreJoins(context.Context, int, int) (*Response, error)
   AddNetworkJoins(context.Context, int, *HypervisorNetworkJoinCreateRequest) (*Response, error)
   AddBackupServerJoins(context.Context, int, int) (*Response, error)

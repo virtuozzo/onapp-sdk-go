@@ -9,17 +9,17 @@ import (
   "github.com/digitalocean/godo"
 )
 
-const networkInterfacesBasePath string = "virtual_machines/%s/network_interfaces"
+const networkInterfacesBasePath string = "virtual_machines/%d/network_interfaces"
 
 // NetworkInterfacesService is an interface for interfacing with the NetworkInterface
 // endpoints of the OnApp API
-// https://docs.onapp.com/apim/latest/networks
+// https://docs.onapp.com/apim/latest/network-interfaces
 type NetworkInterfacesService interface {
-  List(context.Context, string, *ListOptions) ([]NetworkInterface, *Response, error)
-  Get(context.Context, string, int) (*NetworkInterface, *Response, error)
-  Create(context.Context, string, *NetworkInterfaceCreateRequest) (*NetworkInterface, *Response, error)
-  Delete(context.Context, string, int, interface{}) (*Response, error)
-  Edit(context.Context, string, int, *NetworkInterfaceEditRequest) (*Response, error)
+  List(context.Context, int, *ListOptions) ([]NetworkInterface, *Response, error)
+  Get(context.Context, int, int) (*NetworkInterface, *Response, error)
+  Create(context.Context, int, *NetworkInterfaceCreateRequest) (*NetworkInterface, *Response, error)
+  Delete(context.Context, int, int, interface{}) (*Response, error)
+  Edit(context.Context, int, int, *NetworkInterfaceEditRequest) (*Response, error)
 }
 
 // NetworkInterfacesServiceOp handles communication with the NetworkInterfaces related methods of the
@@ -31,14 +31,34 @@ type NetworkInterfacesServiceOp struct {
 var _ NetworkInterfacesService = &NetworkInterfacesServiceOp{}
 
 // NetworkInterface represents a NetworkInterface
-type NetworkInterface Network
+type NetworkInterface struct {
+  AdapterType         string      `json:"adapter_type,omitempty"`
+  Connected           bool        `json:"connected,bool"`
+  CreatedAt           string      `json:"created_at,omitempty"`
+  DefaultFirewallRule string      `json:"default_firewall_rule,omitempty"`
+  EdgeGatewayID       int         `json:"edge_gateway_id,omitempty"`
+  ID                  int         `json:"id,omitempty"`
+  Identifier          string      `json:"identifier,omitempty"`
+  Label               string      `json:"label,omitempty"`
+  MacAddress          string      `json:"mac_address,omitempty"`
+  NetworkJoinID       int         `json:"network_join_id"`
+  OpenstackID         int         `json:"openstack_id,omitempty"`
+  Primary             bool        `json:"primary,bool"`
+  RateLimit           int         `json:"rate_limit,omitempty"`
+  UpdatedAt           string      `json:"updated_at,omitempty"`
+  Usage               bool        `json:"usage,bool"`
+  UsageLastResetAt    bool        `json:"usage_last_reset_at,bool"`
+  UsageMonthRolledAt  bool        `json:"usage_month_rolled_at,bool"`
+  UseAsGateway        bool        `json:"use_as_gateway,bool"`
+  VirtualMachineID    int         `json:"virtual_machine_id,omitempty"`
+}
 
 // NetworkInterfaceCreateRequest represents a request to create a NetworkInterface
 type NetworkInterfaceCreateRequest struct {
   Label          string `json:"label,omitempty"`
-  NetworkJoinID  int    `json:"network_join_id,omitempty"`
   RateLimit      int    `json:"rate_limit,omitempty"`
-  Primary        int    `json:"primary,omitempty"`
+  NetworkJoinID  int    `json:"network_join_id,omitempty"`
+  Primary        bool   `json:"primary,bool"`
 }
 
 // NetworkInterfaceEditRequest represents a request to edit a NetworkInterface
@@ -48,11 +68,11 @@ type NetworkInterfaceEditRequest struct {
 }
 
 type networkInterfaceCreateRequestRoot struct {
-  NetworkInterfaceCreateRequest  *NetworkInterfaceCreateRequest  `json:"network"`
+  NetworkInterfaceCreateRequest  *NetworkInterfaceCreateRequest  `json:"network_interface"`
 }
 
 type networkInterfaceRoot struct {
-  NetworkInterface  *NetworkInterface  `json:"network"`
+  NetworkInterface  *NetworkInterface  `json:"network_interface"`
 }
 
 func (d NetworkInterfaceCreateRequest) String() string {
@@ -60,7 +80,7 @@ func (d NetworkInterfaceCreateRequest) String() string {
 }
 
 // List all NetworkInterfaces.
-func (s *NetworkInterfacesServiceOp) List(ctx context.Context, vm string, opt *ListOptions) ([]NetworkInterface, *Response, error) {
+func (s *NetworkInterfacesServiceOp) List(ctx context.Context, vm int, opt *ListOptions) ([]NetworkInterface, *Response, error) {
   path := fmt.Sprintf(networkInterfacesBasePath, vm) + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
@@ -80,14 +100,14 @@ func (s *NetworkInterfacesServiceOp) List(ctx context.Context, vm string, opt *L
 
   arr := make([]NetworkInterface, len(out))
   for i := range arr {
-    arr[i] = out[i]["network"]
+    arr[i] = out[i]["network_interface"]
   }
 
   return arr, resp, err
 }
 
 // Get individual NetworkInterface.
-func (s *NetworkInterfacesServiceOp) Get(ctx context.Context, vm string, id int) (*NetworkInterface, *Response, error) {
+func (s *NetworkInterfacesServiceOp) Get(ctx context.Context, vm int, id int) (*NetworkInterface, *Response, error) {
   if id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -109,7 +129,7 @@ func (s *NetworkInterfacesServiceOp) Get(ctx context.Context, vm string, id int)
 }
 
 // Create NetworkInterface.
-func (s *NetworkInterfacesServiceOp) Create(ctx context.Context, vm string, createRequest *NetworkInterfaceCreateRequest) (*NetworkInterface, *Response, error) {
+func (s *NetworkInterfacesServiceOp) Create(ctx context.Context, vm int, createRequest *NetworkInterfaceCreateRequest) (*NetworkInterface, *Response, error) {
   if createRequest == nil {
     return nil, nil, godo.NewArgError("NetworkInterface createRequest", "cannot be nil")
   }
@@ -135,7 +155,7 @@ func (s *NetworkInterfacesServiceOp) Create(ctx context.Context, vm string, crea
 }
 
 // Delete NetworkInterface.
-func (s *NetworkInterfacesServiceOp) Delete(ctx context.Context, vm string, id int, meta interface{}) (*Response, error) {
+func (s *NetworkInterfacesServiceOp) Delete(ctx context.Context, vm int, id int, meta interface{}) (*Response, error) {
   if id < 1 {
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
@@ -157,7 +177,7 @@ func (s *NetworkInterfacesServiceOp) Delete(ctx context.Context, vm string, id i
 }
 
 // Edit NetworkInterface.
-func (s *NetworkInterfacesServiceOp) Edit(ctx context.Context, vm string, id int, editRequest *NetworkInterfaceEditRequest) (*Response, error) {
+func (s *NetworkInterfacesServiceOp) Edit(ctx context.Context, vm int, id int, editRequest *NetworkInterfaceEditRequest) (*Response, error) {
   path := fmt.Sprintf(networkInterfacesBasePath, vm)
   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
 
