@@ -181,7 +181,7 @@ func (s *NetworkGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *
   if err != nil {
     return nil, err
   }
-  log.Println("NetworkGroup [Edit]  req: ", req)
+  log.Println("NetworkGroup [Edit] req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }

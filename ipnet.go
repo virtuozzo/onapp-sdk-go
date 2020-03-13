@@ -30,25 +30,29 @@ type IPNetsServiceOp struct {
 
 var _ IPNetsService = &IPNetsServiceOp{}
 
+// ID - 
 type ID struct {
   ID int `json:"id"`
 }
 
+// IPNet - 
 type IPNet struct {
-  ID             int       `json:"id,omitempty"`
-  NetworkAddress string    `json:"network_address,omitempty"`
-  DefaultGateway string    `json:"default_gateway,omitempty"`
-  NetworkMask    int       `json:"network_mask,omitempty"`
-  Ipv4           bool      `json:"ipv4,bool"`
-  Label          string    `json:"label,omitempty"`
-  CreatedAt      string    `json:"created_at,omitempty"`
-  UpdatedAt      string    `json:"updated_at,omitempty"`
-  OpenstackID    int       `json:"openstack_id,omitempty"`
-  Kind           string    `json:"kind,omitempty"`
-  Enabled        bool      `json:"enabled,bool"`
-  Network        ID        `json:"network,omitempty"`
+  ID                  int       `json:"id,omitempty"`
+  NetworkAddress      string    `json:"network_address,omitempty"`
+  DefaultGateway      string    `json:"default_gateway,omitempty"`
+  NetworkMask         int       `json:"network_mask,omitempty"`
+  Ipv4                bool      `json:"ipv4,bool"`
+  Label               string    `json:"label,omitempty"`
+  CreatedAt           string    `json:"created_at,omitempty"`
+  UpdatedAt           string    `json:"updated_at,omitempty"`
+  OpenstackID         int       `json:"openstack_id,omitempty"`
+  Kind                string    `json:"kind,omitempty"`
+  GatewayOutsideIPNet bool      `json:"gateway_outside_ip_net,bool"`
+  Enabled             bool      `json:"enabled,bool"`
+  Network             ID        `json:"network"`
 }
 
+// IPNetCreateRequest - 
 type IPNetCreateRequest struct {
   Label             string    `json:"label,omitempty"`
   AddDefaultIPRange int       `json:"add_default_ip_range,omitempty"`

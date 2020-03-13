@@ -29,18 +29,21 @@ type RolesServiceOp struct {
 
 var _ RolesService = &RolesServiceOp{}
 
+// Permission - 
 type Permission struct {
   ID         int        `json:"id,omitempty"`
   Identifier string     `json:"identifier,omitempty"`
   CreatedAt  string     `json:"created_at,omitempty"`
   UpdatedAt  string     `json:"updated_at,omitempty"`
-  Label      string     `json:"label,omitempty"`
+  // Label      string     `json:"label,omitempty"`
 }
 
+// Permissions - 
 type Permissions struct {
   Permission Permission `json:"permission,omitempty"`
 }
 
+// Role - 
 type Role struct {
   ID          int           `json:"id,omitempty"`
   Label       string        `json:"label,omitempty"`

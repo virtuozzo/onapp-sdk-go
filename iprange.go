@@ -30,18 +30,21 @@ type IPRangesServiceOp struct {
 
 var _ IPRangesService = &IPRangesServiceOp{}
 
+// IPRange - 
 type IPRange struct {
-  ID             int       `json:"id,omitempty"`
-  StartAddress   string    `json:"start_address,omitempty"`
-  EndAddress     string    `json:"end_address,omitempty"`
-  DefaultGateway string    `json:"default_gateway,omitempty"`
-  Ipv4           bool      `json:"ipv4,bool"`
-  CreatedAt      string    `json:"created_at,omitempty"`
-  UpdatedAt      string    `json:"updated_at,omitempty"`
-  Kind           string    `json:"kind,omitempty"`
-  IPNet          ID        `json:"ip_net,omitempty"`
+  ID                  int     `json:"id,omitempty"`
+  StartAddress        string  `json:"start_address,omitempty"`
+  EndAddress          string  `json:"end_address,omitempty"`
+  DefaultGateway      string  `json:"default_gateway,omitempty"`
+  Ipv4                bool    `json:"ipv4,bool"`
+  CreatedAt           string  `json:"created_at,omitempty"`
+  UpdatedAt           string  `json:"updated_at,omitempty"`
+  Kind                string  `json:"kind,omitempty"`
+  GatewayOutsideIPNet bool    `json:"gateway_outside_ip_net,bool"`
+  IPNet               ID      `json:"ip_net"`
 }
 
+// IPRangeCreateRequest - 
 type IPRangeCreateRequest struct {
   StartAddress      string    `json:"start_address,omitempty"`
   EndAddress        string    `json:"end_address,omitempty"`
