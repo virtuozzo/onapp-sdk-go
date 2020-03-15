@@ -16,7 +16,7 @@ const hypervisorsBasePath          string = "settings/hypervisors"
 // TODO: maybe later remove this because will be DataSoreJoins, NetworkJoins
 // BackupServerJoins objects
 const hypervisorsDataSoreJoins     string = "settings/hypervisors/%d/data_store_joins"
-const hypervisorsNetworkJoins      string = "settings/hypervisors/%d/network_joins"
+// const hypervisorsNetworkJoins      string = "settings/hypervisors/%d/network_joins"
 const hypervisorsBackupServerJoins string = "settings/hypervisors/%d/backup_server_joins"
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
@@ -35,11 +35,11 @@ type HypervisorsService interface {
   // TODO: maybe later remove this because will be DataSoreJoins, NetworkJoins
   // BackupServerJoins objects
   AddDataStoreJoins(context.Context, int, int) (*Response, error)
-  AddNetworkJoins(context.Context, int, *HypervisorNetworkJoinCreateRequest) (*Response, error)
+  // AddNetworkJoins(context.Context, int, *HypervisorNetworkJoinCreateRequest) (*Response, error)
   AddBackupServerJoins(context.Context, int, int) (*Response, error)
 
   DeleteDataStoreJoins(context.Context, int, int) (*Response, error)
-  DeleteNetworkJoins(context.Context, int, int) (*Response, error)
+  // DeleteNetworkJoins(context.Context, int, int) (*Response, error)
   DeleteBackupServerJoins(context.Context, int, int) (*Response, error)
 }
 
@@ -395,46 +395,46 @@ func (s *HypervisorsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvID in
   return s.client.Do(ctx, req, nil)
 }
 
-// AddNetworkJoins - add Network Joins to the Hypervisor
-func (s *HypervisorsServiceOp) AddNetworkJoins(ctx context.Context, hvID int, createRequest *HypervisorNetworkJoinCreateRequest) (*Response, error) {
-  if hvID < 1 {
-    return nil, godo.NewArgError("id", "cannot be less than 1")
-  }
+// // AddNetworkJoins - add Network Joins to the Hypervisor
+// func (s *HypervisorsServiceOp) AddNetworkJoins(ctx context.Context, hvID int, createRequest *HypervisorNetworkJoinCreateRequest) (*Response, error) {
+//   if hvID < 1 {
+//     return nil, godo.NewArgError("id", "cannot be less than 1")
+//   }
 
-  path := fmt.Sprintf(hypervisorsNetworkJoins, hvID) + apiFormat
+//   path := fmt.Sprintf(hypervisorsNetworkJoins, hvID) + apiFormat
 
-  rootRequest := &hypervisorNetworkJoinCreateRequestRoot{
-    HypervisorNetworkJoinCreateRequest: createRequest,
-  }
+//   rootRequest := &hypervisorNetworkJoinCreateRequestRoot{
+//     HypervisorNetworkJoinCreateRequest: createRequest,
+//   }
 
-  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
-  if err != nil {
-    return nil, err
-  }
+//   req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+//   if err != nil {
+//     return nil, err
+//   }
 
-  log.Println("NetworkJoins [Create] req: ", req)
+//   log.Println("NetworkJoins [Create] req: ", req)
 
-  return s.client.Do(ctx, req, nil)
-}
+//   return s.client.Do(ctx, req, nil)
+// }
 
-// DeleteNetworkJoins - delete Network Joins from the Hypervisor
-func (s *HypervisorsServiceOp) DeleteNetworkJoins(ctx context.Context, hvID int, id int) (*Response, error) {
-  if hvID < 1 {
-    return nil, godo.NewArgError("id", "cannot be less than 1")
-  }
+// // DeleteNetworkJoins - delete Network Joins from the Hypervisor
+// func (s *HypervisorsServiceOp) DeleteNetworkJoins(ctx context.Context, hvID int, id int) (*Response, error) {
+//   if hvID < 1 {
+//     return nil, godo.NewArgError("id", "cannot be less than 1")
+//   }
 
-  path := fmt.Sprintf(hypervisorsNetworkJoins, hvID)
-  path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+//   path := fmt.Sprintf(hypervisorsNetworkJoins, hvID)
+//   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
 
-  req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-  if err != nil {
-    return nil, err
-  }
+//   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+//   if err != nil {
+//     return nil, err
+//   }
 
-  log.Println("Delete Network Joins from Hypervisor [Delete] req: ", req)
+//   log.Println("Delete Network Joins from Hypervisor [Delete] req: ", req)
 
-  return s.client.Do(ctx, req, nil)
-}
+//   return s.client.Do(ctx, req, nil)
+// }
 
 // AddBackupServerJoins - add Backup Server Joins to the Hypervisor
 func (s *HypervisorsServiceOp) AddBackupServerJoins(ctx context.Context, hvID int, bsID int) (*Response, error) {
