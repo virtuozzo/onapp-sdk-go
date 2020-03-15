@@ -60,15 +60,15 @@ type ImageTemplate struct {
   BaremetalServer           bool        `json:"baremetal_server,bool"`
   InitialPassword           string      `json:"initial_password,omitempty"`
   InitialUsername           string      `json:"initial_username,omitempty"`
-  RemoteID                  int         `json:"remote_id,omitempty"`
-  ManagerID                 string      `json:"manager_id,omitempty"`
-  // ResizeWithoutRebootPolicy interface{} `json:"resize_without_reboot_policy,omitempty"`
-  ApplicationServer         bool        `json:"application_server,bool"`
-  Draas                     bool        `json:"draas,bool"`
-  Properties                interface{} `json:"properties,omitempty"`
-  Locked                    bool        `json:"locked,bool"`
-  OpenstackID               int         `json:"openstack_id,omitempty"`
-  Type                      string      `json:"type,omitempty"`
+  RemoteID                  string      `json:"remote_id,omitempty"`
+  ManagerID                 string                  `json:"manager_id,omitempty"`
+  ResizeWithoutRebootPolicy interface{}             `json:"resize_without_reboot_policy,omitempty"`
+  ApplicationServer         bool                    `json:"application_server,bool"`
+  Draas                     bool                    `json:"draas,bool"`
+  Properties                map[string]interface{}  `json:"properties,omitempty"`
+  Locked                    bool                    `json:"locked,bool"`
+  OpenstackID               int                     `json:"openstack_id,omitempty"`
+  Type                      string                  `json:"type,omitempty"`
 }
 
 type imageTemplatesRoot struct {

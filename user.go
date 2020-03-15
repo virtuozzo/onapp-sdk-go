@@ -76,8 +76,8 @@ type User struct {
   UsedMemory              int                 `json:"used_memory,omitempty"`
   UsedCPUShares           int                 `json:"used_cpu_shares,omitempty"`
   UsedDiskSize            int                 `json:"used_disk_size,omitempty"`
-  MemoryAvailable         int                 `json:"memory_available,omitempty"`
-  DiskSpaceAvailable      int                 `json:"disk_space_available,omitempty"`
+  MemoryAvailable         float64             `json:"memory_available,omitempty"`
+  DiskSpaceAvailable      float64             `json:"disk_space_available,omitempty"`
   Roles                   []Roles             `json:"roles,omitempty"`
   MonthlyPrice            float64             `json:"monthly_price,omitempty"`
   PaymentAmount           float64             `json:"payment_amount,omitempty"`

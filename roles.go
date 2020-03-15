@@ -35,7 +35,7 @@ type Permission struct {
   Identifier string     `json:"identifier,omitempty"`
   CreatedAt  string     `json:"created_at,omitempty"`
   UpdatedAt  string     `json:"updated_at,omitempty"`
-  // Label      string     `json:"label,omitempty"`
+  Label      string     `json:"label,omitempty"`
 }
 
 // Permissions - 
