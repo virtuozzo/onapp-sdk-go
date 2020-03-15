@@ -56,6 +56,7 @@ type Client struct {
   DataStores              DataStoresService
   DataStoreGroups         DataStoreGroupsService
   ImageTemplates          ImageTemplatesService
+  ImageTemplateGroups     ImageTemplateGroupsService
   Disks                   DisksService
   Networks                NetworksService
   NetworkInterfaces       NetworkInterfacesService
@@ -184,6 +185,7 @@ func NewClient(httpClient *http.Client, allowUnverifiedSSL bool) *Client {
   c.DataStores            = &DataStoresServiceOp{client: c}
   c.DataStoreGroups       = &DataStoreGroupsServiceOp{client: c}
   c.ImageTemplates        = &ImageTemplatesServiceOp{client: c}
+  c.ImageTemplateGroups   = &ImageTemplateGroupsServiceOp{client: c}
   c.Disks                 = &DisksServiceOp{client: c}
   c.Networks              = &NetworksServiceOp{client: c}
   c.IPNets                = &IPNetsServiceOp{client: c}
