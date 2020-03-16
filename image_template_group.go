@@ -14,6 +14,7 @@ const relationGroupTemplateBasePath string = "settings/image_template_groups/%d/
 
 // ImageTemplateGroupsService is an interface for interfacing with the ImageTemplateGroup
 // endpoints of the OnApp API
+// https://docs.onapp.com/apim/latest/template-store
 type ImageTemplateGroupsService interface {
   List(context.Context, *ListOptions) ([]ImageTemplateGroup, *Response, error)
   Get(context.Context, int) (*ImageTemplateGroup, *Response, error)
@@ -86,9 +87,10 @@ type imageTemplateGroupsRoot struct {
 
 // ImageTemplateGroupAttachRequest represents a request to attach template to the ImageTemplateGroup
 type ImageTemplateGroupAttachRequest struct {
-  TemplateID  int `json:"template_id,omitempty"`
-
+  TemplateID  int     `json:"template_id,omitempty"`
+  // Price       float64 `json:"price,omitempty"`
 }
+
 // Attach Template to Template Group
 type imageTemplateGroupAttachRequestRoot struct {
   ImageTemplateGroupAttachRequest *ImageTemplateGroupAttachRequest `json:"relation_group_template"`

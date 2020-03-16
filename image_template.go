@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -13,11 +14,14 @@ const imageTemplatesBasePath string = "templates"
 // ImageTemplatesService is an interface for interfacing with the ImageTemplate
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/templates
+// 
+// Describe templates *installed* on the OnApp cloud
 type ImageTemplatesService interface {
   List(context.Context, *ListOptions) ([]ImageTemplate, *Response, error)
   Get(context.Context, int) (*ImageTemplate, *Response, error)
+  Create(context.Context, *ImageTemplateCreateRequest) (*ImageTemplate, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]ImageTemplate, *Response, error)
+  Edit(context.Context, int, *ImageTemplateEditRequest) (*Response, error)
 }
 
 // ImageTemplatesServiceOp handles communication with the ImageTemplate related methods of the
@@ -28,47 +32,71 @@ type ImageTemplatesServiceOp struct {
 
 var _ ImageTemplatesService = &ImageTemplatesServiceOp{}
 
-// ImageTemplate - represent a template of OnApp API
+// ImageTemplate - represent a template of OnApp API from cloud
 type ImageTemplate struct {
-  ID                        int         `json:"id,omitempty"`
-  Label                     string      `json:"label,omitempty"`
-  CreatedAt                 string      `json:"created_at,omitempty"`
-  UpdatedAt                 string      `json:"updated_at,omitempty"`
-  Version                   string      `json:"version,omitempty"`
-  FileName                  string      `json:"file_name,omitempty"`
-  OperatingSystem           string      `json:"operating_system,omitempty"`
-  OperatingSystemDistro     string      `json:"operating_system_distro,omitempty"`
-  AllowedSwap               bool        `json:"allowed_swap,bool"`
-  State                     string      `json:"state,omitempty"`
-  Checksum                  string      `json:"checksum,omitempty"`
-  AllowResizeWithoutReboot  bool        `json:"allow_resize_without_reboot,bool"`
-  MinDiskSize               int         `json:"min_disk_size,omitempty"`
-  UserID                    int         `json:"user_id,omitempty"`
-  TemplateSize              int         `json:"template_size,omitempty"`
-  AllowedHotMigrate         bool        `json:"allowed_hot_migrate,bool"`
-  OperatingSystemArch       string      `json:"operating_system_arch,omitempty"`
-  OperatingSystemEdition    string      `json:"operating_system_edition,omitempty"`
-  OperatingSystemTail       string      `json:"operating_system_tail,omitempty"`
-  ParentTemplateID          int         `json:"parent_template_id,omitempty"`
-  Virtualization            []string    `json:"virtualization,omitempty"`
-  MinMemorySize             int         `json:"min_memory_size,omitempty"`
-  DiskTargetDevice          string      `json:"disk_target_device,omitempty"`
-  Cdn                       bool        `json:"cdn,bool"`
-  BackupServerID            int         `json:"backup_server_id,omitempty"`
-  Ext4                      bool        `json:"ext4,bool"`
-  SmartServer               bool        `json:"smart_server,bool"`
-  BaremetalServer           bool        `json:"baremetal_server,bool"`
-  InitialPassword           string      `json:"initial_password,omitempty"`
-  InitialUsername           string      `json:"initial_username,omitempty"`
-  RemoteID                  string      `json:"remote_id,omitempty"`
+  ID                        int                     `json:"id,omitempty"`
+  Label                     string                  `json:"label,omitempty"`
+  CreatedAt                 string                  `json:"created_at,omitempty"`
+  UpdatedAt                 string                  `json:"updated_at,omitempty"`
+  Version                   string                  `json:"version,omitempty"`
+  FileName                  string                  `json:"file_name,omitempty"`
+  OperatingSystem           string                  `json:"operating_system,omitempty"`
+  OperatingSystemDistro     string                  `json:"operating_system_distro,omitempty"`
+  AllowedSwap               bool                    `json:"allowed_swap,bool"`
+  State                     string                  `json:"state,omitempty"`
+  Checksum                  string                  `json:"checksum,omitempty"`
+  AllowResizeWithoutReboot  bool                    `json:"allow_resize_without_reboot,bool"`
+  MinDiskSize               int                     `json:"min_disk_size,omitempty"`
+  UserID                    int                     `json:"user_id,omitempty"`
+  TemplateSize              int                     `json:"template_size,omitempty"`
+  AllowedHotMigrate         bool                    `json:"allowed_hot_migrate,bool"`
+  OperatingSystemArch       string                  `json:"operating_system_arch,omitempty"`
+  OperatingSystemEdition    string                  `json:"operating_system_edition,omitempty"`
+  OperatingSystemTail       string                  `json:"operating_system_tail,omitempty"`
+  ParentTemplateID          int                     `json:"parent_template_id,omitempty"`
+  Virtualization            []string                `json:"virtualization,omitempty"`
+  MinMemorySize             int                     `json:"min_memory_size,omitempty"`
+  DiskTargetDevice          string                  `json:"disk_target_device,omitempty"`
+  Cdn                       bool                    `json:"cdn,bool"`
+  BackupServerID            int                     `json:"backup_server_id,omitempty"`
+  Ext4                      bool                    `json:"ext4,bool"`
+  SmartServer               bool                    `json:"smart_server,bool"`
+  BaremetalServer           bool                    `json:"baremetal_server,bool"`
+  InitialPassword           string                  `json:"initial_password,omitempty"`
+  InitialUsername           string                  `json:"initial_username,omitempty"`
+  RemoteID                  string                  `json:"remote_id,omitempty"`
   ManagerID                 string                  `json:"manager_id,omitempty"`
-  ResizeWithoutRebootPolicy interface{}             `json:"resize_without_reboot_policy,omitempty"`
+  ResizeWithoutRebootPolicy string                  `json:"resize_without_reboot_policy,omitempty"`
   ApplicationServer         bool                    `json:"application_server,bool"`
   Draas                     bool                    `json:"draas,bool"`
   Properties                map[string]interface{}  `json:"properties,omitempty"`
   Locked                    bool                    `json:"locked,bool"`
   OpenstackID               int                     `json:"openstack_id,omitempty"`
   Type                      string                  `json:"type,omitempty"`
+}
+
+// ImageTemplateCreateRequest represents a request to install template
+type ImageTemplateCreateRequest struct {
+  ManagerID      string `json:"manager_id,omitempty"`
+  BackupServerID int    `json:"backup_server_id,omitempty"`
+}
+
+type imageTemplateCreateRequestRoot struct {
+  ImageTemplateCreateRequest *ImageTemplateCreateRequest `json:"image_template"`
+}
+
+// ImageTemplateEditRequest represents a request to edit template
+type ImageTemplateEditRequest struct {
+  Label             string `json:"label,omitempty"`
+  FileName          string `json:"file_name,omitempty"`
+  Version           string `json:"version,omitempty"`
+  MinDiskSize       int    `json:"min_disk_size,omitempty"`
+  MinMemorySize     int    `json:"min_memory_size,omitempty"`
+  AllowedHotMigrate bool   `json:"allowed_hot_migrate,omitempty"`
+}
+
+type imageTemplateEditRequestRoot struct {
+  ImageTemplateEditRequest *ImageTemplateEditRequest `json:"image_template"`
 }
 
 type imageTemplatesRoot struct {
@@ -124,6 +152,32 @@ func (s *ImageTemplatesServiceOp) Get(ctx context.Context, id int) (*ImageTempla
   return root.ImageTemplate, resp, err
 }
 
+// Create ImageTemplate.
+func (s *ImageTemplatesServiceOp) Create(ctx context.Context, createRequest *ImageTemplateCreateRequest) (*ImageTemplate, *Response, error) {
+  if createRequest == nil {
+    return nil, nil, godo.NewArgError("ImageTemplate createRequest", "cannot be nil")
+  }
+
+  path := imageTemplatesBasePath + apiFormat
+  rootRequest := &imageTemplateCreateRequestRoot {
+    ImageTemplateCreateRequest : createRequest,
+  }
+
+  req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+  if err != nil {
+    return nil, nil, err
+  }
+  log.Println("ImageTemplate [Create] req: ", req)
+
+  root := new(imageTemplatesRoot)
+  resp, err := s.client.Do(ctx, req, root)
+  if err != nil {
+    return nil, resp, err
+  }
+
+  return root.ImageTemplate, resp, err
+}
+
 // Delete ImageTemplate.
 func (s *ImageTemplatesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Response, error) {
   if id < 1 {
@@ -140,6 +194,27 @@ func (s *ImageTemplatesServiceOp) Delete(ctx context.Context, id int, meta inter
   if err != nil {
     return nil, err
   }
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit ImageTemplate
+func (s *ImageTemplatesServiceOp) Edit(ctx context.Context, id int, editRequest *ImageTemplateEditRequest) (*Response, error) {
+  if editRequest == nil {
+    return nil, godo.NewArgError("ImageTemplate editRequest", "cannot be nil")
+  }
+
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf("%s/%d%s", imageTemplatesBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("ImageTemplate [Edit] req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }
