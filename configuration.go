@@ -229,6 +229,12 @@ type Configuration struct {
   ComposeVappTemplateTimeout            int         `json:"compose_vapp_template_timeout,omitempty"`
   CreateSnapshotTimeout                 int         `json:"create_snapshot_timeout,omitempty"`
   CreateVdcTimeout                      int         `json:"create_vdc_timeout,omitempty"`
+
+  // 6.1 Edge 2
+  DefaultVirshConsolePolicy             bool        `json:"default_virsh_console_policy,bool"`
+
+  // 6.1 Edge 1
+  EnableSuperAdminPermissions           bool        `json:"enable_super_admin_permissions,bool"`
 }
 
 type configurationEditRequestRoot struct {
