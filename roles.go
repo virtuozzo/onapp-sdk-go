@@ -4,6 +4,7 @@ import (
   "context"
   "net/http"
   "fmt"
+  "log"
 
   "github.com/digitalocean/godo"
 )
@@ -18,7 +19,7 @@ type RolesService interface {
   Get(context.Context, int) (*Role, *Response, error)
   Create(context.Context, *RoleCreateRequest) (*Role, *Response, error)
   Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ListOptions) ([]Role, *Response, error)
+  Edit(context.Context, int, *RoleCreateRequest) (*Response, error)
 }
 
 // RolesServiceOp handles communication with the Roles related methods of the
@@ -164,6 +165,27 @@ func (s *RolesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
     return nil, err
   }
   fmt.Println("Role [Delete] req: ", req)
+
+  return s.client.Do(ctx, req, nil)
+}
+
+// Edit Role
+func (s *RolesServiceOp) Edit(ctx context.Context, id int, editRequest *RoleCreateRequest) (*Response, error) {
+  if editRequest == nil {
+    return nil, godo.NewArgError("Role editRequest", "cannot be nil")
+  }
+
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  path := fmt.Sprintf("%s/%d%s", rolesBasePath, id, apiFormat)
+
+  req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+  if err != nil {
+    return nil, err
+  }
+  log.Println("Role [Edit] req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }
