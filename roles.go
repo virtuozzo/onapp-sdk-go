@@ -171,6 +171,10 @@ func (s *RolesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
 
 // Edit Role
 func (s *RolesServiceOp) Edit(ctx context.Context, id int, editRequest *RoleCreateRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
   if editRequest == nil {
     return nil, godo.NewArgError("Role editRequest", "cannot be nil")
   }

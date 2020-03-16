@@ -80,8 +80,8 @@ func (d NetworkInterfaceCreateRequest) String() string {
 }
 
 // List all NetworkInterfaces.
-func (s *NetworkInterfacesServiceOp) List(ctx context.Context, vm int, opt *ListOptions) ([]NetworkInterface, *Response, error) {
-  path := fmt.Sprintf(networkInterfacesBasePath, vm) + apiFormat
+func (s *NetworkInterfacesServiceOp) List(ctx context.Context, vmID int, opt *ListOptions) ([]NetworkInterface, *Response, error) {
+  path := fmt.Sprintf(networkInterfacesBasePath, vmID) + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
     return nil, nil, err
@@ -107,12 +107,12 @@ func (s *NetworkInterfacesServiceOp) List(ctx context.Context, vm int, opt *List
 }
 
 // Get individual NetworkInterface.
-func (s *NetworkInterfacesServiceOp) Get(ctx context.Context, vm int, id int) (*NetworkInterface, *Response, error) {
-  if id < 1 {
-    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+func (s *NetworkInterfacesServiceOp) Get(ctx context.Context, vmID int, id int) (*NetworkInterface, *Response, error) {
+  if vmID < 1 || id < 1 {
+    return nil, nil, godo.NewArgError("vmID || id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(networkInterfacesBasePath, vm)
+  path := fmt.Sprintf(networkInterfacesBasePath, vmID)
   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
   req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
   if err != nil {
@@ -129,12 +129,16 @@ func (s *NetworkInterfacesServiceOp) Get(ctx context.Context, vm int, id int) (*
 }
 
 // Create NetworkInterface.
-func (s *NetworkInterfacesServiceOp) Create(ctx context.Context, vm int, createRequest *NetworkInterfaceCreateRequest) (*NetworkInterface, *Response, error) {
+func (s *NetworkInterfacesServiceOp) Create(ctx context.Context, vmID int, createRequest *NetworkInterfaceCreateRequest) (*NetworkInterface, *Response, error) {
+  if vmID < 1 {
+    return nil, nil, godo.NewArgError("vmID", "cannot be less than 1")
+  }
+
   if createRequest == nil {
     return nil, nil, godo.NewArgError("NetworkInterface createRequest", "cannot be nil")
   }
 
-  path := fmt.Sprintf(networkInterfacesBasePath, vm) + apiFormat
+  path := fmt.Sprintf(networkInterfacesBasePath, vmID) + apiFormat
   rootRequest := &networkInterfaceCreateRequestRoot{
     NetworkInterfaceCreateRequest: createRequest,
   }
@@ -155,12 +159,12 @@ func (s *NetworkInterfacesServiceOp) Create(ctx context.Context, vm int, createR
 }
 
 // Delete NetworkInterface.
-func (s *NetworkInterfacesServiceOp) Delete(ctx context.Context, vm int, id int, meta interface{}) (*Response, error) {
-  if id < 1 {
-    return nil, godo.NewArgError("id", "cannot be less than 1")
+func (s *NetworkInterfacesServiceOp) Delete(ctx context.Context, vmID int, id int, meta interface{}) (*Response, error) {
+  if vmID < 1 || id < 1 {
+    return nil, godo.NewArgError("vmID || id", "cannot be less than 1")
   }
 
-  path := fmt.Sprintf(networkInterfacesBasePath, vm)
+  path := fmt.Sprintf(networkInterfacesBasePath, vmID)
   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
   path, err := addOptions(path, meta)
   if err != nil {
@@ -177,8 +181,16 @@ func (s *NetworkInterfacesServiceOp) Delete(ctx context.Context, vm int, id int,
 }
 
 // Edit NetworkInterface.
-func (s *NetworkInterfacesServiceOp) Edit(ctx context.Context, vm int, id int, editRequest *NetworkInterfaceEditRequest) (*Response, error) {
-  path := fmt.Sprintf(networkInterfacesBasePath, vm)
+func (s *NetworkInterfacesServiceOp) Edit(ctx context.Context, vmID int, id int, editRequest *NetworkInterfaceEditRequest) (*Response, error) {
+  if vmID < 1 || id < 1 {
+    return nil, godo.NewArgError("vmID || id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("NetworkInterface [Edit] editRequest", "cannot be nil")
+  }
+
+  path := fmt.Sprintf(networkInterfacesBasePath, vmID)
   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)

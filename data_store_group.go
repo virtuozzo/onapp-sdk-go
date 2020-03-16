@@ -178,6 +178,14 @@ func (s *DataStoreGroupsServiceOp) Delete(ctx context.Context, id int, meta inte
 
 // Edit DataStoreGroup.
 func (s *DataStoreGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *DataStoreGroupEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("DataStoreGroup [Edit] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", dataStoreGroupsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)

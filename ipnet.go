@@ -74,6 +74,10 @@ func (d IPNetCreateRequest) String() string {
 
 // List all IPNet.
 func (s *IPNetsServiceOp) List(ctx context.Context, net int, opt *ListOptions) ([]IPNet, *Response, error) {
+  if net < 1 {
+    return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
   path := fmt.Sprintf(ipNetsBasePath, net) + apiFormat
   path, err := addOptions(path, opt)
   if err != nil {
@@ -101,7 +105,7 @@ func (s *IPNetsServiceOp) List(ctx context.Context, net int, opt *ListOptions) (
 
 // Get individual IPNet.
 func (s *IPNetsServiceOp) Get(ctx context.Context, net int, id int) (*IPNet, *Response, error) {
-  if id < 1 {
+  if net < 1 || id < 1 {
     return nil, nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
@@ -125,6 +129,10 @@ func (s *IPNetsServiceOp) Get(ctx context.Context, net int, id int) (*IPNet, *Re
 func (s *IPNetsServiceOp) Create(ctx context.Context, net int, createRequest *IPNetCreateRequest) (*IPNet, *Response, error) {
   if createRequest == nil {
     return nil, nil, godo.NewArgError("IPNet createRequest", "cannot be nil")
+  }
+
+  if net < 1 {
+    return nil, nil, godo.NewArgError("net", "cannot be less than 1")
   }
 
   path := fmt.Sprintf(ipNetsBasePath, net) + apiFormat

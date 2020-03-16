@@ -173,8 +173,16 @@ func (s *NetworkGroupsServiceOp) Delete(ctx context.Context, id int, meta interf
   return s.client.Do(ctx, req, nil)
 }
 
-// Edit Hypervisor.
+// Edit NetworkGroup.
 func (s *NetworkGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *NetworkGroupEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("NetworkGroup [Edit] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", networkZonesBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)

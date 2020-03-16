@@ -343,6 +343,14 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
 
 // Edit Hypervisor.
 func (s *HypervisorsServiceOp) Edit(ctx context.Context, id int, editRequest *HypervisorEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("Hypervisor [Edit] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", hypervisorsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
@@ -356,7 +364,7 @@ func (s *HypervisorsServiceOp) Edit(ctx context.Context, id int, editRequest *Hy
 
 // AddDataStoreJoins - add Data Store Joins to the Hypervisor
 func (s *HypervisorsServiceOp) AddDataStoreJoins(ctx context.Context, hvID int, dsID int) (*Response, error) {
-  if hvID < 1 {
+  if hvID < 1 || dsID < 1 {
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
@@ -378,7 +386,7 @@ func (s *HypervisorsServiceOp) AddDataStoreJoins(ctx context.Context, hvID int, 
 
 // DeleteDataStoreJoins - delete Data Store Joins from the Hypervisor
 func (s *HypervisorsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvID int, id int) (*Response, error) {
-  if hvID < 1 {
+  if hvID < 1 || id < 1 {
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
@@ -438,7 +446,7 @@ func (s *HypervisorsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvID in
 
 // AddBackupServerJoins - add Backup Server Joins to the Hypervisor
 func (s *HypervisorsServiceOp) AddBackupServerJoins(ctx context.Context, hvID int, bsID int) (*Response, error) {
-  if hvID < 1 {
+  if hvID < 1 || bsID < 1 {
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 
@@ -460,7 +468,7 @@ func (s *HypervisorsServiceOp) AddBackupServerJoins(ctx context.Context, hvID in
 
 // DeleteBackupServerJoins - delete Backup Server Joins from the Hypervisor
 func (s *HypervisorsServiceOp) DeleteBackupServerJoins(ctx context.Context, hvID int, id int) (*Response, error) {
-  if hvID < 1 {
+  if hvID < 1 || id < 1 {
     return nil, godo.NewArgError("id", "cannot be less than 1")
   }
 

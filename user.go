@@ -234,8 +234,16 @@ func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
   return s.client.Do(ctx, req, nil)
 }
 
-// Edit Network.
+// Edit User
 func (s *UsersServiceOp) Edit(ctx context.Context, id int, editRequest *UserEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("User [Edit] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", usersBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)

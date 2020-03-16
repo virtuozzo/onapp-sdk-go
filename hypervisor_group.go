@@ -230,6 +230,14 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
 
 // Edit HypervisorGroup.
 func (s *HypervisorGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *HypervisorGroupEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("HypervisorZone [Edit] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", hypervisorGroupsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)

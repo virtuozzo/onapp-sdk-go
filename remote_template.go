@@ -3,10 +3,10 @@ package onappgo
 import (
   "context"
   "net/http"
-  "fmt"
-  "log"
+  // "fmt"
+  // "log"
 
-  "github.com/digitalocean/godo"
+  // "github.com/digitalocean/godo"
 )
 
 const remoteTemplatesBasePath string = "templates/available"

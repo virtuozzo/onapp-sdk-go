@@ -187,6 +187,14 @@ func (s *UserGroupsServiceOp) Delete(ctx context.Context, id int, meta interface
 
 // Edit UserGroup.
 func (s *UserGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *UserGroupEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("UserGroup [Edit] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", userGroupsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)

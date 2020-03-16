@@ -164,6 +164,14 @@ func (s *InstancePackagesServiceOp) Delete(ctx context.Context, id int, meta int
 
 // Edit InstancePackage.
 func (s *InstancePackagesServiceOp) Edit(ctx context.Context, id int, editRequest *InstancePackageEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("InstancePackage editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", instancePackagesBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)

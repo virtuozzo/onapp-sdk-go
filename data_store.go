@@ -228,6 +228,14 @@ func (s *DataStoresServiceOp) Delete(ctx context.Context, id int, meta interface
 
 // Edit DataStore.
 func (s *DataStoresServiceOp) Edit(ctx context.Context, id int, editRequest *DataStoreEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("DataStore [Edit] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", dataStoresBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
@@ -241,6 +249,14 @@ func (s *DataStoresServiceOp) Edit(ctx context.Context, id int, editRequest *Dat
 
 // IoLimits edit io limits for DataStore.
 func (s *DataStoresServiceOp) IoLimits(ctx context.Context, id int, editRequest *IoLimits) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("DataStore [IoLimits] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf(dataStoresIoLimitsBasePath, id) + apiFormat
 
   rootRequest := &rootIoLimits{

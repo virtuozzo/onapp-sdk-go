@@ -118,6 +118,10 @@ func (s *IPRangesServiceOp) Create(ctx context.Context, net int, ipnet int, crea
     return nil, nil, godo.NewArgError("Network createRequest", "cannot be nil")
   }
 
+  if net < 1 || ipnet < 1 {
+    return nil, nil, godo.NewArgError("net || ipnet", "cannot be less than 1")
+  }
+
   path := fmt.Sprintf(ipRangesBasePath, net, ipnet)
   rootRequest := &ipRangeCreateRequestRoot {
     IPRangeCreateRequest: createRequest,
@@ -140,8 +144,8 @@ func (s *IPRangesServiceOp) Create(ctx context.Context, net int, ipnet int, crea
 
 // Delete IPRange.
 func (s *IPRangesServiceOp) Delete(ctx context.Context, net int, ipnet int, id int, meta interface{}) (*Response, error) {
-  if id < 1 {
-    return nil, godo.NewArgError("id", "cannot be less than 1")
+  if net < 1 || ipnet < 1 || id < 1 {
+    return nil, godo.NewArgError("net || ipnet || id", "cannot be less than 1")
   }
 
   path := fmt.Sprintf(ipRangesBasePath, net, ipnet)

@@ -4,6 +4,8 @@ import (
   "context"
   "net/http"
   "fmt"
+
+  "github.com/digitalocean/godo"
 )
 
 const licensesBasePath      string = "settings/license"
@@ -75,6 +77,10 @@ func (s *LicensesServiceOp) Get(ctx context.Context) (*License, *Response, error
 
 // Edit individual License.
 func (s *LicensesServiceOp) Edit(ctx context.Context, editRequest *LicenseEditRequest) (*Response, error) {
+  if editRequest == nil {
+    return nil, godo.NewArgError("License editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s%s", licensesEditBasePath, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, nil)

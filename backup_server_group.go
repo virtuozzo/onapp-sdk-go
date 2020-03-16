@@ -174,6 +174,14 @@ func (s *BackupServerGroupsServiceOp) Delete(ctx context.Context, id int, meta i
 
 // Edit BackupServerGroup.
 func (s *BackupServerGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *BackupServerGroupEditRequest) (*Response, error) {
+  if id < 1 {
+    return nil, godo.NewArgError("id", "cannot be less than 1")
+  }
+
+  if editRequest == nil {
+    return nil, godo.NewArgError("BackupServerGroup [Edit] editRequest", "cannot be nil")
+  }
+
   path := fmt.Sprintf("%s/%d%s", backupServerGroupsBasePath, id, apiFormat)
 
   req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
