@@ -110,20 +110,6 @@ type AdditionalFields struct {
 type AdvancedOptions struct {
 }
 
-// FirewallRule - 
-// https://docs.onapp.com/apim/latest/firewall-rules-for-vss
-type FirewallRule struct {
-  ID                  int         `json:"id,omitempty"`
-  Position            int         `json:"position,omitempty"`
-  Address             string      `json:"address,omitempty"`
-  CreatedAt           string      `json:"created_at,omitempty"`
-  UpdatedAt           string      `json:"updated_at,omitempty"`
-  Command             string      `json:"adapter_type,omitempty"`
-  Port                int         `json:"port,omitempty"`
-  Protocol            string      `json:"protocol,omitempty"`
-  NetworkInterfaceID  int         `json:"network_interface_id,omitempty"`
-}
-
 // AssignIPAddress - used for assign IPAddress to the VirtualMachine or User
 type AssignIPAddress struct {
   Address             string  `json:"address,omitempty"`
