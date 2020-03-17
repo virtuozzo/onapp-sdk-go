@@ -41,7 +41,7 @@ var _ VirtualMachinesService = &VirtualMachinesServiceOp{}
 type VirtualMachine struct {
   Acceleration                  bool                    `json:"acceleration,bool"`
   AccelerationAllowed           bool                    `json:"acceleration_allowed,bool"`
-  AccelerationStatus            string                  `json:"acceleration_status,omitempty"`
+  // AccelerationStatus            string                  `json:"acceleration_status,omitempty"`
   AddToMarketplace              string                  `json:"add_to_marketplace,omitempty"`
   AdminNote                     string                  `json:"admin_note,omitempty"`
   AllowedHotMigrate             bool                    `json:"allowed_hot_migrate,bool"`

@@ -34,45 +34,47 @@ var _ ImageTemplatesService = &ImageTemplatesServiceOp{}
 
 // ImageTemplate - represent a template of OnApp API from cloud
 type ImageTemplate struct {
-  ID                        int                     `json:"id,omitempty"`
-  Label                     string                  `json:"label,omitempty"`
-  CreatedAt                 string                  `json:"created_at,omitempty"`
-  UpdatedAt                 string                  `json:"updated_at,omitempty"`
-  Version                   string                  `json:"version,omitempty"`
-  FileName                  string                  `json:"file_name,omitempty"`
-  OperatingSystem           string                  `json:"operating_system,omitempty"`
-  OperatingSystemDistro     string                  `json:"operating_system_distro,omitempty"`
-  AllowedSwap               bool                    `json:"allowed_swap,bool"`
-  State                     string                  `json:"state,omitempty"`
-  Checksum                  string                  `json:"checksum,omitempty"`
   AllowResizeWithoutReboot  bool                    `json:"allow_resize_without_reboot,bool"`
-  MinDiskSize               int                     `json:"min_disk_size,omitempty"`
-  UserID                    int                     `json:"user_id,omitempty"`
-  TemplateSize              int                     `json:"template_size,omitempty"`
   AllowedHotMigrate         bool                    `json:"allowed_hot_migrate,bool"`
+  AllowedSwap               bool                    `json:"allowed_swap,bool"`
+  ApplicationServer         bool                    `json:"application_server,bool"`
+  BackupServerID            int                     `json:"backup_server_id,omitempty"`
+  BaremetalServer           bool                    `json:"baremetal_server,bool"`
+  Cdn                       bool                    `json:"cdn,bool"`
+  Checksum                  string                  `json:"checksum,omitempty"`
+  CreatedAt                 string                  `json:"created_at,omitempty"`
+  DatacenterID              int                     `json:"datacenter_id,omitempty"`
+  DiskTargetDevice          string                  `json:"disk_target_device,omitempty"`
+  Draas                     bool                    `json:"draas,bool"`
+  Ext4                      bool                    `json:"ext4,bool"`
+  FileName                  string                  `json:"file_name,omitempty"`
+  ID                        int                     `json:"id,omitempty"`
+  Identifier                string                  `json:"identifier,omitempty"`
+  InitialPassword           string                  `json:"initial_password,omitempty"`
+  InitialUsername           string                  `json:"initial_username,omitempty"`
+  Label                     string                  `json:"label,omitempty"`
+  Locked                    bool                    `json:"locked,bool"`
+  ManagerID                 string                  `json:"manager_id,omitempty"`
+  MinDiskSize               int                     `json:"min_disk_size,omitempty"`
+  MinMemorySize             int                     `json:"min_memory_size,omitempty"`
+  OpenstackID               int                     `json:"openstack_id,omitempty"`
+  OperatingSystem           string                  `json:"operating_system,omitempty"`
   OperatingSystemArch       string                  `json:"operating_system_arch,omitempty"`
+  OperatingSystemDistro     string                  `json:"operating_system_distro,omitempty"`
   OperatingSystemEdition    string                  `json:"operating_system_edition,omitempty"`
   OperatingSystemTail       string                  `json:"operating_system_tail,omitempty"`
   ParentTemplateID          int                     `json:"parent_template_id,omitempty"`
-  Virtualization            []string                `json:"virtualization,omitempty"`
-  MinMemorySize             int                     `json:"min_memory_size,omitempty"`
-  DiskTargetDevice          string                  `json:"disk_target_device,omitempty"`
-  Cdn                       bool                    `json:"cdn,bool"`
-  BackupServerID            int                     `json:"backup_server_id,omitempty"`
-  Ext4                      bool                    `json:"ext4,bool"`
-  SmartServer               bool                    `json:"smart_server,bool"`
-  BaremetalServer           bool                    `json:"baremetal_server,bool"`
-  InitialPassword           string                  `json:"initial_password,omitempty"`
-  InitialUsername           string                  `json:"initial_username,omitempty"`
-  RemoteID                  string                  `json:"remote_id,omitempty"`
-  ManagerID                 string                  `json:"manager_id,omitempty"`
-  ResizeWithoutRebootPolicy string                  `json:"resize_without_reboot_policy,omitempty"`
-  ApplicationServer         bool                    `json:"application_server,bool"`
-  Draas                     bool                    `json:"draas,bool"`
   Properties                map[string]interface{}  `json:"properties,omitempty"`
-  Locked                    bool                    `json:"locked,bool"`
-  OpenstackID               int                     `json:"openstack_id,omitempty"`
+  RemoteID                  string                  `json:"remote_id,omitempty"`
+  ResizeWithoutRebootPolicy map[string]map[string]interface{} `json:"resize_without_reboot_policy,omitempty"`
+  SmartServer               bool                    `json:"smart_server,bool"`
+  State                     string                  `json:"state,omitempty"`
+  TemplateSize              int                     `json:"template_size,omitempty"`
   Type                      string                  `json:"type,omitempty"`
+  UpdatedAt                 string                  `json:"updated_at,omitempty"`
+  UserID                    int                     `json:"user_id,omitempty"`
+  Version                   string                  `json:"version,omitempty"`
+  Virtualization            []string                `json:"virtualization,omitempty"`
 }
 
 // ImageTemplateCreateRequest represents a request to install template
