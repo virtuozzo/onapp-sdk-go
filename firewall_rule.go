@@ -30,20 +30,27 @@ type FirewallRulesServiceOp struct {
 
 var _ FirewallRulesService = &FirewallRulesServiceOp{}
 
-
 // FirewallRule - 
 // https://docs.onapp.com/apim/latest/firewall-rules-for-vss
 type FirewallRule struct {
-  ID                  int     `json:"id,omitempty"`
-  Position            int     `json:"position,omitempty"`
-  Address             string  `json:"address,omitempty"`
-  CreatedAt           string  `json:"created_at,omitempty"`
-  UpdatedAt           string  `json:"updated_at,omitempty"`
-  Command             string  `json:"command,omitempty"`
-  Port                string  `json:"port,omitempty"`
-  Protocol            string  `json:"protocol,omitempty"`
-  NetworkInterfaceID  int     `json:"network_interface_id,omitempty"`
-  Comment             string  `json:"comment,omitempty"`
+  Address            string      `json:"address,omitempty"`
+  Command            string      `json:"command,omitempty"`
+  Comment            string      `json:"comment,omitempty"`
+  CreatedAt          string      `json:"created_at,omitempty"`
+  Description        string      `json:"description,omitempty"`
+  DestinationIP      string      `json:"destination_ip,omitempty"`
+  EnableLogging      bool        `json:"enable_logging,bool"`
+  Enabled            bool        `json:"enabled,bool"`
+  FirewallServiceID  int         `json:"firewall_service_id,omitempty"`
+  ID                 int         `json:"id,omitempty"`
+  Identifier         string      `json:"identifier,omitempty"`
+  NetworkInterfaceID int         `json:"network_interface_id,omitempty"`
+  Port               string      `json:"port,omitempty"`
+  Position           int         `json:"position,omitempty"`
+  Protocol           string      `json:"protocol,omitempty"`
+  ProtocolType       string      `json:"protocol_type,omitempty"`
+  SourcePort         string      `json:"source_port,omitempty"`
+  UpdatedAt          string      `json:"updated_at,omitempty"`
 }
 
 // FirewallRuleCreateRequest represents a request to create a FirewallRule
