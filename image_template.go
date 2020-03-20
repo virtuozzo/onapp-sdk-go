@@ -38,7 +38,7 @@ type ImageTemplate struct {
   AllowedHotMigrate         bool                    `json:"allowed_hot_migrate,bool"`
   AllowedSwap               bool                    `json:"allowed_swap,bool"`
   ApplicationServer         bool                    `json:"application_server,bool"`
-  BackupServerID            int                     `json:"backup_server_id,omitempty"`
+  BackupServerID            string                  `json:"backup_server_id,omitempty"`
   BaremetalServer           bool                    `json:"baremetal_server,bool"`
   Cdn                       bool                    `json:"cdn,bool"`
   Checksum                  string                  `json:"checksum,omitempty"`
@@ -80,7 +80,7 @@ type ImageTemplate struct {
 // ImageTemplateCreateRequest represents a request to install template
 type ImageTemplateCreateRequest struct {
   ManagerID      string `json:"manager_id,omitempty"`
-  BackupServerID int    `json:"backup_server_id,omitempty"`
+  BackupServerID string `json:"backup_server_id,omitempty"`
 }
 
 type imageTemplateCreateRequestRoot struct {
