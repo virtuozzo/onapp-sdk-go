@@ -3,28 +3,21 @@ package onappgo
 import (
   "context"
   "net/http"
-  // "fmt"
-  // "log"
-
-  // "github.com/digitalocean/godo"
+  "log"
 )
 
 const remoteTemplatesBasePath string = "templates/available"
 
-// RemoteTemplatesService is an interface for interfacing with the ImageTemplate
+// RemoteTemplatesService is an interface for interfacing with the RemoteTemplate
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/templates/get-list-of-available-for-installation-templates
 // 
 // Describe templates *available* for install on the OnApp repository
 type RemoteTemplatesService interface {
   List(context.Context, *ListOptions) ([]RemoteTemplate, *Response, error)
-  // Get(context.Context, int) (*RemoteTemplate, *Response, error)
-  // Create(context.Context, *ImageTemplateCreateRequest) (*RemoteTemplate, *Response, error)
-  // Delete(context.Context, int, interface{}) (*Response, error)
-  // Edit(context.Context, int, *ImageTemplateEditRequest) (*Response, error)
 }
 
-// RemoteTemplatesServiceOp handles communication with the ImageTemplate related methods of the
+// RemoteTemplatesServiceOp handles communication with the RemoteTemplate related methods of the
 // OnApp API.
 type RemoteTemplatesServiceOp struct {
   client *Client
@@ -46,8 +39,8 @@ type RemoteTemplate struct {
   FileName                  string `json:"file_name,omitempty"`
   Label                     string `json:"label,omitempty"`
   ManagerID                 string `json:"manager_id,omitempty"`
-  MinDiskSize               int    `json:"min_disk_size"`
-  MinMemorySize             int    `json:"min_memory_size"`
+  MinDiskSize               int    `json:"min_disk_size,omitempty"`
+  MinMemorySize             int    `json:"min_memory_size,omitempty"`
   OperatingSystem           string `json:"operating_system,omitempty"`
   OperatingSystemArch       string `json:"operating_system_arch,omitempty"`
   OperatingSystemDistro     string `json:"operating_system_distro,omitempty"`
@@ -72,6 +65,7 @@ func (s *RemoteTemplatesServiceOp) List(ctx context.Context, opt *ListOptions) (
   if err != nil {
     return nil, nil, err
   }
+  log.Println("RemoteTemplate [List]  req: ", req)
 
   var out []map[string]RemoteTemplate
   resp, err := s.client.Do(ctx, req, &out)
