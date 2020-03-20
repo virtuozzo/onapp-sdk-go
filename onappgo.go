@@ -12,6 +12,7 @@ import (
   "net/url"
   "reflect"
   "crypto/tls"
+  "strconv"
 
   sdk "github.com/onapp/onapp-sdk-go/version"
 
@@ -25,7 +26,13 @@ const (
   defaultBaseURL      = "http://69.168.237.17/"
   mediaType           = "application/json"
   apiFormat           = ".json"
+
   searchTransactions  = 100
+
+  headerPerPage       = "X-Limit"
+  headerPage          = "X-Page"
+  headerTotal         = "X-Total"
+  headerRequestID     = "X-Request-Id"
 )
 
 // Client manages communication with OnApp API.
@@ -55,6 +62,7 @@ type Client struct {
   HypervisorGroups        HypervisorGroupsService
   DataStores              DataStoresService
   DataStoreGroups         DataStoreGroupsService
+  RemoteTemplates         RemoteTemplatesService
   ImageTemplates          ImageTemplatesService
   ImageTemplateGroups     ImageTemplateGroupsService
   Disks                   DisksService
@@ -185,6 +193,7 @@ func NewClient(httpClient *http.Client, allowUnverifiedSSL bool) *Client {
   c.HypervisorGroups      = &HypervisorGroupsServiceOp{client: c}
   c.DataStores            = &DataStoresServiceOp{client: c}
   c.DataStoreGroups       = &DataStoreGroupsServiceOp{client: c}
+  c.RemoteTemplates       = &RemoteTemplatesServiceOp{client: c}
   c.ImageTemplates        = &ImageTemplatesServiceOp{client: c}
   c.ImageTemplateGroups   = &ImageTemplateGroupsServiceOp{client: c}
   c.Disks                 = &DisksServiceOp{client: c}
@@ -309,9 +318,29 @@ func (c *Client) OnRequestCompleted(rc RequestCompletionCallback) {
 
 // newResponse creates a new Response for the provided http.Response
 func newResponse(r *http.Response) *Response {
-  response := Response{Response: r}
+  response := &Response{Response: r}
+  if response != nil {
+    response.populateLinks()
+  }
 
-  return &response
+  return response
+}
+
+func (r *Response) populateLinks() {
+  limit := r.Header.Get(headerPerPage)
+  page  := r.Header.Get(headerPage)
+  total := r.Header.Get(headerTotal)
+
+  if limit == "" && page == "" && total == "" {
+    r.Links = nil
+    return
+  }
+
+  r.Links = &Links{}
+  r.Links.PerPage, _  = strconv.Atoi(limit)
+  r.Links.CurPage, _  = strconv.Atoi(page)
+  r.Links.Total, _    = strconv.Atoi(total)
+  r.Links.NumPages    = int(r.Links.Total / r.Links.PerPage)+1
 }
 
 // Do sends an API request and returns the API response. The API response is JSON decoded and stored in the value
