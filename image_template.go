@@ -118,6 +118,7 @@ func (s *ImageTemplatesServiceOp) List(ctx context.Context, opt *ListOptions) ([
   if err != nil {
     return nil, nil, err
   }
+  log.Println("ImageTemplate [List] req: ", req)
 
   var out []map[string]ImageTemplate
   resp, err := s.client.Do(ctx, req, &out)
@@ -145,6 +146,7 @@ func (s *ImageTemplatesServiceOp) Get(ctx context.Context, id int) (*ImageTempla
   if err != nil {
     return nil, nil, err
   }
+  log.Println("ImageTemplate [Get] req: ", req)
 
   root := new(imageTemplatesRoot)
   resp, err := s.client.Do(ctx, req, root)

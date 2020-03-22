@@ -65,7 +65,7 @@ func (s *RemoteTemplatesServiceOp) List(ctx context.Context, opt *ListOptions) (
   if err != nil {
     return nil, nil, err
   }
-  log.Println("RemoteTemplate [List]  req: ", req)
+  log.Println("RemoteTemplate [List] req: ", req)
 
   var out []map[string]RemoteTemplate
   resp, err := s.client.Do(ctx, req, &out)
