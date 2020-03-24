@@ -67,7 +67,7 @@ type roleCreateRequestRoot struct {
 }
 
 type roleRoot struct {
-  Role  *Role  `json:"role"`
+  Role *Role `json:"role"`
 }
 
 func (d RoleCreateRequest) String() string {

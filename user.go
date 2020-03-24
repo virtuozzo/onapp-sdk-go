@@ -38,7 +38,7 @@ type Infoboxes struct {
 
 // Roles - 
 type Roles struct {
-  Role  *Role `json:"role,omitempty"`
+  Role *Role `json:"role,omitempty"`
 }
 
 // User - 

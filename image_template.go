@@ -199,6 +199,7 @@ func (s *ImageTemplatesServiceOp) Delete(ctx context.Context, id int, meta inter
   if err != nil {
     return nil, err
   }
+  log.Println("ImageTemplate [Delete] req: ", req)
 
   return s.client.Do(ctx, req, nil)
 }
