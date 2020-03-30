@@ -50,24 +50,20 @@ type UserBuckets struct {
 
 // UserGroup - 
 type UserGroup struct {
-  AdditionalFields        AdditionalFields  `json:"additional_fields,omitempty"`
+  // Must be as map[string]interface{}
+  AdditionalFields        map[string]interface{}  `json:"additional_fields,omitempty"`
+
   BucketID                int               `json:"bucket_id,omitempty"`
   CreatedAt               string            `json:"created_at,omitempty"`
   DatacenterID            int               `json:"datacenter_id,omitempty"`
-  DiscountDueToFree       float64           `json:"discount_due_to_free,omitempty"`
   DraasID                 int               `json:"draas_id,omitempty"`
   HypervisorID            int               `json:"hypervisor_id,omitempty"`
   ID                      int               `json:"id,omitempty"`
   Identifier              string            `json:"identifier,omitempty"`
   Label                   string            `json:"label,omitempty"`
-  MonthlyPrice            float64           `json:"monthly_price,omitempty"`
-  OutstandingAmount       float64           `json:"outstanding_amount,omitempty"`
-  PaidAmount              float64           `json:"paid_amount,omitempty"`
   PreconfiguredOnly       bool              `json:"preconfigured_only,bool"`
   ProviderVdcID           int               `json:"provider_vdc_id,omitempty"`
   Roles                   []Roles           `json:"roles,omitempty"`
-  TotalAmount             float64           `json:"total_amount,omitempty"`
-  TotalAmountWithDiscount float64           `json:"total_amount_with_discount,omitempty"`
   UpdatedAt               string            `json:"updated_at,omitempty"`
   UserBuckets             []UserBuckets     `json:"user_buckets,omitempty"`
 }
