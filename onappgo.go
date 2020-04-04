@@ -14,7 +14,7 @@ import (
   "crypto/tls"
   "strconv"
 
-  sdk "github.com/onapp/onapp-sdk-go/version"
+  sdk "github.com/OnApp/onapp-sdk-go/version"
 
   "github.com/hashicorp/go-version"
   "github.com/google/go-querystring/query"
