@@ -1,4 +1,4 @@
-module github.com/onapp/onapp-sdk-go
+module github.com/OnApp/onapp-sdk-go
 
 go 1.14
 
