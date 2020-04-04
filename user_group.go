@@ -30,7 +30,7 @@ type UserGroupsServiceOp struct {
 
 var _ UserGroupsService = &UserGroupsServiceOp{}
 
-// UserBucket - 
+// UserBucket -
 type UserBucket struct {
   AllowsKms    bool   `json:"allows_kms,bool"`
   AllowsMak    bool   `json:"allows_mak,bool"`
@@ -43,51 +43,51 @@ type UserBucket struct {
   UpdatedAt    string `json:"updated_at,omitempty"`
 }
 
-// UserBuckets - 
+// UserBuckets -
 type UserBuckets struct {
   UserBucket UserBucket `json:"user_bucket"`
 }
 
-// UserGroup - 
+// UserGroup -
 type UserGroup struct {
   // Must be as map[string]interface{}
-  AdditionalFields        map[string]interface{}  `json:"additional_fields,omitempty"`
+  AdditionalFields map[string]interface{} `json:"additional_fields,omitempty"`
 
-  BucketID                int               `json:"bucket_id,omitempty"`
-  CreatedAt               string            `json:"created_at,omitempty"`
-  DatacenterID            int               `json:"datacenter_id,omitempty"`
-  DraasID                 int               `json:"draas_id,omitempty"`
-  HypervisorID            int               `json:"hypervisor_id,omitempty"`
-  ID                      int               `json:"id,omitempty"`
-  Identifier              string            `json:"identifier,omitempty"`
-  Label                   string            `json:"label,omitempty"`
-  PreconfiguredOnly       bool              `json:"preconfigured_only,bool"`
-  ProviderVdcID           int               `json:"provider_vdc_id,omitempty"`
-  Roles                   []Roles           `json:"roles,omitempty"`
-  UpdatedAt               string            `json:"updated_at,omitempty"`
-  UserBuckets             []UserBuckets     `json:"user_buckets,omitempty"`
+  BucketID          int           `json:"bucket_id,omitempty"`
+  CreatedAt         string        `json:"created_at,omitempty"`
+  DatacenterID      int           `json:"datacenter_id,omitempty"`
+  DraasID           int           `json:"draas_id,omitempty"`
+  HypervisorID      int           `json:"hypervisor_id,omitempty"`
+  ID                int           `json:"id,omitempty"`
+  Identifier        string        `json:"identifier,omitempty"`
+  Label             string        `json:"label,omitempty"`
+  PreconfiguredOnly bool          `json:"preconfigured_only,bool"`
+  ProviderVdcID     int           `json:"provider_vdc_id,omitempty"`
+  Roles             []Roles       `json:"roles,omitempty"`
+  UpdatedAt         string        `json:"updated_at,omitempty"`
+  UserBuckets       []UserBuckets `json:"user_buckets,omitempty"`
 }
 
-// UserGroupCreateRequest - 
+// UserGroupCreateRequest -
 type UserGroupCreateRequest struct {
-  Label             string  `json:"label,omitempty"`
-  BucketIds         []int   `json:"bucket_ids,omitempty"`
+  Label     string `json:"label,omitempty"`
+  BucketIDs []int  `json:"bucket_ids,omitempty"`
 }
 
-// UserGroupEditRequest - 
+// UserGroupEditRequest -
 type UserGroupEditRequest struct {
-  Label     string  `json:"label,omitempty"`
+  Label string `json:"label,omitempty"`
 
-  RoleID    int     `json:"role_id,omitempty"`
-  BucketID  int     `json:"bucket_id,omitempty"`
+  RoleIDs   []string `json:"role_ids,omitempty"`
+  BucketIDs []int    `json:"bucket_ids,omitempty"`
 }
 
 type userGroupCreateRequestRoot struct {
-  UserGroupCreateRequest  *UserGroupCreateRequest `json:"user_group"`
+  UserGroupCreateRequest *UserGroupCreateRequest `json:"user_group"`
 }
 
 type userGroupRoot struct {
-  UserGroup  *UserGroup  `json:"user_group"`
+  UserGroup *UserGroup `json:"user_group"`
 }
 
 func (d UserGroupCreateRequest) String() string {
