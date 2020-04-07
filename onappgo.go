@@ -23,7 +23,7 @@ import (
 var userAgent = "onappgo/" + sdk.String()
 
 const (
-	defaultBaseURL = "http://69.168.237.17/"
+	defaultBaseURL = "https://69.168.239.52/"
 	mediaType      = "application/json"
 	apiFormat      = ".json"
 
@@ -147,7 +147,7 @@ func addOptions(s string, opt interface{}) (string, error) {
 }
 
 // NewClient returns a new OnApp API client.
-func NewClient(httpClient *http.Client, allowUnverifiedSSL bool) *Client {
+func NewClient(httpClient *http.Client) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
@@ -167,19 +167,6 @@ func NewClient(httpClient *http.Client, allowUnverifiedSSL bool) *Client {
 		}
 	} else {
 		c.transport = new(http.Transport)
-	}
-
-	c.transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: allowUnverifiedSSL}
-
-	// Don't bother setting DialTLS if InsecureSkipVerify=true
-	if !allowUnverifiedSSL {
-		c.transport.DialTLS = nil
-	}
-
-	c.client.Transport = c.transport
-
-	if cert := c.certificate(); cert != nil {
-		c.setCertificate(*cert)
 	}
 
 	c.Buckets = &BucketsServiceOp{client: c}
@@ -237,8 +224,8 @@ func (c *Client) setCertificate(cert tls.Certificate) {
 type ClientOpt func(*Client) error
 
 // New returns a new OnApp API client instance.
-func New(httpClient *http.Client, allowUnverifiedSSL bool, opts ...ClientOpt) (*Client, error) {
-	c := NewClient(httpClient, allowUnverifiedSSL)
+func New(httpClient *http.Client, opts ...ClientOpt) (*Client, error) {
+	c := NewClient(httpClient)
 	for _, opt := range opts {
 		if err := opt(c); err != nil {
 			return nil, err
@@ -274,6 +261,25 @@ func SetBasicAuth(user, password string) ClientOpt {
 	return func(c *Client) error {
 		c.apiUser = user
 		c.apiPassword = password
+		return nil
+	}
+}
+
+// SetAllowUnverifiedSSL is a client option for setting allowUnverifiedSSL.
+func SetAllowUnverifiedSSL(isv bool) ClientOpt {
+	return func(c *Client) error {
+		c.transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: isv}
+
+		// Don't bother setting DialTLS if InsecureSkipVerify=true
+		if !isv {
+			c.transport.DialTLS = nil
+		}
+
+		c.client.Transport = c.transport
+
+		if cert := c.certificate(); cert != nil {
+			c.setCertificate(*cert)
+		}
 		return nil
 	}
 }
@@ -399,7 +405,6 @@ func DoRequestWithClient(ctx context.Context, client *http.Client, req *http.Req
 func (r *ErrorResponse) Error() string {
 	return fmt.Sprintf("%v %v: %d %s",
 		r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, r.String())
-	// r.Response.Request.Method, r.Response.Request.URL, r.Response.StatusCode, godo.Stringify(r))
 }
 
 // CheckResponse checks the API response for errors, and returns them if present. A response is considered an
