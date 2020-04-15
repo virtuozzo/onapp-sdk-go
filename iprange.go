@@ -46,9 +46,10 @@ type IPRange struct {
 
 // IPRangeCreateRequest -
 type IPRangeCreateRequest struct {
-	StartAddress   string `json:"start_address,omitempty"`
-	EndAddress     string `json:"end_address,omitempty"`
-	DefaultGateway string `json:"default_gateway,omitempty"`
+	StartAddress        string `json:"start_address,omitempty"`
+	EndAddress          string `json:"end_address,omitempty"`
+	DefaultGateway      string `json:"default_gateway,omitempty"`
+	GatewayOutsideIPNet bool   `json:"gateway_outside_ip_net,bool"`
 }
 
 type ipRangeCreateRequestRoot struct {

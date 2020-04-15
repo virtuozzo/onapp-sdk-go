@@ -54,10 +54,12 @@ type IPNet struct {
 
 // IPNetCreateRequest -
 type IPNetCreateRequest struct {
-	Label             string `json:"label,omitempty"`
-	AddDefaultIPRange int    `json:"add_default_ip_range,omitempty"`
-	NetworkAddress    string `json:"network_address,omitempty"`
-	NetworkMask       string `json:"network_mask,omitempty"`
+	Label               string `json:"label,omitempty"`
+	AddDefaultIPRange   int    `json:"add_default_ip_range,omitempty"`
+	NetworkAddress      string `json:"network_address,omitempty"`
+	NetworkMask         int    `json:"network_mask,omitempty"`
+	GatewayOutsideIPNet bool   `json:"gateway_outside_ip_net,bool"`
+	DefaultGateway      string `json:"default_gateway,omitempty"`
 }
 
 type ipNetCreateRequestRoot struct {
