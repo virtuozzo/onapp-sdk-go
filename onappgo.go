@@ -23,7 +23,7 @@ import (
 var userAgent = "onappgo/" + sdk.String()
 
 const (
-	defaultBaseURL = "https://69.168.239.52/"
+	defaultBaseURL = "https://69.168.239.52"
 	mediaType      = "application/json"
 	apiFormat      = ".json"
 

@@ -72,51 +72,40 @@ type HypervisorGroup struct {
 
 // HypervisorGroupCreateRequest represents a request to create a Compute Zone
 type HypervisorGroupCreateRequest struct {
-	CPUFlagsEnabled   bool   `json:"cpu_flags_enabled,bool"`
-	CPUUnits          int    `json:"cpu_units,omitempty"`
-	CustomConfig      string `json:"custom_config,omitempty"`
-	FailoverTimeout   int    `json:"failover_timeout,omitempty"`
-	Label             string `json:"label,omitempty"`
-	LocationGroupID   int    `json:"location_group_id,omitempty"`
-	MaxVmsStartAtOnce int    `json:"max_vms_start_at_once,omitempty"`
-	PreconfiguredOnly bool   `json:"preconfigured_only,bool"`
-
-	// roundrobin, fillnext
-	RecoveryType string `json:"recovery_type,omitempty"`
-
-	// memory_guarantee, ballooning
+	CPUFlagsEnabled     bool   `json:"cpu_flags_enabled,bool"`
+	CPUUnits            int    `json:"cpu_units,omitempty"`
+	CustomConfig        string `json:"custom_config,omitempty"`
+	FailoverTimeout     int    `json:"failover_timeout,omitempty"`
+	Label               string `json:"label,omitempty"`
+	LocationGroupID     int    `json:"location_group_id,omitempty"`
+	MaxVmsStartAtOnce   int    `json:"max_vms_start_at_once,omitempty"`
+	PreconfiguredOnly   bool   `json:"preconfigured_only,bool"`
+	RecoveryType        string `json:"recovery_type,omitempty"`
 	ReleaseResourceType string `json:"release_resource_type,omitempty"`
 	RunSysprep          bool   `json:"run_sysprep,bool"`
 	ServerType          string `json:"server_type,omitempty"`
-
-	// VMware parameters:
-	DefaultGateway string `json:"default_gateway,omitempty"`
-	Vlan           string `json:"vlan,omitempty"`
+	DefaultGateway      string `json:"default_gateway,omitempty"`
+	Vlan                string `json:"vlan,omitempty"`
 }
 
 // HypervisorGroupEditRequest represents a request to edit a Compute Zone
 type HypervisorGroupEditRequest struct {
-	CPUFlagsEnabled   bool   `json:"cpu_flags_enabled,bool"`
-	CPUUnits          int    `json:"cpu_units,omitempty"`
-	CustomConfig      string `json:"custom_config,omitempty"`
-	FailoverTimeout   int    `json:"failover_timeout,omitempty"`
-	Label             string `json:"label,omitempty"`
-	LocationGroupID   int    `json:"location_group_id,omitempty"`
-	MaxVmsStartAtOnce int    `json:"max_vms_start_at_once,omitempty"`
-	PreconfiguredOnly bool   `json:"preconfigured_only,bool"`
-
-	// roundrobin, fillnext
-	RecoveryType string `json:"recovery_type,omitempty"`
-
-	// memory_guarantee, ballooning
+	CPUFlagsEnabled     bool   `json:"cpu_flags_enabled,bool"`
+	CPUUnits            int    `json:"cpu_units,omitempty"`
+	CustomConfig        string `json:"custom_config,omitempty"`
+	FailoverTimeout     int    `json:"failover_timeout,omitempty"`
+	Label               string `json:"label,omitempty"`
+	LocationGroupID     int    `json:"location_group_id,omitempty"`
+	MaxVmsStartAtOnce   int    `json:"max_vms_start_at_once,omitempty"`
+	PreconfiguredOnly   bool   `json:"preconfigured_only,bool"`
+	RecoveryType        string `json:"recovery_type,omitempty"`
 	ReleaseResourceType string `json:"release_resource_type,omitempty"`
 	RunSysprep          bool   `json:"run_sysprep,bool"`
 	ServerType          string `json:"server_type,omitempty"`
-
-	OnlyStartedVms   int `json:"only_started_vms,omitempty"`
-	PreferLocalReads int `json:"prefer_local_reads,omitempty"`
-	UpdateCPUUnits   int `json:"update_cpu_units,omitempty"`
-	СPUGuarantee     int `json:"cpu_guarantee,omitempty"`
+	OnlyStartedVms      int    `json:"only_started_vms,omitempty"`
+	PreferLocalReads    int    `json:"prefer_local_reads,omitempty"`
+	UpdateCPUUnits      int    `json:"update_cpu_units,omitempty"`
+	СPUGuarantee        int    `json:"cpu_guarantee,omitempty"`
 }
 
 type hypervisorGroupCreateRequestRoot struct {
