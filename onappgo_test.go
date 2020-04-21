@@ -23,12 +23,13 @@ var (
 	token              = "91108764ba6758e7ef06ce7bb84631483b4d9607"
 )
 
-func setup(t *testing.T) {
+func setup() {
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 
 	client = nil
 	client, _ = New(nil, SetAllowUnverifiedSSL(allowUnverifiedSSL), SetBasicAuth(email, token))
+	// client = NewClient(nil)
 
 	url, _ := url.Parse(server.URL)
 	client.BaseURL = url
@@ -105,6 +106,7 @@ func testClientServices(t *testing.T, c *Client) {
 		"Configurations",
 		"UserGroups",
 		"FirewallRules",
+		"UserWhiteList",
 	}
 
 	cp := reflect.ValueOf(c)
@@ -201,7 +203,7 @@ func TestNewRequest_withCustomUserAgent(t *testing.T) {
 }
 
 func TestDo(t *testing.T) {
-	setup(t)
+	setup()
 	if client == nil {
 		t.Fatalf("client == nil")
 	}
@@ -232,7 +234,7 @@ func TestDo(t *testing.T) {
 }
 
 func TestDo_httpError(t *testing.T) {
-	setup(t)
+	setup()
 	if client == nil {
 		t.Fatalf("client == nil")
 	}
@@ -253,7 +255,7 @@ func TestDo_httpError(t *testing.T) {
 // Test handling of an error caused by the internal http client's Do()
 // function.
 func TestDo_redirectLoop(t *testing.T) {
-	setup(t)
+	setup()
 	if client == nil {
 		t.Fatalf("client == nil")
 	}
@@ -338,7 +340,7 @@ func checkCurrentPage(t *testing.T, resp *Response, expectedPage int) {
 }
 
 func TestDo_completion_callback(t *testing.T) {
-	setup(t)
+	setup()
 	if client == nil {
 		t.Fatalf("client == nil")
 	}
