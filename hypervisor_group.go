@@ -9,7 +9,15 @@ import (
 	"github.com/digitalocean/godo"
 )
 
+// Xen/KVM, VMware - CRUD
+// CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
 const hypervisorGroupsBasePath string = "settings/hypervisor_zones"
+
+// TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
+// BackupServerJoins objects
+const hypervisorGroupsDataStoreJoins string = hypervisorGroupsBasePath + "/%d/data_store_joins"
+const hypervisorGroupsNetworkJoins string = hypervisorGroupsBasePath + "/%d/network_joins"
+const hypervisorGroupsBackupServerJoins string = hypervisorGroupsBasePath + "/%d/backup_server_joins"
 
 // HypervisorGroupsService is an interface for interfacing with the Compute Zone
 // endpoints of the OnApp API
@@ -20,6 +28,16 @@ type HypervisorGroupsService interface {
 	Create(context.Context, *HypervisorGroupCreateRequest) (*HypervisorGroup, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *HypervisorGroupEditRequest) (*Response, error)
+
+	// TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
+	// BackupServerJoins objects
+	AddDataStoreJoins(context.Context, int, int) (*Response, error)
+	AddNetworkJoins(context.Context, int, *NetworkJoinCreateRequest) (*Response, error)
+	AddBackupServerJoins(context.Context, int, int) (*Response, error)
+
+	DeleteDataStoreJoins(context.Context, int, int) (*Response, error)
+	DeleteNetworkJoins(context.Context, int, int) (*Response, error)
+	DeleteBackupServerJoins(context.Context, int, int) (*Response, error)
 }
 
 // HypervisorGroupsServiceOp handles communication with the Compute Zone
@@ -32,42 +50,43 @@ var _ HypervisorGroupsService = &HypervisorGroupsServiceOp{}
 
 // HypervisorGroup represent Compute Zone of the OnApp API
 type HypervisorGroup struct {
-	ID                          int                `json:"id,omitempty"`
-	Label                       string             `json:"label,omitempty"`
+	AdditionalFields            []AdditionalFields `json:"additional_fields,omitempty"`
+	Closed                      bool               `json:"closed,bool"`
+	CPUFlags                    []string           `json:"cpu_flags,omitempty"`
+	CPUFlagsEnabled             bool               `json:"cpu_flags_enabled,bool"`
+	CPUModelConfiguration       string             `json:"cpu_model_configuration"`
+	CPUUnits                    int                `json:"cpu_units,omitempty"`
 	CreatedAt                   string             `json:"created_at,omitempty"`
-	UpdatedAt                   string             `json:"updated_at,omitempty"`
-	ServerType                  string             `json:"server_type,omitempty"`
-	LocationGroupID             int                `json:"location_group_id,omitempty"`
+	CustomConfig                string             `json:"custom_config,omitempty"`
+	DatacenterID                int                `json:"datacenter_id,omitempty"`
+	DraasID                     int                `json:"draas_id,omitempty"`
+	FailoverTimeout             int                `json:"failover_timeout,omitempty"`
 	FederationEnabled           bool               `json:"federation_enabled,bool"`
 	FederationID                string             `json:"federation_id,omitempty"`
-	Traded                      bool               `json:"traded,bool"`
-	Closed                      bool               `json:"closed,bool"`
 	HypervisorID                int                `json:"hypervisor_id,omitempty"`
+	ID                          int                `json:"id,omitempty"`
 	Identifier                  string             `json:"identifier,omitempty"`
-	DraasID                     int                `json:"draas_id,omitempty"`
-	PreconfiguredOnly           bool               `json:"preconfigured_only,bool"`
-	ProviderVdcID               int                `json:"provider_vdc_id,omitempty"`
-	AdditionalFields            []AdditionalFields `json:"additional_fields,omitempty"`
-	DatacenterID                int                `json:"datacenter_id,omitempty"`
-	MaxHostFreeMemory           int                `json:"max_host_free_memory,omitempty"`
+	Label                       string             `json:"label,omitempty"`
+	LocationGroupID             int                `json:"location_group_id,omitempty"`
 	MaxHostCPU                  int                `json:"max_host_cpu,omitempty"`
-	PreferLocalReads            bool               `json:"prefer_local_reads,bool"`
-	ReleaseResourceType         string             `json:"release_resource_type,omitempty"`
+	MaxHostFreeMemory           int                `json:"max_host_free_memory,omitempty"`
 	NetworkFailure              bool               `json:"network_failure,bool"`
-	StorageChannel              int                `json:"storage_channel,omitempty"`
-	RunSysprep                  bool               `json:"run_sysprep,bool"`
-	RecoveryType                string             `json:"recovery_type,omitempty"`
-	FailoverTimeout             int                `json:"failover_timeout,omitempty"`
-	CPUUnits                    int                `json:"cpu_units,omitempty"`
-	SupplierVersion             string             `json:"supplier_version,omitempty"`
-	SupplierProvider            string             `json:"supplier_provider,omitempty"`
+	PreconfiguredOnly           bool               `json:"preconfigured_only,bool"`
+	PreferLocalReads            bool               `json:"prefer_local_reads,bool"`
 	ProviderName                string             `json:"provider_name,omitempty"`
+	ProviderVdcID               int                `json:"provider_vdc_id,omitempty"`
+	RecoveryType                string             `json:"recovery_type,omitempty"`
+	ReleaseResourceType         string             `json:"release_resource_type,omitempty"`
+	RunSysprep                  bool               `json:"run_sysprep,bool"`
 	ScheduledForDeletion        string             `json:"scheduled_for_deletion,omitempty"`
-	CPUFlagsEnabled             bool               `json:"cpu_flags_enabled,bool"`
-	CPUFlags                    []string           `json:"cpu_flags,omitempty"`
-	Tier                        string             `json:"tier,omitempty"`
+	ServerType                  string             `json:"server_type,omitempty"`
+	StorageChannel              int                `json:"storage_channel,omitempty"`
+	SupplierProvider            string             `json:"supplier_provider,omitempty"`
+	SupplierVersion             string             `json:"supplier_version,omitempty"`
 	SupportsVirtualServerMotion bool               `json:"supports_virtual_server_motion,bool"`
-	CustomConfig                string             `json:"custom_config,omitempty"`
+	Tier                        string             `json:"tier,omitempty"`
+	Traded                      bool               `json:"traded,bool"`
+	UpdatedAt                   string             `json:"updated_at,omitempty"`
 }
 
 // HypervisorGroupCreateRequest represents a request to create a Compute Zone
@@ -75,6 +94,7 @@ type HypervisorGroupCreateRequest struct {
 	CPUFlagsEnabled     bool   `json:"cpu_flags_enabled,bool"`
 	CPUUnits            int    `json:"cpu_units,omitempty"`
 	CustomConfig        string `json:"custom_config,omitempty"`
+	DefaultGateway      string `json:"default_gateway,omitempty"`
 	FailoverTimeout     int    `json:"failover_timeout,omitempty"`
 	Label               string `json:"label,omitempty"`
 	LocationGroupID     int    `json:"location_group_id,omitempty"`
@@ -84,7 +104,6 @@ type HypervisorGroupCreateRequest struct {
 	ReleaseResourceType string `json:"release_resource_type,omitempty"`
 	RunSysprep          bool   `json:"run_sysprep,bool"`
 	ServerType          string `json:"server_type,omitempty"`
-	DefaultGateway      string `json:"default_gateway,omitempty"`
 	Vlan                string `json:"vlan,omitempty"`
 }
 
@@ -97,13 +116,13 @@ type HypervisorGroupEditRequest struct {
 	Label               string `json:"label,omitempty"`
 	LocationGroupID     int    `json:"location_group_id,omitempty"`
 	MaxVmsStartAtOnce   int    `json:"max_vms_start_at_once,omitempty"`
+	OnlyStartedVms      int    `json:"only_started_vms,omitempty"`
 	PreconfiguredOnly   bool   `json:"preconfigured_only,bool"`
+	PreferLocalReads    int    `json:"prefer_local_reads,omitempty"`
 	RecoveryType        string `json:"recovery_type,omitempty"`
 	ReleaseResourceType string `json:"release_resource_type,omitempty"`
 	RunSysprep          bool   `json:"run_sysprep,bool"`
 	ServerType          string `json:"server_type,omitempty"`
-	OnlyStartedVms      int    `json:"only_started_vms,omitempty"`
-	PreferLocalReads    int    `json:"prefer_local_reads,omitempty"`
 	UpdateCPUUnits      int    `json:"update_cpu_units,omitempty"`
 	СPUGuarantee        int    `json:"cpu_guarantee,omitempty"`
 }
@@ -234,6 +253,129 @@ func (s *HypervisorGroupsServiceOp) Edit(ctx context.Context, id int, editReques
 		return nil, err
 	}
 	log.Println("HypervisorGroup [Edit]  req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// AddDataStoreJoins - add Data Store Joins to the HypervisorGroup
+func (s *HypervisorGroupsServiceOp) AddDataStoreJoins(ctx context.Context, hvgID int, dsID int) (*Response, error) {
+	if hvgID < 1 || dsID < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorGroupsDataStoreJoins, hvgID) + apiFormat
+
+	rootRequest := &DataStoreJoinCreateRequest{
+		DataStoreID: dsID,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("Add DataStore Joins to the HypervisorGroup [Create] req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// DeleteDataStoreJoins - delete Data Store Joins from the HypervisorGroup
+func (s *HypervisorGroupsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvgID int, id int) (*Response, error) {
+	if hvgID < 1 || id < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorGroupsDataStoreJoins, hvgID)
+	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("Delete DataStore Joins from HypervisorGroup [Delete] req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// AddNetworkJoins - add Network Joins to the HypervisorGroup
+func (s *HypervisorGroupsServiceOp) AddNetworkJoins(ctx context.Context, hvgID int, createRequest *NetworkJoinCreateRequest) (*Response, error) {
+	if hvgID < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorGroupsNetworkJoins, hvgID) + apiFormat
+
+	rootRequest := &networkJoinCreateRequestRoot{
+    NetworkJoinCreateRequest: createRequest,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("Add Network Joins to the HypervisorGroup [Create] req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// DeleteNetworkJoins - delete Network Joins from the HypervisorGroup
+func (s *HypervisorGroupsServiceOp) DeleteNetworkJoins(ctx context.Context, hvgID int, id int) (*Response, error) {
+	if hvgID < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorGroupsNetworkJoins, hvgID)
+	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("Delete Network Joins from HypervisorGroup [Delete] req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// AddBackupServerJoins - add Backup Server Joins to the HypervisorGroup
+func (s *HypervisorGroupsServiceOp) AddBackupServerJoins(ctx context.Context, hvgID int, id int) (*Response, error) {
+	if hvgID < 1 || id < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorGroupsBackupServerJoins, hvgID) + apiFormat
+
+	rootRequest := &BackupServerJoinCreateRequest{
+		BackupServerID: id,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("Add Backup Server Joins to the HypervisorGroup [Create] req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// DeleteBackupServerJoins - delete Backup Server Joins from the HypervisorGroup
+func (s *HypervisorGroupsServiceOp) DeleteBackupServerJoins(ctx context.Context, hvgID int, id int) (*Response, error) {
+	if hvgID < 1 || id < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorGroupsBackupServerJoins, hvgID)
+	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("Delete Backup Server Joins from HypervisorGroup [Delete] req: ", req)
 
 	return s.client.Do(ctx, req, nil)
 }

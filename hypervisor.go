@@ -13,12 +13,11 @@ import (
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
 const hypervisorsBasePath string = "settings/hypervisors"
 
-// TODO: maybe later remove this because will be DataSoreJoins, NetworkJoins
+// TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
 // BackupServerJoins objects
-const hypervisorsDataSoreJoins string = "settings/hypervisors/%d/data_store_joins"
-
-// const hypervisorsNetworkJoins      string = "settings/hypervisors/%d/network_joins"
-const hypervisorsBackupServerJoins string = "settings/hypervisors/%d/backup_server_joins"
+const hypervisorsDataStoreJoins string = hypervisorsBasePath + "/%d/data_store_joins"
+// const hypervisorsNetworkJoins string = hypervisorsBasePath + "/%d/network_joins"
+const hypervisorsBackupServerJoins string = hypervisorsBasePath + "/%d/backup_server_joins"
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
 const cloudBootHypervisorsBasePath string = "settings/assets/%s/hypervisors"
@@ -54,144 +53,79 @@ var _ HypervisorsService = &HypervisorsServiceOp{}
 
 // Hypervisor represent Hypervisor of the OnApp API
 type Hypervisor struct {
-	ID                               int               `json:"id,omitempty"`
-	Label                            string            `json:"label,omitempty"`
-	IPAddress                        string            `json:"ip_address,omitempty"`
-	CreatedAt                        string            `json:"created_at,omitempty"`
-	UpdatedAt                        string            `json:"updated_at,omitempty"`
-	Locked                           bool              `json:"locked,bool"`
-	CalledInAt                       string            `json:"called_in_at,omitempty"`
-	Online                           bool              `json:"online,bool"`
-	Spare                            bool              `json:"spare,bool"`
-	FailureCount                     int               `json:"failure_count,omitempty"`
-	HypervisorType                   string            `json:"hypervisor_type,omitempty"`
-	HypervisorGroupID                int               `json:"hypervisor_group_id,omitempty"`
-	Enabled                          bool              `json:"enabled,bool"`
-	Uptime                           string            `json:"uptime,omitempty"`
-	ListOfZombieDomains              string            `json:"list_of_zombie_domains,omitempty"`
-	ListOfVolumeGroups               string            `json:"list_of_volume_groups,omitempty"`
-	Host                             string            `json:"host,omitempty"`
-	Release                          string            `json:"release,omitempty"`
-	Machine                          string            `json:"machine,omitempty"`
-	CPUMhz                           string            `json:"cpu_mhz,omitempty"`
-	Cpus                             int               `json:"cpus,omitempty"`
-	ThreadsPerCore                   int               `json:"threads_per_core,omitempty"`
-	TotalMem                         int               `json:"total_mem,omitempty"`
-	TotalZombieMem                   int               `json:"total_zombie_mem,omitempty"`
-	DisableFailover                  bool              `json:"disable_failover,bool"`
-	Mac                              string            `json:"mac,omitempty"`
-	CustomConfig                     string            `json:"custom_config,omitempty"`
-	FormatDisks                      bool              `json:"format_disks,bool"`
-	PassthroughDisks                 bool              `json:"passthrough_disks,bool"`
-	ConnectionOptions                ConnectionOptions `json:"connection_options,omitempty"`
-	HostID                           int               `json:"host_id,omitempty"`
-	FreeMem                          int               `json:"free_mem,omitempty"`
-	BackupIPAddress                  string            `json:"backup_ip_address,omitempty"`
-	Built                            bool              `json:"built,bool"`
-	Blocked                          bool              `json:"blocked,bool"`
-	ServerType                       string            `json:"server_type,omitempty"`
-	Backup                           bool              `json:"backup,bool"`
-	CPUIdle                          int               `json:"cpu_idle,omitempty"`
-	Mtu                              int               `json:"mtu,omitempty"`
-	MemInfo                          int               `json:"mem_info,omitempty"`
-	StorageControllerMemorySize      int               `json:"storage_controller_memory_size,omitempty"`
-	DisksPerStorageController        int               `json:"disks_per_storage_controller,omitempty"`
-	CloudBootOs                      string            `json:"cloud_boot_os,omitempty"`
 	AllowUnsafeAssignedInterrupts    bool              `json:"allow_unsafe_assigned_interrupts,bool"`
-	Dom0MemorySize                   int               `json:"dom0_memory_size,omitempty"`
-	CPUCores                         int               `json:"cpu_cores,omitempty"`
-	CPUUnits                         int               `json:"cpu_units,omitempty"`
-	PowerCycleCommand                string            `json:"power_cycle_command,omitempty"`
-	Rebooting                        bool              `json:"rebooting,bool"`
-	MaintenanceMode                  bool              `json:"maintenance_mode,bool"`
-	CPUFlags                         []string          `json:"cpu_flags,omitempty"`
 	AmqpExchangeName                 string            `json:"amqp_exchange_name,omitempty"`
-	CacheMirrors                     int               `json:"cache_mirrors,omitempty"`
-	CacheStripes                     int               `json:"cache_stripes,omitempty"`
-	StorageControllerDbSize          int               `json:"storage_controller_db_size,omitempty"`
-	StorageBondingMode               string            `json:"storage_bonding_mode,omitempty"`
+	ApplyHypervisorGroupCustomConfig bool              `json:"apply_hypervisor_group_custom_config,bool"`
+	Backup                           bool              `json:"backup,bool"`
+	BackupIPAddress                  string            `json:"backup_ip_address,omitempty"`
+	Blocked                          bool              `json:"blocked,bool"`
+	Built                            bool              `json:"built,bool"`
+	CalledInAt                       string            `json:"called_in_at,omitempty"`
+	CloudBootOs                      string            `json:"cloud_boot_os,omitempty"`
+	ConnectionOptions                ConnectionOptions `json:"connection_options,omitempty"`
+	CPUCores                         int               `json:"cpu_cores,omitempty"`
+	CPUFlags                         []string          `json:"cpu_flags,omitempty"`
+	CPUIdle                          int               `json:"cpu_idle,omitempty"`
+	CPUMhz                           string            `json:"cpu_mhz,omitempty"`
+	CPUModel                         string            `json:"cpu_model,omitempty"`
+	Cpus                             int               `json:"cpus,omitempty"`
+	CPUUnits                         int               `json:"cpu_units,omitempty"`
+	CrashDebug                       bool              `json:"crash_debug,bool"`
+	CreatedAt                        string            `json:"created_at,omitempty"`
+	CustomConfig                     string            `json:"custom_config,omitempty"`
+	DisableFailover                  bool              `json:"disable_failover,bool"`
+	Distro                           string            `json:"distro,omitempty"`
+	Enabled                          bool              `json:"enabled,bool"`
+	FailoverRecipeID                 int               `json:"failover_recipe_id,omitempty"`
+	FailureCount                     int               `json:"failure_count,omitempty"`
+	FormatDisks                      bool              `json:"format_disks,bool"`
+	FreeDiskSpace                    map[string]int    `json:"free_disk_space,omitempty"`
+	FreeMem                          int               `json:"free_mem,omitempty"`
+	FreeMemory                       int               `json:"free_memory,omitempty"`
+	Host                             string            `json:"host,omitempty"`
+	HypervisorGroupID                int               `json:"hypervisor_group_id,omitempty"`
+	HypervisorType                   string            `json:"hypervisor_type,omitempty"`
+	ID                               int               `json:"id,omitempty"`
+	InstanceUUID                     string            `json:"instance_uuid,omitempty"`
+	IntegratedStorageDisabled        bool              `json:"integrated_storage_disabled,bool"`
+	IPAddress                        string            `json:"ip_address,omitempty"`
+	Label                            string            `json:"label,omitempty"`
+	ListOfLogicalVolumes             string            `json:"list_of_logical_volumes,omitempty"`
+	ListOfVolumeGroups               string            `json:"list_of_volume_groups,omitempty"`
+	ListOfZombieDomains              string            `json:"list_of_zombie_domains,omitempty"`
+	Locked                           bool              `json:"locked,bool"`
+	Mac                              string            `json:"mac,omitempty"`
+	Machine                          string            `json:"machine,omitempty"`
+	MaintenanceMode                  bool              `json:"maintenance_mode,bool"`
+	MemInfo                          int               `json:"mem_info,omitempty"`
+	MemoryAllocatedByRunningVms      int               `json:"memory_allocated_by_running_vms,omitempty"`
+	Online                           bool              `json:"online,bool"`
 	OsVersion                        int               `json:"os_version,omitempty"`
 	OsVersionMinor                   int               `json:"os_version_minor,omitempty"`
-	IntegratedStorageDisabled        bool              `json:"integrated_storage_disabled,bool"`
-	StorageVlan                      string            `json:"storage_vlan,omitempty"`
-	ApplyHypervisorGroupCustomConfig bool              `json:"apply_hypervisor_group_custom_config,bool"`
-	CPUModel                         string            `json:"cpu_model,omitempty"`
+	PassthroughDisks                 bool              `json:"passthrough_disks,bool"`
+	PowerCycleCommand                string            `json:"power_cycle_command,omitempty"`
+	Rebooting                        bool              `json:"rebooting,bool"`
+	Release                          string            `json:"release,omitempty"`
 	SegregationOsType                string            `json:"segregation_os_type,omitempty"`
-	CrashDebug                       bool              `json:"crash_debug,bool"`
-	FailoverRecipeID                 int               `json:"failover_recipe_id,omitempty"`
+	ServerType                       string            `json:"server_type,omitempty"`
+	Spare                            bool              `json:"spare,bool"`
+	StaticIntegratedStorage          bool              `json:"static_integrated_storage,bool"`
+	ThreadsPerCore                   int               `json:"threads_per_core,omitempty"`
 	TotalCpus                        int               `json:"total_cpus,omitempty"`
-	FreeMemory                       int               `json:"free_memory,omitempty"`
-	UsedCPUResources                 int               `json:"used_cpu_resources,omitempty"`
+	TotalMem                         int               `json:"total_mem,omitempty"`
 	TotalMemory                      int               `json:"total_memory,omitempty"`
-	FreeDiskSpace                    map[string]int    `json:"free_disk_space,omitempty"`
-	MemoryAllocatedByRunningVms      int               `json:"memory_allocated_by_running_vms,omitempty"`
 	TotalMemoryAllocatedByVms        int               `json:"total_memory_allocated_by_vms,omitempty"`
-	Storage                          Storage           `json:"storage,omitempty"`
-	ListOfLogicalVolumes             string            `json:"list_of_logical_volumes,omitempty"`
-	Distro                           string            `json:"distro,omitempty"`
+	TotalZombieMem                   int               `json:"total_zombie_mem,omitempty"`
+	UpdatedAt                        string            `json:"updated_at,omitempty"`
+	Uptime                           string            `json:"uptime,omitempty"`
+	UsedCPUResources                 int               `json:"used_cpu_resources,omitempty"`
 }
-
-// HypervisorCreateRequest represents a request to create a Hypervisor
-// type HypervisorCreateRequest struct {
-//   Label                         string  `json:"label,omitempty"`
-
-//   // VMware
-//   IPAddress                     string  `json:"ip_address,omitempty"`
-
-//   // CloudBoot, SmartCloudBoot, VMware
-//   BackupIPAddress               string  `json:"backup_ip_address,omitempty"`
-//   CollectStats                  bool    `json:"collect_stats,bool"`
-//   DisableFailover               bool    `json:"disable_failover,bool"`
-
-//   // SmartCloudBoot only can be: kvm
-//   // VMware, CloudBoot: xen, kvm
-//   // BaremetalCloudBoot only can be: xen
-//   HypervisorType                string  `json:"hypervisor_type,omitempty"`
-//   SegregationOsType             string  `json:"segregation_os_type,omitempty"`
-//   Enabled                       bool    `json:"enabled,bool"`
-
-//   // BaremetalCloudBoot
-//   FailoverRecipeID              int     `json:"failover_recipe_id,omitempty"`
-
-//   HypervisorGroupID             int     `json:"hypervisor_group_id,omitempty"`
-//   CPUUnits                      int     `json:"cpu_units,omitempty"`
-
-//   // SmartCloudBoot, BaremetalCloudBoot
-//   PxeIPAddressID                int     `json:"pxe_ip_address_id,omitempty"`
-
-//   // CloudBoot, SmartCloudBoot, BaremetalCloudBoot
-//   // by default: virtual
-//   // SmartCloudBoot: smart
-//   // BaremetalCloudBoot: baremetal
-//   ServerType                    string  `json:"server_type,omitempty"`
-//   Backup                        bool    `json:"backup,bool"`
-
-//   // only for VMware
-//   ConnectionOptions             ConnectionOptions `json:"connection_options,omitempty"`
-
-//   // CloudBoot, SmartCloudBoot
-//   FormatDisks                   bool    `json:"format_disks,bool"`
-//   PassthroughDisks              bool    `json:"passthrough_disks,bool"`
-//   Storage                       Storage `json:"storage,omitempty"`
-//   Mtu                           int     `json:"mtu,omitempty"`
-//   StorageControllerMemorySize   int     `json:"storage_controller_memory_size,omitempty"`
-//   DisksPerStorageController     int     `json:"disks_per_storage_controller,omitempty"`
-//   CustomConfig                  string  `json:"custom_config,omitempty"`
-
-//   // only for CloudBoot
-//   CloudBootOs                   string  `json:"cloud_boot_os,omitempty"`
-
-//   // only for SmartCloudBoot
-//   PassthroughCustomPcis         string  `json:"passthrough_custom_pcis,omitempty"`
-//   AllowUnsafeAssignedInterrupts bool    `json:"allow_unsafe_assigned_interrupts,bool"`
-// }
 
 // HypervisorCreateRequest represents a request to create a Hypervisor
 type HypervisorCreateRequest struct {
 	Label             string `json:"label,omitempty"`
 	IPAddress         string `json:"ip_address,omitempty"`
 	BackupIPAddress   string `json:"backup_ip_address,omitempty"`
-	CollectStats      bool   `json:"collect_stats,bool"`
 	DisableFailover   bool   `json:"disable_failover,bool"`
 	HypervisorType    string `json:"hypervisor_type,omitempty"`
 	SegregationOsType string `json:"segregation_os_type,omitempty"`
@@ -221,23 +155,13 @@ type hypervisorRoot struct {
 	Hypervisor *Hypervisor `json:"hypervisor"`
 }
 
-// HypervisorDataSoreJoinCreateRequest -
-type HypervisorDataSoreJoinCreateRequest struct {
+// DataStoreJoinCreateRequest -
+type DataStoreJoinCreateRequest struct {
 	DataStoreID int `json:"data_store_id,omitempty"`
 }
 
-// HypervisorNetworkJoinCreateRequest -
-type HypervisorNetworkJoinCreateRequest struct {
-	NetworkID int    `json:"network_id,omitempty"`
-	Interface string `json:"interface,omitempty"`
-}
-
-type hypervisorNetworkJoinCreateRequestRoot struct {
-	HypervisorNetworkJoinCreateRequest *HypervisorNetworkJoinCreateRequest `json:"network_join"`
-}
-
-// HypervisorBackupServerJoinCreateRequest -
-type HypervisorBackupServerJoinCreateRequest struct {
+// BackupServerJoinCreateRequest -
+type BackupServerJoinCreateRequest struct {
 	BackupServerID int `json:"backup_server_id,omitempty"`
 }
 
@@ -369,9 +293,9 @@ func (s *HypervisorsServiceOp) AddDataStoreJoins(ctx context.Context, hvID int, 
 		return nil, godo.NewArgError("id", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(hypervisorsDataSoreJoins, hvID) + apiFormat
+	path := fmt.Sprintf(hypervisorsDataStoreJoins, hvID) + apiFormat
 
-	rootRequest := &HypervisorDataSoreJoinCreateRequest{
+	rootRequest := &DataStoreJoinCreateRequest{
 		DataStoreID: dsID,
 	}
 
@@ -391,7 +315,7 @@ func (s *HypervisorsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvID in
 		return nil, godo.NewArgError("id", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(hypervisorsDataSoreJoins, hvID)
+	path := fmt.Sprintf(hypervisorsDataStoreJoins, hvID)
 	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
 
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
@@ -404,47 +328,6 @@ func (s *HypervisorsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvID in
 	return s.client.Do(ctx, req, nil)
 }
 
-// // AddNetworkJoins - add Network Joins to the Hypervisor
-// func (s *HypervisorsServiceOp) AddNetworkJoins(ctx context.Context, hvID int, createRequest *HypervisorNetworkJoinCreateRequest) (*Response, error) {
-//   if hvID < 1 {
-//     return nil, godo.NewArgError("id", "cannot be less than 1")
-//   }
-
-//   path := fmt.Sprintf(hypervisorsNetworkJoins, hvID) + apiFormat
-
-//   rootRequest := &hypervisorNetworkJoinCreateRequestRoot{
-//     HypervisorNetworkJoinCreateRequest: createRequest,
-//   }
-
-//   req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
-//   if err != nil {
-//     return nil, err
-//   }
-
-//   log.Println("NetworkJoins [Create] req: ", req)
-
-//   return s.client.Do(ctx, req, nil)
-// }
-
-// // DeleteNetworkJoins - delete Network Joins from the Hypervisor
-// func (s *HypervisorsServiceOp) DeleteNetworkJoins(ctx context.Context, hvID int, id int) (*Response, error) {
-//   if hvID < 1 {
-//     return nil, godo.NewArgError("id", "cannot be less than 1")
-//   }
-
-//   path := fmt.Sprintf(hypervisorsNetworkJoins, hvID)
-//   path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
-
-//   req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-//   if err != nil {
-//     return nil, err
-//   }
-
-//   log.Println("Delete Network Joins from Hypervisor [Delete] req: ", req)
-
-//   return s.client.Do(ctx, req, nil)
-// }
-
 // AddBackupServerJoins - add Backup Server Joins to the Hypervisor
 func (s *HypervisorsServiceOp) AddBackupServerJoins(ctx context.Context, hvID int, bsID int) (*Response, error) {
 	if hvID < 1 || bsID < 1 {
@@ -453,7 +336,7 @@ func (s *HypervisorsServiceOp) AddBackupServerJoins(ctx context.Context, hvID in
 
 	path := fmt.Sprintf(hypervisorsBackupServerJoins, hvID) + apiFormat
 
-	rootRequest := &HypervisorBackupServerJoinCreateRequest{
+	rootRequest := &BackupServerJoinCreateRequest{
 		BackupServerID: bsID,
 	}
 

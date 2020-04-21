@@ -1,20 +1,6 @@
 package onappgo
 
-import (
-// "fmt"
-)
-
 // Represent common structures for onappgo package
-
-// Params represents a OnApp Transaction params
-// type Params struct {
-//   DestroyMsg       string   `json:"destroy_msg,omitempty"`
-//   InitiatorID      int      `json:"initiator_id,omitempty"`
-//   RealUserID       int      `json:"real_user_id,omitempty"`
-//   RemoteIP         string   `json:"remote_ip,omitempty"`
-//   SkipNotification bool     `json:"skip_notification,bool"`
-//   ShutdownType     string   `json:"shutdown_type,omitempty"`
-// }
 
 // IPAddress - represents an IP address
 type IPAddress struct {
@@ -56,36 +42,10 @@ type IPAddressJoin struct {
 
 // ConnectionOptions for VMware hypervisor
 type ConnectionOptions struct {
-	APIURL                       string `json:"api_url,omitempty"`
-	Login                        string `json:"login,omitempty"`
-	Password                     string `json:"password,omitempty"`
-	ClusterName                  string `json:"cluster_name,omitempty"`
-	DistributedVirtualSwitchName string `json:"distributed_virtual_switch_name,omitempty"`
-}
-
-// StorageDisk of storage
-type StorageDisk struct {
-	Scsi     string `json:"scsi,omitempty"`
-	Selected bool   `json:"selected,bool"`
-}
-
-// StorageNic of storage
-type StorageNic struct {
-	Mac  string `json:"mac,omitempty"`
-	Type int    `json:"type,omitempty"`
-}
-
-// StorageCustomPCI of storage
-type StorageCustomPCI struct {
-	Pci      string `json:"pci,omitempty"`
-	Selected bool   `json:"selected,bool"`
-}
-
-// Storage for hypervisor
-type Storage struct {
-	Disks      []StorageDisk      `json:"disks,omitempty"`
-	Nics       []StorageNic       `json:"nics,omitempty"`
-	CustomPCIs []StorageCustomPCI `json:"custom_pcis,omitempty"`
+	APIURL        string `json:"api_url,omitempty"`
+	Login         string `json:"login,omitempty"`
+	OperationMode string `json:"operation_mode,omitempty"`
+	Password      string `json:"password,omitempty"`
 }
 
 // IntegratedStorageCacheSettings -
