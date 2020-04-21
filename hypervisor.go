@@ -75,6 +75,7 @@ type Hypervisor struct {
 	CustomConfig                     string            `json:"custom_config,omitempty"`
 	DisableFailover                  bool              `json:"disable_failover,bool"`
 	Distro                           string            `json:"distro,omitempty"`
+	Dom0MemorySize                   int               `json:"dom0_memory_size,omitempty"`
 	Enabled                          bool              `json:"enabled,bool"`
 	FailoverRecipeID                 int               `json:"failover_recipe_id,omitempty"`
 	FailureCount                     int               `json:"failure_count,omitempty"`
