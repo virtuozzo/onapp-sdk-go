@@ -16,6 +16,7 @@ const hypervisorsBasePath string = "settings/hypervisors"
 // TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
 // BackupServerJoins objects
 const hypervisorsDataStoreJoins string = hypervisorsBasePath + "/%d/data_store_joins"
+
 // const hypervisorsNetworkJoins string = hypervisorsBasePath + "/%d/network_joins"
 const hypervisorsBackupServerJoins string = hypervisorsBasePath + "/%d/backup_server_joins"
 
@@ -124,16 +125,18 @@ type Hypervisor struct {
 
 // HypervisorCreateRequest represents a request to create a Hypervisor
 type HypervisorCreateRequest struct {
-	Label             string `json:"label,omitempty"`
-	IPAddress         string `json:"ip_address,omitempty"`
-	BackupIPAddress   string `json:"backup_ip_address,omitempty"`
-	DisableFailover   bool   `json:"disable_failover,bool"`
-	HypervisorType    string `json:"hypervisor_type,omitempty"`
-	SegregationOsType string `json:"segregation_os_type,omitempty"`
-	Enabled           bool   `json:"enabled,bool"`
-	FailoverRecipeID  int    `json:"failover_recipe_id,omitempty"`
-	HypervisorGroupID int    `json:"hypervisor_group_id,omitempty"`
-	CPUUnits          int    `json:"cpu_units,omitempty"`
+	Label                   string `json:"label,omitempty"`
+	IPAddress               string `json:"ip_address,omitempty"`
+	BackupIPAddress         string `json:"backup_ip_address,omitempty"`
+	DisableFailover         bool   `json:"disable_failover,bool"`
+	HypervisorType          string `json:"hypervisor_type,omitempty"`
+	SegregationOsType       string `json:"segregation_os_type,omitempty"`
+	Enabled                 bool   `json:"enabled,bool"`
+	FailoverRecipeID        int    `json:"failover_recipe_id,omitempty"`
+	HypervisorGroupID       int    `json:"hypervisor_group_id,omitempty"`
+	CPUUnits                int    `json:"cpu_units,omitempty"`
+	StaticIntegratedStorage bool   `json:"static_integrated_storage,bool"`
+	PowerCycleCommand       string `json:"power_cycle_command,omitempty"`
 }
 
 // HypervisorEditRequest represents a request to edit a Hypervisor
