@@ -69,9 +69,8 @@ type Disk struct {
 
 // DiskCreateRequest - data for creating Disk
 type DiskCreateRequest struct {
-	Primary  bool `json:"primary,bool"`
-	DiskSize int  `json:"disk_size,omitempty"`
-	// "ext3","ext4"
+	Primary           bool   `json:"primary,bool"`
+	DiskSize          int    `json:"disk_size,omitempty"`
 	FileSystem        string `json:"file_system,omitempty"`
 	DataStoreID       int    `json:"data_store_id,omitempty"`
 	Label             string `json:"label,omitempty"`
@@ -87,10 +86,9 @@ type DiskCreateRequest struct {
 
 // DiskEditRequest - data for editing Disk
 type DiskEditRequest struct {
-	AddToLinuxFstab   bool `json:"add_to_linux_fstab,bool"`
-	AddToFreebsdFstab bool `json:"add_to_freebsd_fstab,bool"`
-	DiskSize          int  `json:"disk_size,omitempty"`
-	// "ext3","ext4"
+	AddToLinuxFstab   bool   `json:"add_to_linux_fstab,bool"`
+	AddToFreebsdFstab bool   `json:"add_to_freebsd_fstab,bool"`
+	DiskSize          int    `json:"disk_size,omitempty"`
 	FileSystem        string `json:"file_system,omitempty"`
 	DataStoreID       int    `json:"data_store_id,omitempty"`
 	Label             string `json:"label,omitempty"`

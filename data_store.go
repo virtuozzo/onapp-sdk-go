@@ -47,32 +47,29 @@ type AccountAttributes struct {
 
 // DataStore represents a DataStore
 type DataStore struct {
-	ID                            int    `json:"id,omitempty"`
-	Label                         string `json:"label,omitempty"`
-	Identifier                    string `json:"identifier,omitempty"`
-	CreatedAt                     string `json:"created_at,omitempty"`
-	UpdatedAt                     string `json:"updated_at,omitempty"`
-	LocalHypervisorID             int    `json:"local_hypervisor_id,omitempty"`
-	DataStoreSize                 int    `json:"data_store_size,omitempty"`
-	ZombieDisksSize               int    `json:"zombie_disks_size,omitempty"`
-	IP                            string `json:"ip,omitempty"`
-	DataStoreGroupID              int    `json:"data_store_group_id,omitempty"`
-	Enabled                       bool   `json:"enabled,bool"`
-	DataStoreType                 string `json:"data_store_type,omitempty"`
-	IscsiIP                       string `json:"iscsi_ip,omitempty"`
-	HypervisorGroupID             int    `json:"hypervisor_group_id,omitempty"`
-	VdcID                         int    `json:"vdc_id,omitempty"`
-	IntegratedStorageCacheEnabled bool   `json:"integrated_storage_cache_enabled,bool"`
-	// IntegratedStorageCacheSettings IntegratedStorageCacheSettings `json:"integrated_storage_cache_settings,omitempty"`
+	ID                             int         `json:"id,omitempty"`
+	Label                          string      `json:"label,omitempty"`
+	Identifier                     string      `json:"identifier,omitempty"`
+	CreatedAt                      string      `json:"created_at,omitempty"`
+	UpdatedAt                      string      `json:"updated_at,omitempty"`
+	LocalHypervisorID              int         `json:"local_hypervisor_id,omitempty"`
+	DataStoreSize                  int         `json:"data_store_size,omitempty"`
+	ZombieDisksSize                int         `json:"zombie_disks_size,omitempty"`
+	IP                             string      `json:"ip,omitempty"`
+	DataStoreGroupID               int         `json:"data_store_group_id,omitempty"`
+	Enabled                        bool        `json:"enabled,bool"`
+	DataStoreType                  string      `json:"data_store_type,omitempty"`
+	IscsiIP                        string      `json:"iscsi_ip,omitempty"`
+	HypervisorGroupID              int         `json:"hypervisor_group_id,omitempty"`
+	VdcID                          int         `json:"vdc_id,omitempty"`
+	IntegratedStorageCacheEnabled  bool        `json:"integrated_storage_cache_enabled,bool"`
 	IntegratedStorageCacheSettings interface{} `json:"integrated_storage_cache_settings,omitempty"`
 	AutoHealing                    bool        `json:"auto_healing,bool"`
 	IoLimits                       IoLimits    `json:"io_limits,omitempty"`
 	Epoch                          bool        `json:"epoch,bool"`
 	Default                        bool        `json:"default,bool"`
 	Usage                          int         `json:"usage,omitempty"`
-
-	// OnApp 6.1
-	Trim bool `json:"trim,bool"`
+	Trim                           bool        `json:"trim,bool"`
 }
 
 // DataStoreCreateRequest represents a request to create a DataStore
