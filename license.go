@@ -2,7 +2,7 @@ package onappgo
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/digitalocean/godo"
@@ -28,20 +28,20 @@ type LicensesServiceOp struct {
 var _ LicensesService = &LicensesServiceOp{}
 
 type License struct {
-	Type                   string `json:"type,omitempty"`
+	IntegratedStorageLimit string `json:"integrated_storage_limit,omitempty"`
 	Key                    string `json:"key,omitempty"`
-	Valid                  bool   `json:"valid,bool"`
-	Status                 string `json:"status,omitempty"`
+	KvmXenCoreLimit        string `json:"kvm_xen_core_limit,omitempty"`
 	KvmXenHvLimit          string `json:"kvm_xen_hv_limit,omitempty"`
 	KvmXenVMLimit          string `json:"kvm_xen_vm_limit,omitempty"`
-	VcenterVMLimit         string `json:"vcenter_vm_limit,omitempty"`
-	KvmXenCoreLimit        string `json:"kvm_xen_core_limit,omitempty"`
-	VcenterCoreLimit       string `json:"vcenter_core_limit,omitempty"`
-	IntegratedStorageLimit string `json:"integrated_storage_limit,omitempty"`
-	TraderStatus           string `json:"trader_status,omitempty"`
-	TraderAllowed          bool   `json:"trader_allowed,bool"`
-	SupplierStatus         string `json:"supplier_status,omitempty"`
+	Status                 string `json:"status,omitempty"`
 	SupplierAllowed        bool   `json:"supplier_allowed,bool"`
+	SupplierStatus         string `json:"supplier_status,omitempty"`
+	TraderAllowed          bool   `json:"trader_allowed,bool"`
+	TraderStatus           string `json:"trader_status,omitempty"`
+	Type                   string `json:"type,omitempty"`
+	Valid                  bool   `json:"valid,bool"`
+	VcenterCoreLimit       string `json:"vcenter_core_limit,omitempty"`
+	VcenterVMLimit         string `json:"vcenter_vm_limit,omitempty"`
 }
 
 type LicenseEditRequest struct {
@@ -59,7 +59,7 @@ type licenseRoot struct {
 
 // Get individual License.
 func (s *LicensesServiceOp) Get(ctx context.Context) (*License, *Response, error) {
-	path := fmt.Sprintf("%s%s", licensesBasePath, apiFormat)
+	path := licensesBasePath + apiFormat
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -81,16 +81,18 @@ func (s *LicensesServiceOp) Edit(ctx context.Context, editRequest *LicenseEditRe
 		return nil, godo.NewArgError("License editRequest", "cannot be nil")
 	}
 
-	path := fmt.Sprintf("%s%s", licensesEditBasePath, apiFormat)
-
-	req, err := s.client.NewRequest(ctx, http.MethodPut, path, nil)
-	if err != nil {
-		return nil, err
-	}
+	path := licensesEditBasePath + apiFormat
 
 	rootRequest := &licenseEditRequestRoot{
 		LicenseEditRequest: editRequest,
 	}
 
-	return s.client.Do(ctx, req, rootRequest)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("License [Edit] req: ", req)
+
+	return s.client.Do(ctx, req, nil)
 }
