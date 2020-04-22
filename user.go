@@ -10,6 +10,7 @@ import (
 )
 
 const usersBasePath string = "users"
+const usersMakeNewAPIKey string = "users/%d/make_new_api_key"
 
 // UsersService is an interface for interfacing with the User
 // endpoints of the OnApp API
@@ -20,6 +21,9 @@ type UsersService interface {
 	Create(context.Context, *UserCreateRequest) (*User, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *UserEditRequest) (*Response, error)
+
+	// Later move to the UserActionsService
+	MakeNewAPIKey(context.Context, int) (string, *Response, error)
 }
 
 // UsersServiceOp handles communication with the User related methods of the
@@ -44,12 +48,17 @@ type Roles struct {
 // User -
 type User struct {
 	ActivatedAt             string             `json:"activated_at,omitempty"`
+	APIKey                  string             `json:"-"` // field filled by MakeNewAPIKey function but not needed to wrap into JSON
+	AdditionalFields        []AdditionalFields `json:"additional_fields,omitempty"`
 	Avatar                  interface{}        `json:"avatar,omitempty"`
 	BillingPlanID           int                `json:"billing_plan_id,omitempty"`
+	BucketID                int                `json:"bucket_id,omitempty"`
 	CdnAccountStatus        string             `json:"cdn_account_status,omitempty"`
 	CdnStatus               string             `json:"cdn_status,omitempty"`
 	CreatedAt               string             `json:"created_at,omitempty"`
 	DeletedAt               string             `json:"deleted_at,omitempty"`
+	DiscountDueToFree       float64            `json:"discount_due_to_free,omitempty"`
+	DiskSpaceAvailable      float64            `json:"disk_space_available,omitempty"`
 	Email                   string             `json:"email,omitempty"`
 	FirewallID              int                `json:"firewall_id,omitempty"`
 	FirstName               string             `json:"first_name,omitempty"`
@@ -61,32 +70,28 @@ type User struct {
 	LastName                string             `json:"last_name,omitempty"`
 	Locale                  string             `json:"locale,omitempty"`
 	Login                   string             `json:"login,omitempty"`
+	MemoryAvailable         float64            `json:"memory_available,omitempty"`
+	MonthlyPrice            float64            `json:"monthly_price,omitempty"`
+	OutstandingAmount       float64            `json:"outstanding_amount,omitempty"`
 	PasswordChangedAt       string             `json:"password_changed_at,omitempty"`
+	PaymentAmount           float64            `json:"payment_amount,omitempty"`
 	RegisteredYubikey       bool               `json:"registered_yubikey,bool"`
+	Roles                   []Roles            `json:"roles,omitempty"`
 	Status                  string             `json:"status,omitempty"`
 	Supplied                bool               `json:"supplied,bool"`
 	SuspendAt               string             `json:"suspend_at,omitempty"`
 	SystemTheme             string             `json:"system_theme,omitempty"`
 	TimeZone                string             `json:"time_zone,omitempty"`
+	TotalAmount             float64            `json:"total_amount,omitempty"`
+	TotalAmountWithDiscount float64            `json:"total_amount_with_discount,omitempty"`
 	UpdatedAt               string             `json:"updated_at,omitempty"`
-	UseGravatar             bool               `json:"use_gravatar,bool"`
-	UserGroupID             int                `json:"user_group_id,omitempty"`
-	BucketID                int                `json:"bucket_id,omitempty"`
 	UsedCpus                int                `json:"used_cpus,omitempty"`
-	UsedMemory              int                `json:"used_memory,omitempty"`
 	UsedCPUShares           int                `json:"used_cpu_shares,omitempty"`
 	UsedDiskSize            int                `json:"used_disk_size,omitempty"`
-	MemoryAvailable         float64            `json:"memory_available,omitempty"`
-	DiskSpaceAvailable      float64            `json:"disk_space_available,omitempty"`
-	Roles                   []Roles            `json:"roles,omitempty"`
-	MonthlyPrice            float64            `json:"monthly_price,omitempty"`
-	PaymentAmount           float64            `json:"payment_amount,omitempty"`
-	OutstandingAmount       float64            `json:"outstanding_amount,omitempty"`
-	TotalAmount             float64            `json:"total_amount,omitempty"`
-	DiscountDueToFree       float64            `json:"discount_due_to_free,omitempty"`
-	TotalAmountWithDiscount float64            `json:"total_amount_with_discount,omitempty"`
-	AdditionalFields        []AdditionalFields `json:"additional_fields,omitempty"`
 	UsedIPAddresses         []IPAddresses      `json:"used_ip_addresses,omitempty"`
+	UsedMemory              int                `json:"used_memory,omitempty"`
+	UseGravatar             bool               `json:"use_gravatar,bool"`
+	UserGroupID             int                `json:"user_group_id,omitempty"`
 }
 
 // UserCreateRequest -
@@ -206,7 +211,7 @@ func (s *UsersServiceOp) Create(ctx context.Context, createRequest *UserCreateRe
 // UserDeleteRequest -
 type UserDeleteRequest struct {
 	// Force int `url:"force"`
-	Force int `json:"force,omitempty"`
+	Force int `json:"force,omitempty"` // json body request
 }
 
 // Delete User.
@@ -216,7 +221,7 @@ func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
 	}
 
 	path := fmt.Sprintf("%s/%d%s", usersBasePath, id, apiFormat)
-	path, err := addOptions(path, nil)
+	path, err := addOptions(path, meta)
 	if err != nil {
 		return nil, err
 	}
@@ -253,4 +258,29 @@ func (s *UsersServiceOp) Edit(ctx context.Context, id int, editRequest *UserEdit
 	log.Println("User [Edit]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// MakeNewAPIKey - Make new API key for the User.
+func (s *UsersServiceOp) MakeNewAPIKey(ctx context.Context, id int) (string, *Response, error) {
+	if id < 1 {
+		return "", nil,godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(usersMakeNewAPIKey, id) + apiFormat
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return "", nil, err
+	}
+
+	log.Println("User [MakeNewAPIKey]  req: ", req)
+
+	var out map[string]interface{}
+	resp, err := s.client.Do(ctx, req, &out)
+	if err != nil {
+		return "", resp, err
+	}
+
+	user := out["user"].(map[string]interface{})
+
+	return user["api_key"].(string), resp, err
 }
