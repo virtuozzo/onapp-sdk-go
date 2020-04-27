@@ -40,8 +40,10 @@ type License struct {
 	TraderStatus           string `json:"trader_status,omitempty"`
 	Type                   string `json:"type,omitempty"`
 	Valid                  bool   `json:"valid,bool"`
+	IsolatedLicense        bool   `json:"isolated_license,bool"`
 	VcenterCoreLimit       string `json:"vcenter_core_limit,omitempty"`
 	VcenterVMLimit         string `json:"vcenter_vm_limit,omitempty"`
+	LicenseKey             string `json:"license_key,omitempty"`
 }
 
 type LicenseEditRequest struct {
