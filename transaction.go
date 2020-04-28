@@ -35,7 +35,7 @@ type TransactionsService interface {
 	List(context.Context, *ListOptions) ([]Transaction, *Response, error)
 	Get(context.Context, int) (*Transaction, *Response, error)
 
-	GetByFilter(context.Context, int, interface{}, *ListOptions) (*Transaction, *Response, error)
+	GetByFilter(context.Context, interface{}, *ListOptions) (*Transaction, *Response, error)
 	// ListByGroup(context.Context, int, string, *ListOptions) (*list.List, *Response, error)
 	ListByGroup(context.Context, interface{}, *ListOptions) (*list.List, *Response, error)
 }
@@ -225,11 +225,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 }
 
 // GetByFilter find transaction with specified fields for virtual machine by ID.
-func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, id int, filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
-	if id < 1 {
-		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
+func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
 	trx, resp, err := s.client.Transactions.ListByGroup(ctx, filter, opt)
 	if err != nil {
 		return nil, resp, fmt.Errorf("GetByFilter.trx: %s", err)
