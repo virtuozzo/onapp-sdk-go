@@ -68,6 +68,8 @@ func (s *LicensesServiceOp) Get(ctx context.Context) (*License, *Response, error
 		return nil, nil, err
 	}
 
+	log.Println("License [Get] req: ", req)
+
 	root := new(licenseRoot)
 	resp, err := s.client.Do(ctx, req, root)
 	if err != nil {
@@ -94,7 +96,12 @@ func (s *LicensesServiceOp) Edit(ctx context.Context, editRequest *LicenseEditRe
 		return nil, err
 	}
 
-	log.Println("License [Edit] req: ", req)
+	log.Println("License [Create/Edit] req: ", req)
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// IsValid check if license is valid
+func (res License) IsValid() bool {
+	return res.Valid == true
 }
