@@ -3,6 +3,8 @@ github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/digitalocean/godo v1.35.0 h1:TUfPNGhfeFZxnZOMkme+pM70aS0NG9TzQAVA0BhfTVw=
 github.com/digitalocean/godo v1.35.0/go.mod h1:gWO4HiN37ogshOjyL5Xpp0SjeQogOLsSjsna5KopKJ8=
+github.com/digitalocean/godo v1.35.1 h1:3P5timR4LTqcCafzrCgV2j83ck4aWb937ybFC7YQVFw=
+github.com/digitalocean/godo v1.35.1/go.mod h1:p7dOjjtSBqCTUksqtA5Fd3uaKs9kyTq2xcz76ulEJRU=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.3.1/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
