@@ -48,7 +48,7 @@ type Roles struct {
 // User -
 type User struct {
 	ActivatedAt             string             `json:"activated_at,omitempty"`
-	APIKey                  string             `json:"-"` // field filled by MakeNewAPIKey function but not needed to wrap into JSON
+	// APIKey                  string             `json:"api_key,omitempty"` // temporary disabled! - filled only by MakeNewAPIKey function but not needed to wrap into JSON
 	AdditionalFields        []AdditionalFields `json:"additional_fields,omitempty"`
 	Avatar                  interface{}        `json:"avatar,omitempty"`
 	BillingPlanID           int                `json:"billing_plan_id,omitempty"`

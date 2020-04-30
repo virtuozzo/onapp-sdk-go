@@ -84,6 +84,7 @@ type Client struct {
 	UserGroups            UserGroupsService
 	FirewallRules         FirewallRulesService
 	UserWhiteLists        UserWhiteListsService
+	IntegratedDataStores  IntegratedDataStoresService
 
 	// Optional function called after every successful request made to the DO APIs
 	onRequestCompleted RequestCompletionCallback
@@ -203,6 +204,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.UserGroups = &UserGroupsServiceOp{client: c}
 	c.FirewallRules = &FirewallRulesServiceOp{client: c}
 	c.UserWhiteLists = &UserWhiteListsServiceOp{client: c}
+	c.IntegratedDataStores = &IntegratedDataStoresServiceOp{client: c}
 
 	return c
 }
@@ -427,26 +429,26 @@ func CheckResponse(r *http.Response) error {
 }
 
 // Version return OnApp endpoint version
-func (c *Client) Version() (*version.Version, error) {
+func (c *Client) Version() (*version.Version, *Response, error) {
 	path := fmt.Sprintf("version%s", apiFormat)
 
 	req, err := c.NewRequest(context.TODO(), http.MethodGet, path, nil)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var res map[string]string
-	_, err = c.Do(context.TODO(), req, &res)
+	resp, err := c.Do(context.TODO(), req, &res)
 	if err != nil {
-		return nil, err
+		return nil, resp, err
 	}
 
 	ver, err := version.NewSemver(res["version"])
 	if err != nil {
-		return nil, err
+		return nil, resp, err
 	}
 
-	return ver, err
+	return ver, resp, err
 }
 
 // String - convert ErrorResponse to the string
