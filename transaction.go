@@ -36,7 +36,6 @@ type TransactionsService interface {
 	Get(context.Context, int) (*Transaction, *Response, error)
 
 	GetByFilter(context.Context, interface{}, *ListOptions) (*Transaction, *Response, error)
-	// ListByGroup(context.Context, int, string, *ListOptions) (*list.List, *Response, error)
 	ListByGroup(context.Context, interface{}, *ListOptions) (*list.List, *Response, error)
 }
 
@@ -50,29 +49,28 @@ var _ TransactionsService = &TransactionsServiceOp{}
 
 // Transaction represents a OnApp Transaction
 type Transaction struct {
-	Action                 string `json:"action,omitempty"`
-	Actor                  string `json:"actor,omitempty"`
-	AllowedCancel          bool   `json:"allowed_cancel,bool"`
-	AssociatedObjectID     int    `json:"associated_object_id,omitempty"`
-	AssociatedObjectType   string `json:"associated_object_type,omitempty"`
-	ChainID                int    `json:"chain_id,omitempty"`
-	CreatedAt              string `json:"created_at,omitempty"`
-	DependentTransactionID int    `json:"dependent_transaction_id,omitempty"`
-	ID                     int    `json:"id,omitempty"`
-	Identifier             string `json:"identifier,omitempty"`
-	LockVersion            int    `json:"lock_version,omitempty"`
-	ParentID               int    `json:"parent_id,omitempty"`
-	ParentType             string `json:"parent_type,omitempty"`
-	Pid                    int    `json:"pid,omitempty"`
-	Priority               int    `json:"priority,omitempty"`
-	Scheduled              bool   `json:"scheduled,bool"`
-	StartAfter             string `json:"start_after,omitempty"`
-	StartedAt              string `json:"started_at,omitempty"`
-	Status                 string `json:"status,omitempty"`
-	UpdatedAt              string `json:"updated_at,omitempty"`
-	UserID                 int    `json:"user_id,omitempty"`
-
-	Params map[string]interface{} `json:"params,omitempty"`
+	Action                 string                 `json:"action,omitempty"`
+	Actor                  string                 `json:"actor,omitempty"`
+	AllowedCancel          bool                   `json:"allowed_cancel,bool"`
+	AssociatedObjectID     int                    `json:"associated_object_id,omitempty"`
+	AssociatedObjectType   string                 `json:"associated_object_type,omitempty"`
+	ChainID                int                    `json:"chain_id,omitempty"`
+	CreatedAt              string                 `json:"created_at,omitempty"`
+	DependentTransactionID int                    `json:"dependent_transaction_id,omitempty"`
+	ID                     int                    `json:"id,omitempty"`
+	Identifier             string                 `json:"identifier,omitempty"`
+	LockVersion            int                    `json:"lock_version,omitempty"`
+	ParentID               int                    `json:"parent_id,omitempty"`
+	ParentType             string                 `json:"parent_type,omitempty"`
+	Pid                    int                    `json:"pid,omitempty"`
+	Priority               int                    `json:"priority,omitempty"`
+	Scheduled              bool                   `json:"scheduled,bool"`
+	StartAfter             string                 `json:"start_after,omitempty"`
+	StartedAt              string                 `json:"started_at,omitempty"`
+	Status                 string                 `json:"status,omitempty"`
+	UpdatedAt              string                 `json:"updated_at,omitempty"`
+	UserID                 int                    `json:"user_id,omitempty"`
+	Params                 map[string]interface{} `json:"params,omitempty"`
 }
 
 type transactionRoot struct {
@@ -271,7 +269,6 @@ func (trx *Transaction) equal(filter interface{}) bool {
 	return true
 }
 
-// func lastTransaction(ctx context.Context, client *Client, id int, objectType string) (*Transaction, *Response, error) {
 func lastTransaction(ctx context.Context, client *Client, filter interface{}) (*Transaction, *Response, error) {
 	opt := &ListOptions{
 		PerPage: searchTransactions,
