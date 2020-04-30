@@ -81,7 +81,7 @@ type Configuration struct {
 	DropFirewallPolicyAllowedIps          string   `json:"drop_firewall_policy_allowed_ips,omitempty"`
 	EmailDeliveryMethod                   string   `json:"email_delivery_method,omitempty"`
 	EnableDailyStorageReport              bool     `json:"enable_daily_storage_report,bool"`
-	EnableDownloadTimeout                 int      `json:"enable_download_timeout"`
+	EnableDownloadTimeout                 int      `json:"enable_download_timeout,omitempty"`
 	EnableHourlyStorageReport             bool     `json:"enable_hourly_storage_report,bool"`
 	EnableNotifications                   bool     `json:"enable_notifications,bool"`
 	EnableSuperAdminPermissions           bool     `json:"enable_super_admin_permissions,bool"`
@@ -120,7 +120,7 @@ type Configuration struct {
 	MaxCPUQuota                           int      `json:"max_cpu_quota,omitempty"`
 	MaximumPendingTasks                   int      `json:"maximum_pending_tasks,omitempty"`
 	MaxIPAddressesToAssignSimultaneously  int      `json:"max_ip_addresses_to_assign_simultaneously,omitempty"`
-	MaxMemoryQuota                        int      `json:"max_memory_quota"`
+	MaxMemoryQuota                        int      `json:"max_memory_quota,omitempty"`
 	MaxMemoryRatio                        int      `json:"max_memory_ratio,omitempty"`
 	MaxNetworkInterfacePortSpeed          int      `json:"max_network_interface_port_speed,omitempty"`
 	MaxUploadSize                         int      `json:"max_upload_size,omitempty"`
