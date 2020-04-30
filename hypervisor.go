@@ -16,9 +16,11 @@ const hypervisorsBasePath string = "settings/hypervisors"
 // TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
 // BackupServerJoins objects
 const hypervisorsDataStoreJoins string = hypervisorsBasePath + "/%d/data_store_joins"
-
 // const hypervisorsNetworkJoins string = hypervisorsBasePath + "/%d/network_joins"
 const hypervisorsBackupServerJoins string = hypervisorsBasePath + "/%d/backup_server_joins"
+
+// Used to get data for integrated storeg
+const hypervisorHardwareDevicesBasePath string = hypervisorsBasePath + "/%d/hardware_devices/refresh"
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
 const cloudBootHypervisorsBasePath string = "settings/assets/%s/hypervisors"
@@ -42,6 +44,8 @@ type HypervisorsService interface {
 	DeleteDataStoreJoins(context.Context, int, int) (*Response, error)
 	// DeleteNetworkJoins(context.Context, int, int) (*Response, error)
 	DeleteBackupServerJoins(context.Context, int, int) (*Response, error)
+
+	Refresh(context.Context, int) (*HardwareDevices, *Response, error)
 }
 
 // HypervisorsServiceOp handles communication with the Hypervisor related methods of the
@@ -211,6 +215,7 @@ func (s *HypervisorsServiceOp) Get(ctx context.Context, id int) (*Hypervisor, *R
 	if err != nil {
 		return nil, nil, err
 	}
+
 
 	root := new(hypervisorRoot)
 	resp, err := s.client.Do(ctx, req, root)
@@ -383,4 +388,105 @@ func hypervisorPath(mac string, serverType string) string {
 	}
 
 	return ""
+}
+
+type HardwareDevices struct {
+	HardwareCustomDevice           []*HardwareCustomDevice
+	HardwareDiskDevice             []*HardwareDiskDevice
+	HardwareDiskPciDevice          []*HardwareDiskPciDevice
+	HardwareNetworkInterfaceDevice []*HardwareNetworkInterfaceDevice
+}
+
+type rootHardware []struct {
+	HardwareCustomDevice           *HardwareCustomDevice           `json:"hardware_custom_device,omitempty"`
+	HardwareDiskDevice             *HardwareDiskDevice             `json:"hardware_disk_device,omitempty"`
+	HardwareDiskPciDevice          *HardwareDiskPciDevice          `json:"hardware_disk_pci_device,omitempty"`
+	HardwareNetworkInterfaceDevice *HardwareNetworkInterfaceDevice `json:"hardware_network_interface_device,omitempty"`
+}
+
+type HardwareDiskDevice struct {
+	ID         int    `json:"id,omitempty"`
+	ParentID   int    `json:"parent_id,omitempty"`
+	Status     string `json:"status,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+	UpdatedAt  string `json:"updated_at,omitempty"`
+	ParentType string `json:"parent_type,omitempty"`
+	Name       string `json:"name,omitempty"`
+	Scsi       string `json:"scsi,omitempty"`
+}
+
+type HardwareNetworkInterfaceDevice struct {
+	ID            int    `json:"id,omitempty"`
+	ParentID      int    `json:"parent_id,omitempty"`
+	Status        string `json:"status,omitempty"`
+	CreatedAt     string `json:"created_at,omitempty"`
+	UpdatedAt     string `json:"updated_at,omitempty"`
+	ParentType    string `json:"parent_type,omitempty"`
+	Name          string `json:"name,omitempty"`
+	Pci           string `json:"pci,omitempty"`
+	Mac           string `json:"mac,omitempty"`
+	InterfaceType string `json:"interface_type,omitempty"`
+}
+
+type HardwareCustomDevice struct {
+	ID         int    `json:"id,omitempty"`
+	ParentID   int    `json:"parent_id,omitempty"`
+	Status     string `json:"status,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+	UpdatedAt  string `json:"updated_at,omitempty"`
+	ParentType string `json:"parent_type,omitempty"`
+	Name       string `json:"name,omitempty"`
+	Pci        string `json:"pci,omitempty"`
+	Code       string `json:"code,omitempty"`
+}
+
+type HardwareDiskPciDevice struct {
+	ID         int    `json:"id,omitempty"`
+	ParentID   int    `json:"parent_id,omitempty"`
+	Status     string `json:"status,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+	UpdatedAt  string `json:"updated_at,omitempty"`
+	ParentType string `json:"parent_type,omitempty"`
+	Pci        string `json:"pci,omitempty"`
+}
+
+// Refresh - get list of hardware devices (disks, network interfaces) from hypervisor with enabled integrated storage
+func (s *HypervisorsServiceOp) Refresh(ctx context.Context, resID int) (*HardwareDevices, *Response, error) {
+	if resID < 1  {
+		return nil, nil, godo.NewArgError("HypervisorsServiceOp.Refresh", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorHardwareDevicesBasePath, resID) + apiFormat
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	log.Println("HypervisorsServiceOp [Refresh] req: ", req)
+
+	out := &rootHardware{}
+	resp, err := s.client.Do(ctx, req, out)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	// log.Printf("IntegratedStorages out: %+v\n", out)
+
+	res := &HardwareDevices{}
+	res.initHardwareDevices(out)
+
+	return res, resp, err
+}
+
+func (obj *HardwareDevices) initHardwareDevices(s *rootHardware) {
+	for _, v := range *s {
+		if v.HardwareCustomDevice != nil {
+			obj.HardwareCustomDevice = append(obj.HardwareCustomDevice, v.HardwareCustomDevice)
+		} else if v.HardwareDiskDevice != nil {
+			obj.HardwareDiskDevice = append(obj.HardwareDiskDevice, v.HardwareDiskDevice)
+		} else if v.HardwareDiskPciDevice != nil {
+			obj.HardwareDiskPciDevice = append(obj.HardwareDiskPciDevice, v.HardwareDiskPciDevice)
+		} else if v.HardwareNetworkInterfaceDevice != nil {
+			obj.HardwareNetworkInterfaceDevice = append(obj.HardwareNetworkInterfaceDevice, v.HardwareNetworkInterfaceDevice)
+		}
+	}
 }
