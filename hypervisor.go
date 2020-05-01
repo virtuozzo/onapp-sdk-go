@@ -47,6 +47,7 @@ type HypervisorsService interface {
 	DeleteBackupServerJoins(context.Context, int, int) (*Response, error)
 
 	Refresh(context.Context, int) (*HardwareDevices, *Response, error)
+	Attach(context.Context, int, map[string]*AttachHardwareDevice) (*Response, error)
 }
 
 // HypervisorsServiceOp handles communication with the Hypervisor related methods of the
@@ -216,7 +217,6 @@ func (s *HypervisorsServiceOp) Get(ctx context.Context, id int) (*Hypervisor, *R
 	if err != nil {
 		return nil, nil, err
 	}
-
 
 	root := new(hypervisorRoot)
 	resp, err := s.client.Do(ctx, req, root)
@@ -453,7 +453,7 @@ type HardwareDiskPciDevice struct {
 
 // Refresh - get list of hardware devices (disks, network interfaces) from hypervisor with enabled integrated storage
 func (s *HypervisorsServiceOp) Refresh(ctx context.Context, resID int) (*HardwareDevices, *Response, error) {
-	if resID < 1  {
+	if resID < 1 {
 		return nil, nil, godo.NewArgError("HypervisorsServiceOp.Refresh", "cannot be less than 1")
 	}
 
@@ -490,4 +490,45 @@ func (obj *HardwareDevices) initHardwareDevices(s *rootHardware) {
 			obj.HardwareNetworkInterfaceDevice = append(obj.HardwareNetworkInterfaceDevice, v.HardwareNetworkInterfaceDevice)
 		}
 	}
+}
+
+// AttachHardwareDevice represents a request to attach disks, network interfaces from hypervisor to the integrated data store
+type AttachHardwareDevice struct {
+	Status string `json:"status,omitempty"`
+	Format bool   `json:"format,bool"`
+}
+
+type hardwareDevicesRoot struct {
+	AttachHardwareDevices map[string]*AttachHardwareDevice `json:"hardware_devices"`
+}
+
+const AssignedToCache string = "assigned_to_cache"
+const AssignedToStorage string = "assigned_to_storage"
+const AssignedToSAN string = "assigned_to_san"
+const Unassigned string = "unassigned"
+
+// Attach - attach disks, network interfaces of hypervisor to the integrated data store
+func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequest map[string]*AttachHardwareDevice) (*Response, error) {
+	if resID < 1 {
+		return nil, godo.NewArgError("HypervisorsServiceOp.Attach", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorHardwareDeviceBasePath, resID) + apiFormat
+
+	rootRequest := &hardwareDevicesRoot{
+		AttachHardwareDevices: attachRequest,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPut, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("HypervisorsServiceOp [Attach] req: ", req)
+
+	resp, err := s.client.Do(ctx, req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, err
 }
