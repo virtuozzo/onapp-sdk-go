@@ -20,7 +20,8 @@ const hypervisorsDataStoreJoins string = hypervisorsBasePath + "/%d/data_store_j
 const hypervisorsBackupServerJoins string = hypervisorsBasePath + "/%d/backup_server_joins"
 
 // Used to get data for integrated storeg
-const hypervisorHardwareDevicesBasePath string = hypervisorsBasePath + "/%d/hardware_devices/refresh"
+const hypervisorHardwareDeviceBasePath string = hypervisorsBasePath + "/%d/hardware_devices"
+const hypervisorHardwareDeviceRefreshBasePath string = hypervisorHardwareDeviceBasePath + "/refresh"
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
 const cloudBootHypervisorsBasePath string = "settings/assets/%s/hypervisors"
@@ -391,10 +392,10 @@ func hypervisorPath(mac string, serverType string) string {
 }
 
 type HardwareDevices struct {
-	HardwareCustomDevice           []*HardwareCustomDevice
-	HardwareDiskDevice             []*HardwareDiskDevice
-	HardwareDiskPciDevice          []*HardwareDiskPciDevice
-	HardwareNetworkInterfaceDevice []*HardwareNetworkInterfaceDevice
+	HardwareCustomDevice           []*HardwareCustomDevice           `json:"hardware_custom_device,omitempty"`
+	HardwareDiskDevice             []*HardwareDiskDevice             `json:"hardware_disk_device,omitempty"`
+	HardwareDiskPciDevice          []*HardwareDiskPciDevice          `json:"hardware_disk_pci_device,omitempty"`
+	HardwareNetworkInterfaceDevice []*HardwareNetworkInterfaceDevice `json:"hardware_network_interface_device,omitempty"`
 }
 
 type rootHardware []struct {
@@ -456,7 +457,7 @@ func (s *HypervisorsServiceOp) Refresh(ctx context.Context, resID int) (*Hardwar
 		return nil, nil, godo.NewArgError("HypervisorsServiceOp.Refresh", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(hypervisorHardwareDevicesBasePath, resID) + apiFormat
+	path := fmt.Sprintf(hypervisorHardwareDeviceRefreshBasePath, resID) + apiFormat
 	req, err := s.client.NewRequest(ctx, http.MethodPost, path, nil)
 	if err != nil {
 		return nil, nil, err
