@@ -16,7 +16,6 @@ const hypervisorsBasePath string = "settings/hypervisors"
 // TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
 // BackupServerJoins objects
 const hypervisorsDataStoreJoins string = hypervisorsBasePath + "/%d/data_store_joins"
-// const hypervisorsNetworkJoins string = hypervisorsBasePath + "/%d/network_joins"
 const hypervisorsBackupServerJoins string = hypervisorsBasePath + "/%d/backup_server_joins"
 
 // Used to get data for integrated storeg
@@ -39,15 +38,13 @@ type HypervisorsService interface {
 	// TODO: maybe later remove this because will be DataSoreJoins, NetworkJoins
 	// BackupServerJoins objects
 	AddDataStoreJoins(context.Context, int, int) (*Response, error)
-	// AddNetworkJoins(context.Context, int, *HypervisorNetworkJoinCreateRequest) (*Response, error)
 	AddBackupServerJoins(context.Context, int, int) (*Response, error)
 
 	DeleteDataStoreJoins(context.Context, int, int) (*Response, error)
-	// DeleteNetworkJoins(context.Context, int, int) (*Response, error)
 	DeleteBackupServerJoins(context.Context, int, int) (*Response, error)
 
 	Refresh(context.Context, int) (*HardwareDevices, *Response, error)
-	Attach(context.Context, int, map[string]*AttachHardwareDevice) (*Response, error)
+	Attach(context.Context, int, map[string]interface{}) (*Response, error)
 }
 
 // HypervisorsServiceOp handles communication with the Hypervisor related methods of the
@@ -492,14 +489,19 @@ func (obj *HardwareDevices) initHardwareDevices(s *rootHardware) {
 	}
 }
 
-// AttachHardwareDevice represents a request to attach disks, network interfaces from hypervisor to the integrated data store
-type AttachHardwareDevice struct {
+// AttachDiskHardwareDevice represents a request to attach disks from hypervisor to the integrated data store
+type AttachDiskHardwareDevice struct {
 	Status string `json:"status,omitempty"`
 	Format bool   `json:"format,bool"`
 }
 
+// AttachNetworkInterfaceHardwareDevice represents a request to attach network interfaces from hypervisor to the integrated data store
+type AttachNetworkInterfaceHardwareDevice struct {
+	Status string `json:"status,omitempty"`
+}
+
 type hardwareDevicesRoot struct {
-	AttachHardwareDevices map[string]*AttachHardwareDevice `json:"hardware_devices"`
+	AttachHardwareDevices map[string]interface{} `json:"hardware_devices"`
 }
 
 const AssignedToCache string = "assigned_to_cache"
@@ -508,7 +510,7 @@ const AssignedToSAN string = "assigned_to_san"
 const Unassigned string = "unassigned"
 
 // Attach - attach disks, network interfaces of hypervisor to the integrated data store
-func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequest map[string]*AttachHardwareDevice) (*Response, error) {
+func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequest map[string]interface{}) (*Response, error) {
 	if resID < 1 {
 		return nil, godo.NewArgError("HypervisorsServiceOp.Attach", "cannot be less than 1")
 	}
