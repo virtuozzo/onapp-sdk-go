@@ -125,8 +125,7 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, 
 	return root.Transaction, resp, err
 }
 
-// ListByGroup return group of transcations depended by action
-// func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, id int, objectType string, opt *ListOptions) (*list.List, *Response, error) {
+// ListByGroup return group of transactions depended by action
 func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{}, opt *ListOptions) (*list.List, *Response, error) {
 	var associatedObjectID, parentID int
 	var associatedObjectType, parentType string
@@ -222,7 +221,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 	return groupList, resp, err
 }
 
-// GetByFilter find transaction with specified fields for virtual machine by ID.
+// GetByFilter find transaction with specified fields.
 func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
 	trx, resp, err := s.client.Transactions.ListByGroup(ctx, filter, opt)
 	if err != nil {
@@ -245,6 +244,10 @@ func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, filter interfac
 	}
 
 	return nil, nil, fmt.Errorf("Transaction not found or wrong filter %+v", filter)
+}
+
+func (trx *Transaction) EqualFilter(filter interface{}) bool {
+	return trx.equal(filter)
 }
 
 func (trx *Transaction) equal(filter interface{}) bool {
@@ -274,7 +277,6 @@ func lastTransaction(ctx context.Context, client *Client, filter interface{}) (*
 		PerPage: searchTransactions,
 	}
 
-	// trx, resp, err := client.Transactions.ListByGroup(ctx, id, aot, opt)
 	trx, resp, err := client.Transactions.ListByGroup(ctx, filter, opt)
 
 	var root *Transaction
