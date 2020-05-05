@@ -18,9 +18,11 @@ const hypervisorsBasePath string = "settings/hypervisors"
 const hypervisorsDataStoreJoins string = hypervisorsBasePath + "/%d/data_store_joins"
 const hypervisorsBackupServerJoins string = hypervisorsBasePath + "/%d/backup_server_joins"
 
-// Used to get data for integrated storeg
+// Used to get data for integrated storage
 const hypervisorHardwareDeviceBasePath string = hypervisorsBasePath + "/%d/hardware_devices"
 const hypervisorHardwareDeviceRefreshBasePath string = hypervisorHardwareDeviceBasePath + "/refresh"
+const hypervisorIntegratedStorageSettingBasePath string = hypervisorsBasePath + "/%d/integrated_storage_settings"
+const hypervisorRebootBasePath string = hypervisorsBasePath + "/%d/reboot"
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
 const cloudBootHypervisorsBasePath string = "settings/assets/%s/hypervisors"
@@ -35,6 +37,8 @@ type HypervisorsService interface {
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *HypervisorEditRequest) (*Response, error)
 
+	Reboot(context.Context, int, *HypervisorRebootRequest) (*Response, error)
+
 	// TODO: maybe later remove this because will be DataSoreJoins, NetworkJoins
 	// BackupServerJoins objects
 	AddDataStoreJoins(context.Context, int, int) (*Response, error)
@@ -45,6 +49,8 @@ type HypervisorsService interface {
 
 	Refresh(context.Context, int) (*HardwareDevices, *Response, error)
 	Attach(context.Context, int, map[string]interface{}) (*Response, error)
+
+	EditIntegratedStorageSettings(context.Context, int, *IntegratedStorageSettings) (*Response, error)
 }
 
 // HypervisorsServiceOp handles communication with the Hypervisor related methods of the
@@ -275,12 +281,8 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
 
 // Edit Hypervisor.
 func (s *HypervisorsServiceOp) Edit(ctx context.Context, id int, editRequest *HypervisorEditRequest) (*Response, error) {
-	if id < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	if editRequest == nil {
-		return nil, godo.NewArgError("Hypervisor [Edit] editRequest", "cannot be nil")
+	if editRequest == nil || id < 1 {
+		return nil, godo.NewArgError("editRequest || id", "cannot be nil or less than 1")
 	}
 
 	path := fmt.Sprintf("%s/%d%s", hypervisorsBasePath, id, apiFormat)
@@ -388,6 +390,30 @@ func hypervisorPath(mac string, serverType string) string {
 	return ""
 }
 
+type HypervisorRebootRequest struct {
+	SkipPoweredOffVmsMigration int `json:"skip_powered_off_vms_migration,omitempty"`
+	SheduleFailover            int `json:"schedule_failover"`
+	Force                      int `json:"force,omitempty"`
+	Confirm                    int `json:"confirm,omitempty"`
+}
+
+// Reboot Hypervisor
+func (s *HypervisorsServiceOp) Reboot(ctx context.Context, id int, rebootRequest *HypervisorRebootRequest) (*Response, error) {
+	if id < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorRebootBasePath, id) + apiFormat
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, rebootRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("Hypervisor [Reboot] req: ", req)
+
+	// return s.client.Do(ctx, req, nil)
+	return nil, nil
+}
+
 type HardwareDevices struct {
 	HardwareCustomDevice           []*HardwareCustomDevice           `json:"hardware_custom_device,omitempty"`
 	HardwareDiskDevice             []*HardwareDiskDevice             `json:"hardware_disk_device,omitempty"`
@@ -451,7 +477,7 @@ type HardwareDiskPciDevice struct {
 // Refresh - get list of hardware devices (disks, network interfaces) from hypervisor with enabled integrated storage
 func (s *HypervisorsServiceOp) Refresh(ctx context.Context, resID int) (*HardwareDevices, *Response, error) {
 	if resID < 1 {
-		return nil, nil, godo.NewArgError("HypervisorsServiceOp.Refresh", "cannot be less than 1")
+		return nil, nil, godo.NewArgError("Hypervisor.Refresh", "cannot be less than 1")
 	}
 
 	path := fmt.Sprintf(hypervisorHardwareDeviceRefreshBasePath, resID) + apiFormat
@@ -459,7 +485,7 @@ func (s *HypervisorsServiceOp) Refresh(ctx context.Context, resID int) (*Hardwar
 	if err != nil {
 		return nil, nil, err
 	}
-	log.Println("HypervisorsServiceOp [Refresh] req: ", req)
+	log.Println("Hypervisor [Refresh] req: ", req)
 
 	out := &rootHardware{}
 	resp, err := s.client.Do(ctx, req, out)
@@ -512,7 +538,7 @@ const Unassigned string = "unassigned"
 // Attach - attach disks, network interfaces of hypervisor to the integrated data store
 func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequest map[string]interface{}) (*Response, error) {
 	if resID < 1 {
-		return nil, godo.NewArgError("HypervisorsServiceOp.Attach", "cannot be less than 1")
+		return nil, godo.NewArgError("Hypervisor.Attach", "cannot be less than 1")
 	}
 
 	path := fmt.Sprintf(hypervisorHardwareDeviceBasePath, resID) + apiFormat
@@ -525,12 +551,50 @@ func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequ
 	if err != nil {
 		return nil, err
 	}
-	log.Println("HypervisorsServiceOp [Attach] req: ", req)
+	log.Println("Hypervisor [Attach] req: ", req)
 
-	resp, err := s.client.Do(ctx, req, nil)
-	if err != nil {
-		return resp, err
+	// resp, err := s.client.Do(ctx, req, nil)
+	// if err != nil {
+	// 	return resp, err
+	// }
+
+	// return resp, err
+	return nil, nil
+}
+
+type IntegratedStorageSettings struct {
+	BondingMode          string `json:"bonding_mode"`
+	CacheMirrors         int    `json:"cache_mirrors"`
+	CacheStripes         int    `json:"cache_stripes"`
+	ControllerDbSize     int    `json:"controller_db_size"`
+	ControllerMemorySize int    `json:"controller_memory_size"`
+	DisksPerController   int    `json:"disks_per_controller"`
+	Mtu                  int    `json:"mtu"`
+	Vlan                 int    `json:"vlan"`
+}
+
+type integratedStorageSettingCreateRequestRoot struct {
+	IntegratedStorageSettings *IntegratedStorageSettings `json:"integrated_storage_settings"`
+}
+
+// EditIntegratedStorageSettings
+func (s *HypervisorsServiceOp) EditIntegratedStorageSettings(ctx context.Context, id int, editRequest *IntegratedStorageSettings) (*Response, error) {
+	if editRequest == nil || id < 1 {
+		return nil, godo.NewArgError("editRequest || id", "cannot be nill or less than 1")
 	}
 
-	return resp, err
+	path := fmt.Sprintf(hypervisorIntegratedStorageSettingBasePath, id) + apiFormat
+
+	rootRequest := &integratedStorageSettingCreateRequestRoot{
+		IntegratedStorageSettings: editRequest,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPut, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("Hypervisor [EditIntegratedStorageSettings]  req: ", req)
+
+	// return s.client.Do(ctx, req, nil)
+	return nil, nil
 }
