@@ -10,6 +10,8 @@ import (
 )
 
 const dataStoreGroupsBasePath string = "settings/data_store_zones"
+const dataStoreAttachBasePath string = dataStoreGroupsBasePath + "/%d/data_stores/%d/attach"
+const dataStoreDetachBasePath string = dataStoreGroupsBasePath + "/%d/data_stores/%d/detach"
 
 // DataStoreGroupsService is an interface for interfacing with the Data Store Zones
 // endpoints of the OnApp API
@@ -20,6 +22,9 @@ type DataStoreGroupsService interface {
 	Create(context.Context, *DataStoreGroupCreateRequest) (*DataStoreGroup, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *DataStoreGroupEditRequest) (*Response, error)
+
+	Attach(context.Context, int, int) (*Response, error)
+	Detach(context.Context, int, int) (*Response, error)
 }
 
 // DataStoreGroupsServiceOp handles communication with the Data Store Groups related methods of the
@@ -193,6 +198,40 @@ func (s *DataStoreGroupsServiceOp) Edit(ctx context.Context, id int, editRequest
 		return nil, err
 	}
 	log.Println("DataStoreGroup [Edit]  req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// Attach data store to the DataStoreGroup.
+func (s *DataStoreGroupsServiceOp) Attach(ctx context.Context, resID int, id int) (*Response, error) {
+	if resID < 1 || id < 1 {
+		return nil, godo.NewArgError("resID || id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(dataStoreAttachBasePath, resID, id) + apiFormat
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("DataStoreGroup [Attach]  req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// Detach data store to the DataStoreGroup.
+func (s *DataStoreGroupsServiceOp) Detach(ctx context.Context, resID int, id int) (*Response, error) {
+	if resID < 1 || id < 1 {
+		return nil, godo.NewArgError("resID || id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(dataStoreDetachBasePath, resID, id) + apiFormat
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("DataStoreGroup [Detach]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
 }
