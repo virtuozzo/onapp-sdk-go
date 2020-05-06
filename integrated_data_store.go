@@ -10,7 +10,7 @@ import (
 )
 
 const integratedDataStoresBasePath string = "storage/%d/data_stores"
-const backendNodesBasePath string = "storage/%d/hypervisors"
+const integratedDataStoreBackendNodesBasePath string = "storage/%d/hypervisors"
 
 // IntegratedDataStoresService is an interface for interfacing with the IntegrateDataStores
 // endpoints of the OnApp API
@@ -67,16 +67,14 @@ type BackendNodes []struct {
 // IntegratedDataStoreCreateRequest represents a request to create a IntegrateDataStores
 type IntegratedDataStoreCreateRequest struct {
 	Name       string   `json:"name,omitempty"`
-	Replicas   int      `json:"replicas,omitempty"`
-	Stripes    int      `json:"stripes,omitempty"`
-	Overcommit int      `json:"overcommit,omitempty"`
+	Replicas   string   `json:"replicas,omitempty"`
+	Stripes    string   `json:"stripes,omitempty"`
+	Overcommit string   `json:"overcommit,omitempty"`
 	NodeIDs    []string `json:"node_ids,omitempty"`
 }
 
 // IntegratedDataStoresEditRequest represents a request to edit a IntegrateDataStores
-type IntegratedDataStoresEditRequest struct {
-	OwnerIDs []string `json:"owner_ids,omitempty"`
-}
+type IntegratedDataStoresEditRequest IntegratedDataStoreCreateRequest
 
 type integratedDataStoreCreateRequestRoot struct {
 	IntegratedDataStoreCreateRequest *IntegratedDataStoreCreateRequest `json:"storage_data_store"`
@@ -147,7 +145,7 @@ func (s *IntegratedDataStoresServiceOp) Get(ctx context.Context, resID int, id s
 }
 
 // Create -
-func (s *IntegratedDataStoresServiceOp) Create(ctx context.Context, resID int, createRequest *IntegratedDataStoreCreateRequest) (*IntegratedDataStores, *Response, error) {
+	func (s *IntegratedDataStoresServiceOp) Create(ctx context.Context, resID int, createRequest *IntegratedDataStoreCreateRequest) (*IntegratedDataStores, *Response, error) {
 	if resID < 1 || createRequest == nil {
 		return nil, nil, godo.NewArgError("IntegratedDataStores createRequest", "cannot be nil")
 	}
@@ -219,12 +217,13 @@ func (s *IntegratedDataStoresServiceOp) Edit(ctx context.Context, resID int, id 
 }
 
 // BackendNodes get list of nodes from hypervisor
+// maybe rename in near feature into the StorageNodes
 func (s *IntegratedDataStoresServiceOp) BackendNodes(ctx context.Context, id int) (*BackendNodes, *Response, error) {
 	if id < 1 {
 		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(backendNodesBasePath, id) + apiFormat
+	path := fmt.Sprintf(integratedDataStoreBackendNodesBasePath, id) + apiFormat
 	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
 		return nil, nil, err

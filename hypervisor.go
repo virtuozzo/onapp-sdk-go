@@ -562,22 +562,25 @@ func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequ
 	return nil, nil
 }
 
+// IntegratedStorageSettings -
+// TODO: we must change all fields to the type 'int' only skip 'bonding_mode' this field must be string
+// because we got normal structure, but for editing we must send string so there is some data inconsistency
 type IntegratedStorageSettings struct {
 	BondingMode          string `json:"bonding_mode"`
-	CacheMirrors         int    `json:"cache_mirrors"`
-	CacheStripes         int    `json:"cache_stripes"`
-	ControllerDbSize     int    `json:"controller_db_size"`
-	ControllerMemorySize int    `json:"controller_memory_size"`
-	DisksPerController   int    `json:"disks_per_controller"`
-	Mtu                  int    `json:"mtu"`
-	Vlan                 int    `json:"vlan"`
+	CacheMirrors         string `json:"cache_mirrors"`
+	CacheStripes         string `json:"cache_stripes"`
+	ControllerDbSize     string `json:"controller_db_size"`
+	ControllerMemorySize string `json:"controller_memory_size"`
+	DisksPerController   string `json:"disks_per_controller"`
+	Mtu                  string `json:"mtu"`
+	Vlan                 string `json:"vlan"`
 }
 
 type integratedStorageSettingCreateRequestRoot struct {
 	IntegratedStorageSettings *IntegratedStorageSettings `json:"integrated_storage_settings"`
 }
 
-// EditIntegratedStorageSettings
+// EditIntegratedStorageSettings -
 func (s *HypervisorsServiceOp) EditIntegratedStorageSettings(ctx context.Context, id int, editRequest *IntegratedStorageSettings) (*Response, error) {
 	if editRequest == nil || id < 1 {
 		return nil, godo.NewArgError("editRequest || id", "cannot be nill or less than 1")

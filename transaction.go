@@ -138,7 +138,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 		// fmt.Printf("associatedObjectID: <%d>\n", associatedObjectID)
 
 		if associatedObjectID < 1 {
-			return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+			return nil, nil, godo.NewArgError("associatedObjectID", "cannot be less than 1")
 		}
 	}
 
@@ -148,7 +148,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 		// fmt.Printf("parentID: <%d>\n", parentID)
 
 		if parentID < 1 {
-			return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+			return nil, nil, godo.NewArgError("parentID", "cannot be less than 1")
 		}
 	}
 
