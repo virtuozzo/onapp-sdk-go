@@ -218,5 +218,4 @@ func (s *HypervisorZonesServiceOp) Delete(ctx context.Context, id int, meta inte
 	}
 
 	return lastTransaction(ctx, s.client, filter)
-	// return lastTransaction(ctx, s.client, id, "HypervisorZone")
 }

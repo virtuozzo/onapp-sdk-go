@@ -220,7 +220,6 @@ func (s *VirtualMachineActionsServiceOp) doAction(ctx context.Context, id int,
 	}
 
 	return lastTransaction(ctx, s.client, filter)
-	// return lastTransaction(ctx, s.client, id, "VirtualMachine")
 }
 
 func virtualMachineActionPath(id int, request *ActionRequest) (string, error) {

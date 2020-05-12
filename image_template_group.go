@@ -10,7 +10,7 @@ import (
 )
 
 const imageTemplateGroupsBasePath string = "settings/image_template_groups"
-const relationGroupTemplateBasePath string = "settings/image_template_groups/%d/relation_group_templates"
+const attachDetachTemplateBasePath string = imageTemplateGroupsBasePath + "/%d/relation_group_templates"
 
 // ImageTemplateGroupsService is an interface for interfacing with the ImageTemplateGroup
 // endpoints of the OnApp API
@@ -223,7 +223,7 @@ func (s *ImageTemplateGroupsServiceOp) Attach(ctx context.Context, groupID int, 
 		return nil, nil, godo.NewArgError("ImageTemplateGroup attachRequest", "cannot be nil")
 	}
 
-	path := fmt.Sprintf(relationGroupTemplateBasePath, groupID)
+	path := fmt.Sprintf(attachDetachTemplateBasePath, groupID)
 	rootRequest := &imageTemplateGroupAttachRequestRoot{
 		ImageTemplateGroupAttachRequest: attachRequest,
 	}
@@ -249,7 +249,7 @@ func (s *ImageTemplateGroupsServiceOp) Detach(ctx context.Context, groupID int, 
 		return nil, godo.NewArgError("id", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(relationGroupTemplateBasePath, groupID)
+	path := fmt.Sprintf(attachDetachTemplateBasePath, groupID)
 	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
 
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)

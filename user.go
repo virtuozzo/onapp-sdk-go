@@ -226,6 +226,7 @@ func (s *UsersServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
 		return nil, err
 	}
 
+	// Forced user delete, must be moved out to the user space
 	opts := &UserDeleteRequest{
 		Force: 1,
 	}

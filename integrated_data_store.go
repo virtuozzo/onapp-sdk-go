@@ -10,7 +10,7 @@ import (
 )
 
 const integratedDataStoresBasePath string = "storage/%d/data_stores"
-const integratedDataStoreBackendNodesBasePath string = "storage/%d/hypervisors"
+const integratedDataStoreStorageNodesBasePath string = "storage/%d/nodes"
 
 // IntegratedDataStoresService is an interface for interfacing with the IntegrateDataStores
 // endpoints of the OnApp API
@@ -22,7 +22,7 @@ type IntegratedDataStoresService interface {
 	Delete(context.Context, int, string, interface{}) (*Response, error)
 	Edit(context.Context, int, string, *IntegratedDataStoresEditRequest) (*Response, error)
 
-	BackendNodes(context.Context, int) (*BackendNodes, *Response, error)
+	StorageNodes(context.Context, int) (*StorageNodes, *Response, error)
 }
 
 // IntegratedDataStoresServiceOp handles communication with the Data Store related methods of the
@@ -55,13 +55,8 @@ type IntegratedDataStores struct {
 	Nodes           []Nodes `json:"nodes,omitempty"`
 }
 
-type HypervisorNode struct {
-	ID    string  `json:"id,omitempty"`
-	Nodes []Nodes `json:"nodes,omitempty"`
-}
-
-type BackendNodes []struct {
-	HypervisorNode *HypervisorNode `json:"hypervisor,omitempty"`
+type StorageNodes []struct {
+	Node Node
 }
 
 // IntegratedDataStoreCreateRequest represents a request to create a IntegrateDataStores
@@ -216,22 +211,21 @@ func (s *IntegratedDataStoresServiceOp) Edit(ctx context.Context, resID int, id 
 	return s.client.Do(ctx, req, nil)
 }
 
-// BackendNodes get list of nodes from hypervisor
-// maybe rename in near feature into the StorageNodes
-func (s *IntegratedDataStoresServiceOp) BackendNodes(ctx context.Context, id int) (*BackendNodes, *Response, error) {
+// StorageNodes get list of storage nodes from hypervisor
+func (s *IntegratedDataStoresServiceOp) StorageNodes(ctx context.Context, id int) (*StorageNodes, *Response, error) {
 	if id < 1 {
 		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(integratedDataStoreBackendNodesBasePath, id) + apiFormat
+	path := fmt.Sprintf(integratedDataStoreStorageNodesBasePath, id) + apiFormat
 	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	log.Println("IntegratedDataStores [BackendNodes]  req: ", req)
+	log.Println("IntegratedDataStores [StorageNodes]  req: ", req)
 
-	root := &BackendNodes{}
+	root := &StorageNodes{}
 	resp, err := s.client.Do(ctx, req, root)
 	if err != nil {
 		return nil, resp, err
