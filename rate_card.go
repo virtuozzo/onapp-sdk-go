@@ -50,19 +50,11 @@ type RateCardCreateRequest struct {
 	Prices                         *Prices `json:"prices,omitempty"`
 }
 
-// type rateCardCreateRequestRoot struct {
-//   RateCardCreateRequest  *RateCardCreateRequest  `json:"rate_card"`
-// }
-
 type rateCardRoot struct {
 	RateCard *RateCard `json:"rate_card"`
 }
 
 type RateCardDeleteRequest RateCardCreateRequest
-
-// type rateCardDeleteRequestRoot struct {
-//   RateCardDeleteRequest  *RateCardDeleteRequest  `json:"rate_card"`
-// }
 
 func (d RateCardCreateRequest) String() string {
 	return godo.Stringify(d)
@@ -102,9 +94,6 @@ func (s *RateCardsServiceOp) Create(ctx context.Context, createRequest *RateCard
 	}
 
 	path := fmt.Sprintf(bucketRateCardsBasePath, createRequest.BucketID) + apiFormat
-	// rootRequest := &rateCardCreateRequestRoot {
-	//   RateCardCreateRequest: createRequest,
-	// }
 
 	req, err := s.client.NewRequest(ctx, http.MethodPost, path, createRequest)
 	if err != nil {
@@ -132,10 +121,6 @@ func (s *RateCardsServiceOp) Delete(ctx context.Context, deleteRequest *RateCard
 	if err != nil {
 		return nil, err
 	}
-
-	// rootRequest := &rateCardDeleteRequestRoot {
-	//   RateCardDeleteRequest: deleteRequest,
-	// }
 
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, deleteRequest)
 	if err != nil {

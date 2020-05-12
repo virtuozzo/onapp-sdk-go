@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"reflect"
 
 	"github.com/digitalocean/godo"
 )
@@ -19,7 +20,7 @@ type AccessControlsService interface {
 	// Get(context.Context, int, int) (*AccessControl, *Response, error)
 	Create(context.Context, *AccessControlCreateRequest) (*AccessControl, *Response, error)
 	Delete(context.Context, *AccessControlDeleteRequest, interface{}) (*Response, error)
-	// Edit(context.Context, int, *ListOptions) ([]AccessControl, *Response, error)
+	Edit(context.Context, *AccessControlEditRequest) (*Response, error)
 }
 
 // AccessControlsServiceOp handles communication with the AccessControl related methods of the
@@ -49,19 +50,12 @@ type AccessControlCreateRequest struct {
 	Limits     *Limits `json:"limits,omitempty"`
 }
 
-// type accessControlCreateRequestRoot struct {
-//   AccessControlCreateRequest  *AccessControlCreateRequest  `json:"access_control"`
-// }
-
 type accessControlRoot struct {
 	AccessControl *AccessControl `json:"access_control"`
 }
 
 type AccessControlDeleteRequest AccessControlCreateRequest
-
-// type accessControlDeleteRequestRoot struct {
-//   AccessControlDeleteRequest  *AccessControlDeleteRequest  `json:"access_control"`
-// }
+type AccessControlEditRequest AccessControlCreateRequest
 
 func (d AccessControlCreateRequest) String() string {
 	return godo.Stringify(d)
@@ -101,9 +95,6 @@ func (s *AccessControlsServiceOp) Create(ctx context.Context, createRequest *Acc
 	}
 
 	path := fmt.Sprintf(bucketAccessControlsBasePath, createRequest.BucketID) + apiFormat
-	// rootRequest := &accessControlCreateRequestRoot {
-	//   AccessControlCreateRequest: createRequest,
-	// }
 
 	req, err := s.client.NewRequest(ctx, http.MethodPost, path, createRequest)
 	if err != nil {
@@ -132,10 +123,6 @@ func (s *AccessControlsServiceOp) Delete(ctx context.Context, deleteRequest *Acc
 		return nil, err
 	}
 
-	// rootRequest := &accessControlDeleteRequestRoot {
-	//   AccessControlDeleteRequest : deleteRequest,
-	// }
-
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, deleteRequest)
 	if err != nil {
 		return nil, err
@@ -145,11 +132,68 @@ func (s *AccessControlsServiceOp) Delete(ctx context.Context, deleteRequest *Acc
 	return s.client.Do(ctx, req, nil)
 }
 
+// Edit AccessControl.
+func (s *AccessControlsServiceOp) Edit(ctx context.Context, editRequest *AccessControlEditRequest) (*Response, error) {
+	if editRequest == nil {
+		return nil, godo.NewArgError("editRequest", "cannot be nil")
+	}
+
+	path := fmt.Sprintf(bucketAccessControlsBasePath, editRequest.BucketID) + apiFormat
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, editRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("AccessControl [Edit]  req: ", req)
+
+	root := new(accessControlRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, err
+}
+
+func (obj *AccessControl) EqualFilter(filter interface{}) bool {
+	return obj.equal(filter)
+}
+
+func (obj *AccessControl) equal(filter interface{}) bool {
+	val := reflect.ValueOf(filter)
+	filterFields := reflect.Indirect(reflect.ValueOf(obj))
+
+	// fmt.Printf("        equal.filterFields: %#v\n", filterFields)
+	for i := 0; i < val.NumField(); i++ {
+		typeField := val.Type().Field(i)
+		value := val.Field(i)
+		filterValue := filterFields.FieldByName(typeField.Name)
+
+		// fmt.Printf("%s: %s[%#v] -> %s[%#v]\n", typeField.Name, value.Type(), value, filterValue.Type(), filterValue)
+
+		if value.Interface() != filterValue.Interface() {
+			// fmt.Printf("[false] return on filed [%s]\n\n", typeField.Name)
+			return false
+		}
+	}
+
+	// fmt.Printf("[true] access control with id[%d]\n\n", obj.ID)
+	return true
+}
+
 type Limits map[string]interface{}
 
 func LimitsRef(serverType string, resourceType string) *Limits {
-	if val, ok := (*(*AccessControls)[serverType])[resourceType]; ok {
-		return val
+	log.Printf("AccessControl [LimitsRef]  serverType: '%s'  resourceType: '%s'", serverType, resourceType)
+
+	if st, ok := (*AccessControls)[serverType]; ok {
+		log.Printf("AccessControl [LimitsRef]  serverType: '%+v'", &st)
+
+		if rt, ok := (*st)[resourceType]; ok {
+			log.Printf("AccessControl [LimitsRef]  resourceType: '%+v'", &rt)
+
+			return rt
+		}
 	}
 
 	return nil
@@ -314,6 +358,20 @@ func initializeAccessControlLimits() *AccessControlLimits {
 			NETWORK_ZONE_RESOURCE: &Limits{
 				"limit_ip":    0.0,
 				"limit_vs_ip": 0.0,
+			},
+		},
+
+		OTHER: &LimitResourceRoots{
+			EDGE_GROUPS_RESOURCE: &Limits{},
+			ORCHESTRATION_MODEL_RESOURCE: &Limits{},
+			RECIPE_GROUPS_RESOURCE: &Limits{},
+			TEMPLATE_GROUPS_RESOURCE: &Limits{},
+			SERVICE_ADDON_GROUPS_RESOURCE: &Limits{},
+			BLUEPRINT_GROUPS_RESOURCE: &Limits{},
+			BACKUP_RESOURCE_ZONE_RESOURCE: &Limits{},
+
+			CDN_BANDWIDTH_RESOURCE: &Limits {
+				"limit": 0.0,
 			},
 		},
 	}
