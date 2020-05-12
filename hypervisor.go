@@ -404,14 +404,13 @@ func (s *HypervisorsServiceOp) Reboot(ctx context.Context, id int, rebootRequest
 	}
 
 	path := fmt.Sprintf(hypervisorRebootBasePath, id) + apiFormat
-	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, rebootRequest)
+	req, err := s.client.NewRequest(ctx, http.MethodPut, path, rebootRequest)
 	if err != nil {
 		return nil, err
 	}
 	log.Println("Hypervisor [Reboot] req: ", req)
 
-	// return s.client.Do(ctx, req, nil)
-	return nil, nil
+	return s.client.Do(ctx, req, nil)
 }
 
 type HardwareDevices struct {
@@ -553,13 +552,12 @@ func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequ
 	}
 	log.Println("Hypervisor [Attach] req: ", req)
 
-	// resp, err := s.client.Do(ctx, req, nil)
-	// if err != nil {
-	// 	return resp, err
-	// }
+	resp, err := s.client.Do(ctx, req, nil)
+	if err != nil {
+		return resp, err
+	}
 
-	// return resp, err
-	return nil, nil
+	return resp, err
 }
 
 // IntegratedStorageSettings -
@@ -598,6 +596,5 @@ func (s *HypervisorsServiceOp) EditIntegratedStorageSettings(ctx context.Context
 	}
 	log.Println("Hypervisor [EditIntegratedStorageSettings]  req: ", req)
 
-	// return s.client.Do(ctx, req, nil)
-	return nil, nil
+	return s.client.Do(ctx, req, nil)
 }
