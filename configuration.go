@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-const configurationsBasePath string = "settings/configuration"
-const configurationsEditBasePath string = "settings"
+const configurationBasePath string = "settings/configuration"
+const configurationEditBasePath string = "settings"
 
 // ConfigurationsService is an interface for interfacing with the Configurations
 // endpoints of the OnApp API
@@ -95,7 +95,7 @@ type Configuration struct {
 	HypervisorLiveTimes                   int      `json:"hypervisor_live_times,omitempty"`
 	HypervisorMonitorDelay                int      `json:"hypervisor_monitor_delay,omitempty"`
 	InfinibandCloudBootEnabled            bool     `json:"infiniband_cloud_boot_enabled,bool"`
-	InstancePackagesThresholdNum          int      `json:"instance_packages_threshold_num,omitempty"`
+	InstancePackagesThresholdNum          int      `json:"instance_packages_threshold_num,omitempty"` // but in the 6.2.0-183 string !!!! wtf?
 	InstantiateVappTemplateTimeout        int      `json:"instantiate_vapp_template_timeout,omitempty"`
 	InstantStatsPeriod                    int      `json:"instant_stats_period,omitempty"`
 	InterHypervisorBalanceThresholdRatio  int      `json:"inter_hypervisor_balance_threshold_ratio,omitempty"`
@@ -115,7 +115,7 @@ type Configuration struct {
 	Localdomain                           string   `json:"localdomain,omitempty"`
 	Locales                               []string `json:"locales,omitempty"`
 	LogCleanupEnabled                     bool     `json:"log_cleanup_enabled,bool"`
-	LogCleanupPeriod                      int      `json:"log_cleanup_period,omitempty"`
+	LogCleanupPeriod                      int      `json:"log_cleanup_period,omitempty"` // but in the 6.2.0-183 string !!!! wtf?
 	LogLevel                              string   `json:"log_level,omitempty"`
 	MaxCPUQuota                           int      `json:"max_cpu_quota,omitempty"`
 	MaximumPendingTasks                   int      `json:"maximum_pending_tasks,omitempty"`
@@ -259,7 +259,7 @@ type configurationRoot struct {
 
 // Get individual Configuration.
 func (s *ConfigurationsServiceOp) Get(ctx context.Context) (*Configuration, *Response, error) {
-	path := configurationsBasePath + apiFormat
+	path := configurationBasePath + apiFormat
 
 	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -275,9 +275,25 @@ func (s *ConfigurationsServiceOp) Get(ctx context.Context) (*Configuration, *Res
 	return root.Configuration, resp, err
 }
 
+// RestartConfigurationRequest -
+type RestartConfigurationRequest struct {
+	Restart int `url:"restart"`
+}
+
 // Edit individual Configuration.
 func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *Configuration) (*Response, error) {
-	path := configurationsEditBasePath + apiFormat
+	path := configurationEditBasePath + apiFormat
+
+	// Restart OnApp Control Panel server after edit user configuration, must be moved out to the user space
+	// opts := &RestartConfigurationRequest{
+	// 	Restart: 1,
+	// }
+	// path, err := addOptions(path, opts)
+
+	path, err := addOptions(path, nil)
+	if err != nil {
+		return nil, err
+	}
 
 	rootRequest := &configurationEditRequestRoot{
 		Configuration: editRequest,
@@ -287,7 +303,6 @@ func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *Configu
 	if err != nil {
 		return nil, err
 	}
-
 	log.Println("[DEBUG] Configuration [Edit]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
