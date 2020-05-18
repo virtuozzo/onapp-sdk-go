@@ -14,7 +14,7 @@ const configurationEditBasePath string = "settings"
 // See: https://docs.onapp.com/apim/latest/system-configuration
 type ConfigurationsService interface {
 	Get(context.Context) (*Configuration, *Response, error)
-	Edit(context.Context, *Configuration) (*Response, error)
+	Edit(context.Context, *Configuration, int) (*Response, error)
 }
 
 // ConfigurationsServiceOp handles communication with the Configuration related methods of the
@@ -34,13 +34,13 @@ type Configuration struct {
 	AjaxLogUpdateInterval                 int      `json:"ajax_log_update_interval,omitempty"`
 	AjaxPaginationUpdateTime              int      `json:"ajax_pagination_update_time,omitempty"`
 	AjaxPowerUpdateTime                   int      `json:"ajax_power_update_time,omitempty"`
-	AllowAdvancedVsManagement             bool     `json:"allow_advanced_vs_management,bool"`
-	AllowConnectAws                       bool     `json:"allow_connect_aws,bool"`
-	AllowHypervisorPasswordEncryption     bool     `json:"allow_hypervisor_password_encryption,bool"`
-	AllowIncrementalBackups               bool     `json:"allow_incremental_backups,bool"`
-	AllowInitialRootPasswordEncryption    bool     `json:"allow_initial_root_password_encryption,bool"`
-	AllowStartVmsWithOneIP                bool     `json:"allow_start_vms_with_one_ip,bool"`
-	AllowToCollectErrors                  bool     `json:"allow_to_collect_errors,bool"`
+	AllowAdvancedVsManagement             bool     `json:"allow_advanced_vs_management,omitempty"`
+	AllowConnectAws                       bool     `json:"allow_connect_aws,omitempty"`
+	AllowHypervisorPasswordEncryption     bool     `json:"allow_hypervisor_password_encryption,omitempty"`
+	AllowIncrementalBackups               bool     `json:"allow_incremental_backups,omitempty"`
+	AllowInitialRootPasswordEncryption    bool     `json:"allow_initial_root_password_encryption,omitempty"`
+	AllowStartVmsWithOneIP                bool     `json:"allow_start_vms_with_one_ip,omitempty"`
+	AllowToCollectErrors                  bool     `json:"allow_to_collect_errors,omitempty"`
 	AmountOfServiceInstances              int      `json:"amount_of_service_instances,omitempty"`
 	AppName                               string   `json:"app_name,omitempty"`
 	ArchiveStatsPeriod                    int      `json:"archive_stats_period,omitempty"`
@@ -53,7 +53,7 @@ type Configuration struct {
 	CdnMaxResultsPerGetPage               int      `json:"cdn_max_results_per_get_page,omitempty"`
 	CdnSyncDelay                          int      `json:"cdn_sync_delay,omitempty"`
 	CloudBootDomainNameServers            string   `json:"cloud_boot_domain_name_servers,omitempty"`
-	CloudBootEnabled                      bool     `json:"cloud_boot_enabled,bool"`
+	CloudBootEnabled                      bool     `json:"cloud_boot_enabled,omitempty"`
 	CloudBootTarget                       string   `json:"cloud_boot_target,omitempty"`
 	ClusterMonitorDelay                   int      `json:"cluster_monitor_delay,omitempty"`
 	ComposeVappTimeout                    int      `json:"compose_vapp_timeout,omitempty"`
@@ -64,49 +64,49 @@ type Configuration struct {
 	DashboardAPIAccessToken               string   `json:"dashboard_api_access_token,omitempty"`
 	DashboardStats                        []string `json:"dashboard_stats,omitempty"`
 	DataPath                              string   `json:"data_path,omitempty"`
-	DefaultAccelerationPolicy             bool     `json:"default_acceleration_policy,bool"`
+	DefaultAccelerationPolicy             bool     `json:"default_acceleration_policy,omitempty"`
 	DefaultCustomTheme                    string   `json:"default_custom_theme,omitempty"`
 	DefaultFirewallPolicy                 string   `json:"default_firewall_policy,omitempty"`
 	DefaultImageTemplate                  int      `json:"default_image_template,omitempty"`
 	DefaultTimeout                        int      `json:"default_timeout,omitempty"`
-	DefaultVirshConsolePolicy             bool     `json:"default_virsh_console_policy,bool"`
-	DeleteTemplateSourceAfterInstall      bool     `json:"delete_template_source_after_install,bool"`
-	DisableBilling                        bool     `json:"disable_billing,bool"`
-	DisableHypervisorFailover             bool     `json:"disable_hypervisor_failover,bool"`
-	DNSEnabled                            bool     `json:"dns_enabled,bool"`
-	DraasEnabled                          bool     `json:"draas_enabled,bool"`
+	DefaultVirshConsolePolicy             bool     `json:"default_virsh_console_policy,omitempty"`
+	DeleteTemplateSourceAfterInstall      bool     `json:"delete_template_source_after_install,omitempty"`
+	DisableBilling                        bool     `json:"disable_billing,omitempty"`
+	DisableHypervisorFailover             bool     `json:"disable_hypervisor_failover,omitempty"`
+	DNSEnabled                            bool     `json:"dns_enabled,omitempty"`
+	DraasEnabled                          bool     `json:"draas_enabled,omitempty"`
 	DraasShadowSSHPort                    int      `json:"draas_shadow_ssh_port,omitempty"`
 	DraasShadowVpnPort                    int      `json:"draas_shadow_vpn_port,omitempty"`
 	DraasVpnCidrBlock                     string   `json:"draas_vpn_cidr_block,omitempty"`
 	DropFirewallPolicyAllowedIps          string   `json:"drop_firewall_policy_allowed_ips,omitempty"`
 	EmailDeliveryMethod                   string   `json:"email_delivery_method,omitempty"`
-	EnableDailyStorageReport              bool     `json:"enable_daily_storage_report,bool"`
+	EnableDailyStorageReport              bool     `json:"enable_daily_storage_report,omitempty"`
 	EnableDownloadTimeout                 int      `json:"enable_download_timeout,omitempty"`
-	EnableHourlyStorageReport             bool     `json:"enable_hourly_storage_report,bool"`
-	EnableNotifications                   bool     `json:"enable_notifications,bool"`
-	EnableSuperAdminPermissions           bool     `json:"enable_super_admin_permissions,bool"`
-	EnforceRedundancy                     bool     `json:"enforce_redundancy,bool"`
-	FederationTrustsOnlyPrivate           bool     `json:"federation_trusts_only_private,bool"`
-	ForceSamlLoginOnly                    bool     `json:"force_saml_login_only,bool"`
+	EnableHourlyStorageReport             bool     `json:"enable_hourly_storage_report,omitempty"`
+	EnableNotifications                   bool     `json:"enable_notifications,omitempty"`
+	EnableSuperAdminPermissions           bool     `json:"enable_super_admin_permissions,omitempty"`
+	EnforceRedundancy                     bool     `json:"enforce_redundancy,omitempty"`
+	FederationTrustsOnlyPrivate           bool     `json:"federation_trusts_only_private,omitempty"`
+	ForceSamlLoginOnly                    bool     `json:"force_saml_login_only,omitempty"`
 	GenerateComment                       string   `json:"generate_comment,omitempty"`
 	GracefulStopTimeout                   int      `json:"graceful_stop_timeout,omitempty"`
 	GuestWaitTimeBeforeDestroy            int      `json:"guest_wait_time_before_destroy,omitempty"`
-	HaEnabled                             bool     `json:"ha_enabled,bool"`
+	HaEnabled                             bool     `json:"ha_enabled,omitempty"`
 	HypervisorLiveTimes                   int      `json:"hypervisor_live_times,omitempty"`
 	HypervisorMonitorDelay                int      `json:"hypervisor_monitor_delay,omitempty"`
-	InfinibandCloudBootEnabled            bool     `json:"infiniband_cloud_boot_enabled,bool"`
+	InfinibandCloudBootEnabled            bool     `json:"infiniband_cloud_boot_enabled,omitempty"`
 	InstancePackagesThresholdNum          int      `json:"instance_packages_threshold_num,omitempty"` // but in the 6.2.0-183 string !!!! wtf?
 	InstantiateVappTemplateTimeout        int      `json:"instantiate_vapp_template_timeout,omitempty"`
 	InstantStatsPeriod                    int      `json:"instant_stats_period,omitempty"`
 	InterHypervisorBalanceThresholdRatio  int      `json:"inter_hypervisor_balance_threshold_ratio,omitempty"`
 	IntraHypervisorBalanceThresholdRatio  int      `json:"intra_hypervisor_balance_threshold_ratio,omitempty"`
-	IoLimitingEnabled                     bool     `json:"io_limiting_enabled,bool"`
+	IoLimitingEnabled                     bool     `json:"io_limiting_enabled,omitempty"`
 	IPAddressReservationTime              int      `json:"ip_address_reservation_time,omitempty"`
 	IPHistoryKeepPeriod                   int      `json:"ip_history_keep_period,omitempty"`
 	IpsAllowedForLogin                    string   `json:"ips_allowed_for_login,omitempty"`
-	IsArchiveStatsEnabled                 bool     `json:"is_archive_stats_enabled,bool"`
+	IsArchiveStatsEnabled                 bool     `json:"is_archive_stats_enabled,omitempty"`
 	IscsiPortAvailabilityCheckTimeout     int      `json:"iscsi_port_availability_check_timeout,omitempty"`
-	IsolatedLicense                       bool     `json:"isolated_license,bool"`
+	IsolatedLicense                       bool     `json:"isolated_license,omitempty"`
 	IsoPathOnCp                           string   `json:"iso_path_on_cp,omitempty"`
 	IsoPathOnHv                           string   `json:"iso_path_on_hv,omitempty"`
 	KvmAvailableFreeMemoryPercentage      int      `json:"kvm_available_free_memory_percentage,omitempty"`
@@ -114,7 +114,7 @@ type Configuration struct {
 	LicenseKey                            string   `json:"license_key,omitempty"`
 	Localdomain                           string   `json:"localdomain,omitempty"`
 	Locales                               []string `json:"locales,omitempty"`
-	LogCleanupEnabled                     bool     `json:"log_cleanup_enabled,bool"`
+	LogCleanupEnabled                     bool     `json:"log_cleanup_enabled,omitempty"`
 	LogCleanupPeriod                      int      `json:"log_cleanup_period,omitempty"` // but in the 6.2.0-183 string !!!! wtf?
 	LogLevel                              string   `json:"log_level,omitempty"`
 	MaxCPUQuota                           int      `json:"max_cpu_quota,omitempty"`
@@ -137,20 +137,20 @@ type Configuration struct {
 	PaginationDashboardPagesLimit         int      `json:"pagination_dashboard_pages_limit,omitempty"`
 	PaginationMaxItemsLimit               int      `json:"pagination_max_items_limit,omitempty"`
 	PartitionAlignOffset                  int      `json:"partition_align_offset,omitempty"`
-	PasswordEnforceComplexity             bool     `json:"password_enforce_complexity,bool"`
+	PasswordEnforceComplexity             bool     `json:"password_enforce_complexity,omitempty"`
 	PasswordExpiry                        int      `json:"password_expiry,omitempty"`
-	PasswordForceUnique                   bool     `json:"password_force_unique,bool"`
+	PasswordForceUnique                   bool     `json:"password_force_unique,omitempty"`
 	PasswordHistoryLength                 int      `json:"password_history_length,omitempty"`
-	PasswordLettersNumbers                bool     `json:"password_letters_numbers,bool"`
+	PasswordLettersNumbers                bool     `json:"password_letters_numbers,omitempty"`
 	PasswordLockoutAttempts               int      `json:"password_lockout_attempts,omitempty"`
 	PasswordMinimumLength                 int      `json:"password_minimum_length,omitempty"`
-	PasswordProtectionForDeleting         bool     `json:"password_protection_for_deleting,bool"`
-	PasswordSymbols                       bool     `json:"password_symbols,bool"`
-	PasswordUpperLowercase                bool     `json:"password_upper_lowercase,bool"`
-	PingVmsBeforeInitFailover             bool     `json:"ping_vms_before_init_failover,bool"`
+	PasswordProtectionForDeleting         bool     `json:"password_protection_for_deleting,omitempty"`
+	PasswordSymbols                       bool     `json:"password_symbols,omitempty"`
+	PasswordUpperLowercase                bool     `json:"password_upper_lowercase,omitempty"`
+	PingVmsBeforeInitFailover             bool     `json:"ping_vms_before_init_failover,omitempty"`
 	PowerOffTimeout                       int      `json:"power_off_timeout,omitempty"`
 	PowerOnTimeout                        int      `json:"power_on_timeout,omitempty"`
-	PreferLocalReads                      bool     `json:"prefer_local_reads,bool"`
+	PreferLocalReads                      bool     `json:"prefer_local_reads,omitempty"`
 	QemuAttachDeviceDelay                 int      `json:"qemu_attach_device_delay,omitempty"`
 	QemuDetachDeviceDelay                 int      `json:"qemu_detach_device_delay,omitempty"`
 	RabbitmqHost                          string   `json:"rabbitmq_host,omitempty"`
@@ -163,16 +163,16 @@ type Configuration struct {
 	RecomposeVappTimeout                  int      `json:"recompose_vapp_timeout,omitempty"`
 	RemoteAccessSessionLastPort           int      `json:"remote_access_session_last_port,omitempty"`
 	RemoteAccessSessionStartPort          int      `json:"remote_access_session_start_port,omitempty"`
-	RemoveBackupsOnDestroyVM              bool     `json:"remove_backups_on_destroy_vm,bool"`
+	RemoveBackupsOnDestroyVM              bool     `json:"remove_backups_on_destroy_vm,omitempty"`
 	ResetTimeout                          int      `json:"reset_timeout,omitempty"`
-	RsyncOptionAcls                       bool     `json:"rsync_option_acls,bool"`
-	RsyncOptionXattrs                     bool     `json:"rsync_option_xattrs,bool"`
+	RsyncOptionAcls                       bool     `json:"rsync_option_acls,omitempty"`
+	RsyncOptionXattrs                     bool     `json:"rsync_option_xattrs,omitempty"`
 	RunRecipeOnVsSleepSeconds             int      `json:"run_recipe_on_vs_sleep_seconds,omitempty"`
 	ScheduleRunnerDelay                   int      `json:"schedule_runner_delay,omitempty"`
 	ServiceAccountName                    string   `json:"service_account_name,omitempty"`
 	SessionTimeout                        int      `json:"session_timeout,omitempty"`
-	ShowIPAddressSelectionForNewVM        bool     `json:"show_ip_address_selection_for_new_vm,bool"`
-	ShowNewWizard                         bool     `json:"show_new_wizard,bool"`
+	ShowIPAddressSelectionForNewVM        bool     `json:"show_ip_address_selection_for_new_vm,omitempty"`
+	ShowNewWizard                         bool     `json:"show_new_wizard,omitempty"`
 	ShutdownTimeout                       int      `json:"shutdown_timeout,omitempty"`
 	SimultaneousBackups                   int      `json:"simultaneous_backups,omitempty"`
 	SimultaneousBackupsPerBackupServer    int      `json:"simultaneous_backups_per_backup_server,omitempty"`
@@ -185,7 +185,7 @@ type Configuration struct {
 	SMTPAddress                           string   `json:"smtp_address,omitempty"`
 	SMTPAuthentication                    string   `json:"smtp_authentication,omitempty"`
 	SMTPDomain                            string   `json:"smtp_domain,omitempty"`
-	SMTPEnableStarttlsAuto                bool     `json:"smtp_enable_starttls_auto,bool"`
+	SMTPEnableStarttlsAuto                bool     `json:"smtp_enable_starttls_auto,omitempty"`
 	SMTPPassword                          string   `json:"smtp_password,omitempty"`
 	SMTPPort                              int      `json:"smtp_port,omitempty"`
 	SMTPUsername                          string   `json:"smtp_username,omitempty"`
@@ -200,22 +200,22 @@ type Configuration struct {
 	SSHPort                               int      `json:"ssh_port,omitempty"`
 	SSHTimeout                            int      `json:"ssh_timeout,omitempty"`
 	SslPemPath                            string   `json:"ssl_pem_path,omitempty"`
-	StorageEnabled                        bool     `json:"storage_enabled,bool"`
+	StorageEnabled                        bool     `json:"storage_enabled,omitempty"`
 	StorageEndpointOverride               string   `json:"storage_endpoint_override,omitempty"`
-	StorageUnicast                        bool     `json:"storage_unicast,bool"`
+	StorageUnicast                        bool     `json:"storage_unicast,omitempty"`
 	SupportHelpEmail                      string   `json:"support_help_email,omitempty"`
 	SuspendTimeout                        int      `json:"suspend_timeout,omitempty"`
 	SystemAlertReminderPeriod             int      `json:"system_alert_reminder_period,omitempty"`
 	SystemEmail                           string   `json:"system_email,omitempty"`
 	SystemHost                            string   `json:"system_host,omitempty"`
-	SystemNotification                    bool     `json:"system_notification,bool"`
+	SystemNotification                    bool     `json:"system_notification,omitempty"`
 	SystemSupportEmail                    string   `json:"system_support_email,omitempty"`
 	SystemTheme                           string   `json:"system_theme,omitempty"`
 	TcBurst                               int      `json:"tc_burst,omitempty"`
 	TcLatency                             int      `json:"tc_latency,omitempty"`
 	TcMtu                                 int      `json:"tc_mtu,omitempty"`
 	TemplatePath                          string   `json:"template_path,omitempty"`
-	TransactionApprovals                  bool     `json:"transaction_approvals,bool"`
+	TransactionApprovals                  bool     `json:"transaction_approvals,omitempty"`
 	TransactionRunnerDelay                int      `json:"transaction_runner_delay,omitempty"`
 	TransactionStandbyPeriod              int      `json:"transaction_standby_period,omitempty"`
 	TrustedProxies                        []string `json:"trusted_proxies,omitempty"`
@@ -226,18 +226,18 @@ type Configuration struct {
 	UploadMediaTimeout                    int      `json:"upload_media_timeout,omitempty"`
 	UploadVappTemplateTimeout             int      `json:"upload_vapp_template_timeout,omitempty"`
 	URLForCustomTools                     string   `json:"url_for_custom_tools,omitempty"`
-	UseHTML5VncConsole                    bool     `json:"use_html5_vnc_console,bool"`
-	UseSSHFileTransfer                    bool     `json:"use_ssh_file_transfer,bool"`
-	UseYubikeyLogin                       bool     `json:"use_yubikey_login,bool"`
+	UseHTML5VncConsole                    bool     `json:"use_html5_vnc_console,omitempty"`
+	UseSSHFileTransfer                    bool     `json:"use_ssh_file_transfer,omitempty"`
+	UseYubikeyLogin                       bool     `json:"use_yubikey_login,omitempty"`
 	VcenterL1StatsTimeout                 int      `json:"vcenter_l1_stats_timeout,omitempty"`
 	VcenterL2StatsTimeout                 int      `json:"vcenter_l2_stats_timeout,omitempty"`
 	VcloudPreventIdleSessionTimeout       int      `json:"vcloud_prevent_idle_session_timeout,omitempty"`
 	VcloudStatsLevel1Period               int      `json:"vcloud_stats_level1_period,omitempty"`
 	VcloudStatsLevel2Period               int      `json:"vcloud_stats_level2_period,omitempty"`
 	VcloudStatsUsageInterval              int      `json:"vcloud_stats_usage_interval,omitempty"`
-	WipeOutDiskOnDestroy                  bool     `json:"wipe_out_disk_on_destroy,bool"`
+	WipeOutDiskOnDestroy                  bool     `json:"wipe_out_disk_on_destroy,omitempty"`
 	WizardResourceReservationTTL          int      `json:"wizard_resource_reservation_ttl,omitempty"`
-	WrongActivatedLogicalVolumeAlerts     bool     `json:"wrong_activated_logical_volume_alerts,bool"`
+	WrongActivatedLogicalVolumeAlerts     bool     `json:"wrong_activated_logical_volume_alerts,omitempty"`
 	WrongActivatedLogicalVolumeMinutes    int      `json:"wrong_activated_logical_volume_minutes,omitempty"`
 	YubikeyAPIID                          string   `json:"yubikey_api_id,omitempty"`
 	YubikeyAPIKey                         string   `json:"yubikey_api_key,omitempty"`
@@ -276,21 +276,20 @@ func (s *ConfigurationsServiceOp) Get(ctx context.Context) (*Configuration, *Res
 }
 
 // RestartConfigurationRequest -
-type RestartConfigurationRequest struct {
+type restartConfigurationRequest struct {
 	Restart int `url:"restart"`
 }
 
 // Edit individual Configuration.
-func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *Configuration) (*Response, error) {
+func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *Configuration, restart int) (*Response, error) {
 	path := configurationEditBasePath + apiFormat
 
 	// Restart OnApp Control Panel server after edit user configuration, must be moved out to the user space
-	// opts := &RestartConfigurationRequest{
-	// 	Restart: 1,
-	// }
-	// path, err := addOptions(path, opts)
+	opts := &restartConfigurationRequest{
+		Restart: restart,
+	}
 
-	path, err := addOptions(path, nil)
+	path, err := addOptions(path, opts)
 	if err != nil {
 		return nil, err
 	}
