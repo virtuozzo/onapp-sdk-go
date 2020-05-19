@@ -222,30 +222,22 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 }
 
 // GetByFilter find transaction with specified fields.
-func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, filter interface{}, opt *ListOptions) (*Transaction, *Response, error) {
-	trx, resp, err := s.client.Transactions.ListByGroup(ctx, filter, opt)
+func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, filter interface{}, opts *ListOptions) (*Transaction, *Response, error) {
+	trx, resp, err := s.client.Transactions.List(ctx, opts)
 	if err != nil {
 		return nil, resp, fmt.Errorf("GetByFilter.trx: %s", err)
 	}
 
-	var root *Transaction
-	for e := trx.Front(); e != nil; e = e.Next() {
-		val := e.Value.(Transaction)
-		root = &val
-		if root.equal(filter) {
-			break
-		} else {
-			root = nil
+	for _, v := range trx {
+		if v.equal(filter) {
+			return &v, resp, err
 		}
-	}
-
-	if root != nil {
-		return root, resp, err
 	}
 
 	return nil, nil, fmt.Errorf("Transaction not found or wrong filter %+v", filter)
 }
 
+// EqualFilter -
 func (trx *Transaction) EqualFilter(filter interface{}) bool {
 	return trx.equal(filter)
 }
