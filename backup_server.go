@@ -30,7 +30,7 @@ type BackupServersServiceOp struct {
 
 var _ BackupServersService = &BackupServersServiceOp{}
 
-// BackupServer - represent a template of OnApp API
+// BackupServer - represent a backup server of OnApp API
 type BackupServer struct {
 	BackupIPAddress     string `json:"backup_ip_address,omitempty"`
 	BackupServerGroupID int    `json:"backup_server_group_id,omitempty"`
