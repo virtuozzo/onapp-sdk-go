@@ -128,7 +128,7 @@ type Configuration struct {
 	MonitisAccount                        string   `json:"monitis_account,omitempty"`
 	MonitisApikey                         string   `json:"monitis_apikey,omitempty"`
 	MonitisPath                           string   `json:"monitis_path,omitempty"`
-	MysqlBillingTransactionRetries        string   `json:"mysql_billing_transaction_retries,omitempty"`
+	MysqlBillingTransactionRetries        int      `json:"mysql_billing_transaction_retries,omitempty"`
 	NfsRootIP                             string   `json:"nfs_root_ip,omitempty"`
 	NotificationSubjectPrefix             string   `json:"notification_subject_prefix,omitempty"`
 	NsxPollingInterval                    int      `json:"nsx_polling_interval,omitempty"`
