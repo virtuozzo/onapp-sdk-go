@@ -11,6 +11,11 @@ import (
 
 const backupServersBasePath string = "settings/backup_servers"
 
+// Used to get data for integrated storage from backup server
+const backupServerHardwareDeviceBasePath string = backupServersBasePath + "/%d/hardware_devices"
+const backupServerHardwareDeviceRefreshBasePath string = backupServerHardwareDeviceBasePath + "/refresh"
+const backupServerIntegratedStorageSettingBasePath string = backupServersBasePath + "/%d/integrated_storage_settings"
+
 // BackupServersService is an interface for interfacing with the Backup Server
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/backup-servers
@@ -20,6 +25,11 @@ type BackupServersService interface {
 	Create(context.Context, *BackupServerCreateRequest) (*BackupServer, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *BackupServerEditRequest) (*Response, error)
+
+	Refresh(context.Context, int) (*HardwareDevices, *Response, error)
+	Attach(context.Context, int, map[string]interface{}) (*Response, error)
+
+	EditIntegratedStorageSettings(context.Context, int, *IntegratedStorageSettings) (*Response, error)
 }
 
 // BackupServersServiceOp handles communication with the Backup Server related methods of the
@@ -199,6 +209,81 @@ func (s *BackupServersServiceOp) Edit(ctx context.Context, id int, editRequest *
 		return nil, err
 	}
 	log.Println("BackupServer [Edit]  req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+
+// Refresh - get list of hardware devices (network interfaces) from backup server with enabled integrated storage
+func (s *BackupServersServiceOp) Refresh(ctx context.Context, resID int) (*HardwareDevices, *Response, error) {
+	if resID < 1 {
+		return nil, nil, godo.NewArgError("BackupServer.Refresh", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(backupServerHardwareDeviceRefreshBasePath, resID) + apiFormat
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	log.Println("BackupServer [Refresh] req: ", req)
+
+	out := &rootHardware{}
+	resp, err := s.client.Do(ctx, req, out)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	// log.Printf("IntegratedStorages out: %+v\n", out)
+
+	res := &HardwareDevices{}
+	res.initHardwareDevices(out)
+
+	return res, resp, err
+}
+
+// Attach - attach disks, network interfaces of hypervisor to the integrated data store
+func (s *BackupServersServiceOp) Attach(ctx context.Context, resID int, attachRequest map[string]interface{}) (*Response, error) {
+	if resID < 1 {
+		return nil, godo.NewArgError("BackupServer.Attach", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(backupServerHardwareDeviceBasePath, resID) + apiFormat
+
+	rootRequest := &hardwareDevicesRoot{
+		AttachHardwareDevices: attachRequest,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPut, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("BackupServer [Attach] req: ", req)
+
+	resp, err := s.client.Do(ctx, req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, err
+}
+
+// EditIntegratedStorageSettings -
+func (s *BackupServersServiceOp) EditIntegratedStorageSettings(ctx context.Context, id int, editRequest *IntegratedStorageSettings) (*Response, error) {
+	if editRequest == nil || id < 1 {
+		return nil, godo.NewArgError("editRequest || id", "cannot be nill or less than 1")
+	}
+
+	path := fmt.Sprintf(backupServerIntegratedStorageSettingBasePath, id) + apiFormat
+
+	rootRequest := &integratedStorageSettingCreateRequestRoot{
+		IntegratedStorageSettings: editRequest,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPut, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("BackupServer [EditIntegratedStorageSettings]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
 }
