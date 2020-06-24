@@ -69,6 +69,8 @@ type Disk struct {
 
 // DiskCreateRequest - data for creating Disk
 type DiskCreateRequest struct {
+	AddToLinuxFstab   bool   `json:"add_to_linux_fstab,bool"`
+	AddToFreebsdFstab bool   `json:"add_to_freebsd_fstab,bool"`
 	Primary           bool   `json:"primary,bool"`
 	DiskSize          int    `json:"disk_size,omitempty"`
 	FileSystem        string `json:"file_system,omitempty"`
