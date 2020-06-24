@@ -128,8 +128,8 @@ func (s *VirtualMachineActionsServiceOp) FQDN(ctx context.Context, id int, hostn
 	return s.doAction(ctx, id, request, root, nil)
 }
 
-// VirtualMachineRebuildNetworkRequest -
-type VirtualMachineRebuildNetworkRequest struct {
+// VirtualMachineRestartRequest -
+type VirtualMachineRestartRequest struct {
 	Force int `url:"force"`
 
 	// "hard", "graceful" or "soft"

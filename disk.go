@@ -32,8 +32,8 @@ var _ DisksService = &DisksServiceOp{}
 
 // Disk - represent disk from Virtual Machine
 type Disk struct {
-	AddToFreebsdFstab              string                         `json:"add_to_freebsd_fstab,omitempty"`
-	AddToLinuxFstab                string                         `json:"add_to_linux_fstab,omitempty"`
+	AddToFreebsdFstab              bool                           `json:"add_to_freebsd_fstab,bool"`
+	AddToLinuxFstab                bool                           `json:"add_to_linux_fstab,bool"`
 	Built                          bool                           `json:"built,bool"`
 	BurstBw                        int                            `json:"burst_bw,omitempty"`
 	BurstIops                      int                            `json:"burst_iops,omitempty"`
@@ -81,7 +81,7 @@ type DiskCreateRequest struct {
 	Mounted           bool   `json:"mounted,bool"`
 
 	// Additional field to determine Virtual Machine to create disk
-	VirtualMachineID int `json:"-"`
+	VirtualMachineID  int    `json:"-"`
 }
 
 // DiskEditRequest - data for editing Disk
