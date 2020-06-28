@@ -85,6 +85,7 @@ type Client struct {
 	FirewallRules         FirewallRulesService
 	UserWhiteLists        UserWhiteListsService
 	IntegratedDataStores  IntegratedDataStoresService
+	LocationGroups        LocationGroupsService
 
 	// Optional function called after every successful request made to the DO APIs
 	onRequestCompleted RequestCompletionCallback
@@ -205,6 +206,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.FirewallRules = &FirewallRulesServiceOp{client: c}
 	c.UserWhiteLists = &UserWhiteListsServiceOp{client: c}
 	c.IntegratedDataStores = &IntegratedDataStoresServiceOp{client: c}
+	c.LocationGroups = &LocationGroupsServiceOp{client: c}
 
 	return c
 }

@@ -9,6 +9,19 @@ import (
 )
 
 const locationGroupsBasePath string = "settings/location_groups"
+const locationGroupRefreshBasePath string = locationGroupsBasePath + "/refresh"
+
+const locationGroupAttachHypervisorGroupsBasePath string = locationGroupsBasePath + "/%d/hypervisor_groups/attach_resource"
+const locationGroupDetachHypervisorGroupsBasePath string = locationGroupsBasePath + "/%d/hypervisor_groups/%d/detach_resource"
+
+const locationGroupAttachDataStoreGroupsBasePath string = locationGroupsBasePath + "/%d/data_store_groups/attach_resource"
+const locationGroupDetachDataStoreGroupsBasePath string = locationGroupsBasePath + "/%d/data_store_groups/%d/detach_resource"
+
+const locationGroupAttachNetworkGroupsBasePath string = locationGroupsBasePath + "/%d/network_groups/attach_resource"
+const locationGroupDetachNetworkGroupsBasePath string = locationGroupsBasePath + "/%d/network_groups/%d/detach_resource"
+
+const locationGroupAttachBackupServerGroupBasePath string = locationGroupsBasePath + "/%d/backup_server_groups/attach_resource"
+const locationGroupDetachBackupServerGroupBasePath string = locationGroupsBasePath + "/%d/backup_server_groups/%d/detach_resource"
 
 // LocationGroupsService is an interface for interfacing with the LocationGroup
 // endpoints of the OnApp API
@@ -16,9 +29,8 @@ const locationGroupsBasePath string = "settings/location_groups"
 type LocationGroupsService interface {
 	List(context.Context, *ListOptions) ([]LocationGroup, *Response, error)
 	Get(context.Context, int) (*LocationGroup, *Response, error)
-	Create(context.Context, *LocationGroupCreateRequest) (*LocationGroup, *Response, error)
-	Delete(context.Context, int, interface{}) (*Response, error)
-	// Edit(context.Context, int, *ListOptions) ([]LocationGroup, *Response, error)
+
+	Refresh(context.Context) (*Response, error)
 }
 
 // LocationGroupsServiceOp handles communication with the LocationGroup related methods of the
@@ -108,50 +120,19 @@ func (s *LocationGroupsServiceOp) Get(ctx context.Context, id int) (*LocationGro
 	return root.LocationGroup, resp, err
 }
 
-// Create LocationGroup.
-func (s *LocationGroupsServiceOp) Create(ctx context.Context, createRequest *LocationGroupCreateRequest) (*LocationGroup, *Response, error) {
-	if createRequest == nil {
-		return nil, nil, godo.NewArgError("LocationGroup createRequest", "cannot be nil")
-	}
-
-	path := locationGroupsBasePath + apiFormat
-
-	rootRequest := &locationGroupCreateRequestRoot{
-		LocationGroupCreateRequest: createRequest,
-	}
-
-	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
-	if err != nil {
-		return nil, nil, err
-	}
-	fmt.Println("LocationGroup [Create] req: ", req)
-
-	root := new(locationGroupRoot)
-	resp, err := s.client.Do(ctx, req, root)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return root.LocationGroup, resp, err
-}
-
-// Delete LocationGroup.
-func (s *LocationGroupsServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Response, error) {
-	if id < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf("%s/%d%s", locationGroupsBasePath, id, apiFormat)
-	path, err := addOptions(path, meta)
+// Refresh LocationGroup.
+func (s *LocationGroupsServiceOp) Refresh(ctx context.Context) (*Response, error) {
+	path := locationGroupRefreshBasePath + apiFormat
+	path, err := addOptions(path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("LocationGroup [Delete] req: ", req)
+	fmt.Println("LocationGroup [Refresh] req: ", req)
 
 	return s.client.Do(ctx, req, nil)
 }
