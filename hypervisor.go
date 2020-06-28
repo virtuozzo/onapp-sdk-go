@@ -392,7 +392,7 @@ func hypervisorPath(mac string, serverType string) string {
 
 type HypervisorRebootRequest struct {
 	SkipPoweredOffVmsMigration int `json:"skip_powered_off_vms_migration,omitempty"`
-	SheduleFailover            int `json:"schedule_failover"`
+	SheduleFailover            int `json:"schedule_failover,omitempty"`
 	Force                      int `json:"force,omitempty"`
 	Confirm                    int `json:"confirm,omitempty"`
 }
@@ -564,18 +564,18 @@ func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequ
 // TODO: we must change all fields to the type 'int' only skip 'bonding_mode' this field must be string
 // because we got normal structure, but for editing we must send string so there is some data inconsistency
 type IntegratedStorageSettings struct {
-	BondingMode          string `json:"bonding_mode"`
-	CacheMirrors         string `json:"cache_mirrors"`
-	CacheStripes         string `json:"cache_stripes"`
-	ControllerDbSize     string `json:"controller_db_size"`
-	ControllerMemorySize string `json:"controller_memory_size"`
-	DisksPerController   string `json:"disks_per_controller"`
-	Mtu                  string `json:"mtu"`
-	Vlan                 string `json:"vlan"`
+	BondingMode          string `json:"bonding_mode,omitempty"`
+	CacheMirrors         string `json:"cache_mirrors,omitempty"`
+	CacheStripes         string `json:"cache_stripes,omitempty"`
+	ControllerDbSize     string `json:"controller_db_size,omitempty"`
+	ControllerMemorySize string `json:"controller_memory_size,omitempty"`
+	DisksPerController   string `json:"disks_per_controller,omitempty"`
+	Mtu                  string `json:"mtu,omitempty"`
+	Vlan                 string `json:"vlan,omitempty"`
 }
 
 type integratedStorageSettingCreateRequestRoot struct {
-	IntegratedStorageSettings *IntegratedStorageSettings `json:"integrated_storage_settings"`
+	IntegratedStorageSettings *IntegratedStorageSettings `json:"integrated_storage_settings,omitempty"`
 }
 
 // EditIntegratedStorageSettings -
