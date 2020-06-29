@@ -86,6 +86,7 @@ type Client struct {
 	UserWhiteLists        UserWhiteListsService
 	IntegratedDataStores  IntegratedDataStoresService
 	LocationGroups        LocationGroupsService
+	SSHKeys               SSHKeysService
 
 	// Optional function called after every successful request made to the DO APIs
 	onRequestCompleted RequestCompletionCallback
@@ -207,6 +208,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.UserWhiteLists = &UserWhiteListsServiceOp{client: c}
 	c.IntegratedDataStores = &IntegratedDataStoresServiceOp{client: c}
 	c.LocationGroups = &LocationGroupsServiceOp{client: c}
+	c.SSHKeys = &SSHKeysServiceOp{client: c}
 
 	return c
 }
