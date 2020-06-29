@@ -225,6 +225,10 @@ func (s *DisksServiceOp) Delete(ctx context.Context, id int, meta interface{}) (
 
 // Edit Disk.
 func (s *DisksServiceOp) Edit(ctx context.Context, id int, editRequest *DiskEditRequest) (*Response, error) {
+	if id < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
 	path := fmt.Sprintf("%s/%d%s", disksBasePath, id, apiFormat)
 
 	req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
