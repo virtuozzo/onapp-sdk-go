@@ -51,42 +51,43 @@ type Client struct {
 	apiPassword string
 
 	// Services used for communicating with the API
-	Buckets               BucketsService
-	AccessControls        AccessControlsService
-	RateCards             RateCardsService
-	Transactions          TransactionsService
-	InstancePackages      InstancePackagesService
-	VirtualMachines       VirtualMachinesService
-	VirtualMachineActions VirtualMachineActionsService
-	Hypervisors           HypervisorsService
-	HypervisorGroups      HypervisorGroupsService
-	DataStores            DataStoresService
-	DataStoreGroups       DataStoreGroupsService
-	RemoteTemplates       RemoteTemplatesService
-	ImageTemplates        ImageTemplatesService
-	ImageTemplateGroups   ImageTemplateGroupsService
-	Disks                 DisksService
-	Networks              NetworksService
-	NetworkInterfaces     NetworkInterfacesService
-	NetworkJoins          NetworkJoinsService
-	NetworkGroups         NetworkGroupsService
-	IPNets                IPNetsService
-	IPRanges              IPRangesService
-	BackupServers         BackupServersService
-	BackupServerGroups    BackupServerGroupsService
-	BackupResources       BackupResourcesService
-	BackupResourceZones   BackupResourceZonesService
-	Users                 UsersService
-	HypervisorZones       HypervisorZonesService
-	Licenses              LicensesService
-	Roles                 RolesService
-	Configurations        ConfigurationsService
-	UserGroups            UserGroupsService
-	FirewallRules         FirewallRulesService
-	UserWhiteLists        UserWhiteListsService
-	IntegratedDataStores  IntegratedDataStoresService
-	LocationGroups        LocationGroupsService
-	SSHKeys               SSHKeysService
+	Buckets                   BucketsService
+	AccessControls            AccessControlsService
+	RateCards                 RateCardsService
+	Transactions              TransactionsService
+	InstancePackages          InstancePackagesService
+	VirtualMachines           VirtualMachinesService
+	VirtualMachineActions     VirtualMachineActionsService
+	Hypervisors               HypervisorsService
+	HypervisorGroups          HypervisorGroupsService
+	DataStores                DataStoresService
+	DataStoreGroups           DataStoreGroupsService
+	RemoteTemplates           RemoteTemplatesService
+	ImageTemplates            ImageTemplatesService
+	ImageTemplateGroups       ImageTemplateGroupsService
+	Disks                     DisksService
+	Networks                  NetworksService
+	NetworkInterfaces         NetworkInterfacesService
+	NetworkJoins              NetworkJoinsService
+	NetworkGroups             NetworkGroupsService
+	IPNets                    IPNetsService
+	IPRanges                  IPRangesService
+	BackupServers             BackupServersService
+	BackupServerGroups        BackupServerGroupsService
+	BackupResources           BackupResourcesService
+	BackupResourceZones       BackupResourceZonesService
+	Users                     UsersService
+	HypervisorZones           HypervisorZonesService
+	Licenses                  LicensesService
+	Roles                     RolesService
+	Configurations            ConfigurationsService
+	UserGroups                UserGroupsService
+	FirewallRules             FirewallRulesService
+	UserWhiteLists            UserWhiteListsService
+	IntegratedDataStores      IntegratedDataStoresService
+	LocationGroups            LocationGroupsService
+	SSHKeys                   SSHKeysService
+	CloudbootComputeResources CloudbootComputeResourcesService
 
 	// Optional function called after every successful request made to the DO APIs
 	onRequestCompleted RequestCompletionCallback
@@ -209,6 +210,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.IntegratedDataStores = &IntegratedDataStoresServiceOp{client: c}
 	c.LocationGroups = &LocationGroupsServiceOp{client: c}
 	c.SSHKeys = &SSHKeysServiceOp{client: c}
+	c.CloudbootComputeResources = &CloudbootComputeResourcesServiceOp{client: c}
 
 	return c
 }

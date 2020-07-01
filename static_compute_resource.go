@@ -25,7 +25,7 @@ const hypervisorIntegratedStorageSettingBasePath string = hypervisorsBasePath + 
 const hypervisorRebootBasePath string = hypervisorsBasePath + "/%d/reboot"
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
-const cloudBootHypervisorsBasePath string = "settings/assets/%s/hypervisors"
+const cloudBootComputeResourcesBasePath string = "settings/assets/%s/hypervisors"
 
 // HypervisorsService is an interface for interfacing with the Hypervisor
 // endpoints of the OnApp API
@@ -383,7 +383,7 @@ func hypervisorPath(mac string, serverType string) string {
 		path := hypervisorsBasePath + apiFormat
 		return path
 	} else if serverType == "smart" || serverType == "baremetal" {
-		path := cloudBootHypervisorsBasePath + apiFormat
+		path := cloudBootComputeResourcesBasePath + apiFormat
 		return fmt.Sprintf(path, mac)
 	}
 
