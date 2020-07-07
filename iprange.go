@@ -19,7 +19,7 @@ type IPRangesService interface {
 	Get(context.Context, int, int, int) (*IPRange, *Response, error)
 	Create(context.Context, int, int, *IPRangeCreateRequest) (*IPRange, *Response, error)
 	Delete(context.Context, int, int, int, interface{}) (*Response, error)
-	// Edit(context.Context, int, *ListOptions) ([]Network, *Response, error)
+	Edit(context.Context, int, int, int, *IPRangeCreateRequest) (*Response, error)
 }
 
 // IPRangesServiceOp handles communication with the IPRange related methods of the
@@ -161,6 +161,28 @@ func (s *IPRangesServiceOp) Delete(ctx context.Context, net int, ipnet int, id i
 		return nil, err
 	}
 	log.Println("IPRange [Delete] req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// Edit IPRange
+func (s *IPRangesServiceOp) Edit(ctx context.Context, net int, ipnet int, id int, editRequest *IPRangeCreateRequest) (*Response, error) {
+	if id < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	if editRequest == nil {
+		return nil, godo.NewArgError("IPRange [Edit] editRequest", "cannot be nil")
+	}
+
+	path := fmt.Sprintf(ipRangesBasePath, net, ipnet)
+	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+
+	req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("IPRange [Edit]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
 }

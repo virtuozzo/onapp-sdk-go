@@ -19,7 +19,7 @@ type IPNetsService interface {
 	Get(context.Context, int, int) (*IPNet, *Response, error)
 	Create(context.Context, int, *IPNetCreateRequest) (*IPNet, *Response, error)
 	Delete(context.Context, int, int, interface{}) (*Response, error)
-	// Edit(context.Context, int, *ListOptions) ([]IPNet, *Response, error)
+	Edit(context.Context, int, int, *IPNetEditRequest) (*Response, error)
 }
 
 // IPNetsServiceOp handles communication with the IPNet related methods of the
@@ -55,11 +55,18 @@ type IPNet struct {
 // IPNetCreateRequest -
 type IPNetCreateRequest struct {
 	Label               string `json:"label,omitempty"`
-	AddDefaultIPRange   int    `json:"add_default_ip_range,omitempty"`
+	AddDefaultIPRange   int    `json:"add_default_ip_range"`
 	NetworkAddress      string `json:"network_address,omitempty"`
 	NetworkMask         int    `json:"network_mask,omitempty"`
 	GatewayOutsideIPNet bool   `json:"gateway_outside_ip_net,bool"`
 	DefaultGateway      string `json:"default_gateway,omitempty"`
+}
+
+// IPNetEditRequest -
+type IPNetEditRequest struct {
+	Label               string `json:"label,omitempty"`
+	NetworkAddress      string `json:"network_address,omitempty"`
+	NetworkMask         int    `json:"network_mask,omitempty"`
 }
 
 type ipNetCreateRequestRoot struct {
@@ -74,7 +81,7 @@ func (d IPNetCreateRequest) String() string {
 	return godo.Stringify(d)
 }
 
-// List all IPNet.
+// List all IPNet
 func (s *IPNetsServiceOp) List(ctx context.Context, net int, opt *ListOptions) ([]IPNet, *Response, error) {
 	if net < 1 {
 		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
@@ -105,7 +112,7 @@ func (s *IPNetsServiceOp) List(ctx context.Context, net int, opt *ListOptions) (
 	return arr, resp, err
 }
 
-// Get individual IPNet.
+// Get individual IPNet
 func (s *IPNetsServiceOp) Get(ctx context.Context, net int, id int) (*IPNet, *Response, error) {
 	if net < 1 || id < 1 {
 		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
@@ -127,7 +134,7 @@ func (s *IPNetsServiceOp) Get(ctx context.Context, net int, id int) (*IPNet, *Re
 	return root.IPNet, resp, err
 }
 
-// Create IPNet.
+// Create IPNet
 func (s *IPNetsServiceOp) Create(ctx context.Context, net int, createRequest *IPNetCreateRequest) (*IPNet, *Response, error) {
 	if createRequest == nil {
 		return nil, nil, godo.NewArgError("IPNet createRequest", "cannot be nil")
@@ -157,7 +164,7 @@ func (s *IPNetsServiceOp) Create(ctx context.Context, net int, createRequest *IP
 	return root.IPNet, resp, err
 }
 
-// Delete IPNet.
+// Delete IPNet
 func (s *IPNetsServiceOp) Delete(ctx context.Context, net int, id int, meta interface{}) (*Response, error) {
 	if id < 1 {
 		return nil, godo.NewArgError("id", "cannot be less than 1")
@@ -175,6 +182,28 @@ func (s *IPNetsServiceOp) Delete(ctx context.Context, net int, id int, meta inte
 		return nil, err
 	}
 	log.Println("IPNet [Delete] req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// Edit IPNet
+func (s *IPNetsServiceOp) Edit(ctx context.Context, net int, id int, editRequest *IPNetEditRequest) (*Response, error) {
+	if id < 1 {
+		return nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	if editRequest == nil {
+		return nil, godo.NewArgError("IPNet [Edit] editRequest", "cannot be nil")
+	}
+
+	path := fmt.Sprintf(ipNetsBasePath, net)
+	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
+
+	req, err := s.client.NewRequest(ctx, http.MethodPut, path, editRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("IPNet [Edit]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
 }
