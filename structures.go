@@ -20,8 +20,6 @@ type IPAddress struct {
 	IPRangeID      int    `json:"ip_range_id,omitempty"`
 	NetworkID      int    `json:"network_id,omitempty"`
 	IPNetID        int    `json:"ip_net_id,omitempty"`
-
-	// OnApp 6.2
 	// ExternalAddress interface{} `json:"external_address,omitempty"`
 }
 
@@ -78,9 +76,7 @@ type AssignIPAddress struct {
 	IPRangeID          int    `json:"ip_range_id,omitempty"`
 	UsedIP             int    `json:"used_ip,omitempty"`
 	OwnIP              int    `json:"own_ip,omitempty"`
-
-	// 6 or 4
-	IPVersion int `json:"ip_version,omitempty"`
+	IPVersion          int    `json:"ip_version,omitempty"`
 }
 
 type LimitResourceRoots map[string]*Limits

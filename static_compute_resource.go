@@ -24,9 +24,6 @@ const hypervisorHardwareDeviceRefreshBasePath string = hypervisorHardwareDeviceB
 const hypervisorIntegratedStorageSettingBasePath string = hypervisorsBasePath + "/%d/integrated_storage_settings"
 const hypervisorRebootBasePath string = hypervisorsBasePath + "/%d/reboot"
 
-// CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
-const cloudBootComputeResourcesBasePath string = "settings/assets/%s/hypervisors"
-
 // HypervisorsService is an interface for interfacing with the Hypervisor
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/compute-resources
@@ -236,8 +233,6 @@ func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *Hyperv
 		return nil, nil, godo.NewArgError("Hypervisor createRequest", "cannot be nil")
 	}
 
-	// mac := "00:00:00:00:00:00"
-	// path := hypervisorPath(mac, createRequest.ServerType)
 	path := hypervisorsBasePath + apiFormat
 	rootRequest := &hypervisorCreateRequestRoot{
 		HypervisorCreateRequest: createRequest,
@@ -376,18 +371,6 @@ func (s *HypervisorsServiceOp) DeleteBackupServerJoins(ctx context.Context, hvID
 	log.Println("Delete Backup Server Joins from Hypervisor [Delete] req: ", req)
 
 	return s.client.Do(ctx, req, nil)
-}
-
-func hypervisorPath(mac string, serverType string) string {
-	if serverType == "virtual" {
-		path := hypervisorsBasePath + apiFormat
-		return path
-	} else if serverType == "smart" || serverType == "baremetal" {
-		path := cloudBootComputeResourcesBasePath + apiFormat
-		return fmt.Sprintf(path, mac)
-	}
-
-	return ""
 }
 
 type HypervisorRebootRequest struct {
@@ -573,6 +556,20 @@ type IntegratedStorageSettings struct {
 	Mtu                  string `json:"mtu,omitempty"`
 	Vlan                 string `json:"vlan,omitempty"`
 }
+
+// From cloudboot
+// type IntegratedStorageSettings struct {
+// 	BondingMode          string `json:"bonding_mode,omitempty"`
+// 	BondName             string `json:"bond_name,omitempty"`
+// 	BridgeName           string `json:"bridge_name,omitempty"`
+// 	CacheMirrors         int    `json:"cache_mirrors,omitempty"`
+// 	CacheStripes         int    `json:"cache_stripes,omitempty"`
+// 	ControllerMemorySize int    `json:"controller_memory_size,omitempty"`
+// 	DbSize               int    `json:"db_size,omitempty"`
+// 	DisksPerController   int    `json:"disks_per_controller,omitempty"`
+// 	Mtu                  int    `json:"mtu,omitempty"`
+// 	Vlan                 string `json:"vlan,omitempty"`
+// }
 
 type integratedStorageSettingCreateRequestRoot struct {
 	IntegratedStorageSettings *IntegratedStorageSettings `json:"integrated_storage_settings,omitempty"`
