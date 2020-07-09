@@ -2,25 +2,44 @@ package onappgo
 
 // Represent common structures for onappgo package
 
-// IPAddress - represents an IP address
+// // IPAddress - represents an IP address
+// type IPAddress struct {
+// 	Address         string      `json:"address,omitempty"`
+// 	Broadcast       string      `json:"broadcast,omitempty"`
+// 	CreatedAt       string      `json:"created_at,omitempty"`
+// 	ExternalAddress interface{} `json:"external_address,omitempty"`
+// 	Free            bool        `json:"free,bool"`
+// 	Gateway         string      `json:"gateway,omitempty"`
+// 	HypervisorID    int         `json:"hypervisor_id,omitempty"`
+// 	ID              int         `json:"id,omitempty"`
+// 	IPNetID         int         `json:"ip_net_id,omitempty"`
+// 	IPRangeID       int         `json:"ip_range_id,omitempty"`
+// 	Ipv4            bool        `json:"ipv4,bool"`
+// 	LockVersion     int         `json:"lock_version,omitempty"`
+// 	NetworkAddress  string      `json:"network_address,omitempty"`
+// 	NetworkID       int         `json:"network_id,omitempty"`
+// 	Netmask         string      `json:"netmask,omitempty"`
+// 	Prefix          int         `json:"prefix,omitempty"`
+// 	Pxe             bool        `json:"pxe,bool"`
+// 	UpdatedAt       string      `json:"updated_at,omitempty"`
+// 	UserID          int         `json:"user_id,omitempty"`
+// }
+
 type IPAddress struct {
-	ID             int    `json:"id,omitempty"`
-	Address        string `json:"address,omitempty"`
-	Prefix         int    `json:"prefix,omitempty"`
-	Broadcast      string `json:"broadcast,omitempty"`
-	NetworkAddress string `json:"network_address,omitempty"`
-	Gateway        string `json:"gateway,omitempty"`
-	CreatedAt      string `json:"created_at,omitempty"`
-	UpdatedAt      string `json:"updated_at,omitempty"`
-	Ipv4           bool   `json:"ipv4,bool"`
-	UserID         int    `json:"user_id,omitempty"`
-	Pxe            bool   `json:"pxe,bool"`
-	HypervisorID   int    `json:"hypervisor_id,omitempty"`
-	LockVersion    int    `json:"lock_version,omitempty"`
-	IPRangeID      int    `json:"ip_range_id,omitempty"`
-	NetworkID      int    `json:"network_id,omitempty"`
-	IPNetID        int    `json:"ip_net_id,omitempty"`
-	// ExternalAddress interface{} `json:"external_address,omitempty"`
+	ID              int    `json:"id,omitempty"`
+	Address         string `json:"address,omitempty"`
+	Broadcast       string `json:"broadcast,omitempty"`
+	NetworkAddress  string `json:"network_address,omitempty"`
+	Gateway         string `json:"gateway,omitempty"`
+	CreatedAt       string `json:"created_at,omitempty"`
+	UpdatedAt       string `json:"updated_at,omitempty"`
+	UserID          int    `json:"user_id,omitempty"`
+	Pxe             bool   `json:"pxe,bool"`
+	HypervisorID    int    `json:"hypervisor_id,omitempty"`
+	IPRangeID       int    `json:"ip_range_id,omitempty"`
+	ExternalAddress string `json:"external_address,omitempty"`
+	Free            bool   `json:"free,bool"`
+	Netmask         string `json:"netmask,omitempty"`
 }
 
 // IPAddresses -

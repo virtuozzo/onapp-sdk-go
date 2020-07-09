@@ -88,6 +88,7 @@ type Client struct {
 	LocationGroups            LocationGroupsService
 	SSHKeys                   SSHKeysService
 	CloudbootComputeResources CloudbootComputeResourcesService
+	CloudbootIPAddresses      CloudbootIPAddressesService
 
 	// Optional function called after every successful request made to the DO APIs
 	onRequestCompleted RequestCompletionCallback
@@ -211,6 +212,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.LocationGroups = &LocationGroupsServiceOp{client: c}
 	c.SSHKeys = &SSHKeysServiceOp{client: c}
 	c.CloudbootComputeResources = &CloudbootComputeResourcesServiceOp{client: c}
+	c.CloudbootIPAddresses = &CloudbootIPAddressesServiceOp{client: c}
 
 	return c
 }

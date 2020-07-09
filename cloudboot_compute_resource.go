@@ -11,7 +11,6 @@ import (
 
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Create, Edit
 const cloudBootComputeResourcesBasePath string = "settings/assets/%s/hypervisors"
-const cloudBootIPAddressesBasePath string = "cloud_boot_ip_addresses"
 const cloudBootAvailableResourcesBasePath string = "settings/assets"
 
 // CloudbootComputeResourcesService is an interface for interfacing with the Hypervisor
@@ -24,7 +23,6 @@ type CloudbootComputeResourcesService interface {
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *CloudbootComputeResourceEditRequest) (*Response, error)
 
-	CloudbootIPAddresses(context.Context) ([]CloudbootIPAddress, *Response, error)
 	CloudbootAvailableResources(context.Context) ([]Asset, *Response, error)
 }
 
@@ -35,22 +33,6 @@ type CloudbootComputeResourcesServiceOp struct {
 }
 
 var _ CloudbootComputeResourcesService = &CloudbootComputeResourcesServiceOp{}
-
-type CloudbootIPAddress struct {
-	ID             int    `json:"id,omitempty"`
-	Address        string `json:"address,omitempty"`
-	Broadcast      string `json:"broadcast,omitempty"`
-	CreatedAt      string `json:"created_at,omitempty"`
-	Gateway        string `json:"gateway,omitempty"`
-	HypervisorID   int    `json:"hypervisor_id,omitempty"`
-	IPRangeID      int    `json:"ip_range_id,omitempty"`
-	Ipv4           bool   `json:"ipv4,bool"`
-	NetworkAddress string `json:"network_address,omitempty"`
-	Prefix         int    `json:"prefix,omitempty"`
-	Pxe            bool   `json:"pxe,bool"`
-	UpdatedAt      string `json:"updated_at,omitempty"`
-	UserID         int    `json:"user_id,omitempty"`
-}
 
 type Asset struct {
 	Mac string `json:"mac,omitempty"`
@@ -231,32 +213,6 @@ func (s *CloudbootComputeResourcesServiceOp) Edit(ctx context.Context, id int, e
 	return s.client.Do(ctx, req, nil)
 }
 
-// CloudbootIPAddresses - List all Cloudboot IP Addresses
-func (s *CloudbootComputeResourcesServiceOp) CloudbootIPAddresses(ctx context.Context) ([]CloudbootIPAddress, *Response, error) {
-	path := cloudBootIPAddressesBasePath + apiFormat
-	path, err := addOptions(path, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var out []map[string]CloudbootIPAddress
-	resp, err := s.client.Do(ctx, req, &out)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	arr := make([]CloudbootIPAddress, len(out))
-	for i := range arr {
-		arr[i] = out[i]["ip_address"]
-	}
-
-	return arr, resp, err
-}
 
 // CloudbootAvailableResources - List all Cloudboot available resources
 func (s *CloudbootComputeResourcesServiceOp) CloudbootAvailableResources(ctx context.Context) ([]Asset, *Response, error) {
