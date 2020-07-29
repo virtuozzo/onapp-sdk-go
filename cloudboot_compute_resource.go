@@ -61,6 +61,7 @@ type CloudbootComputeResourceCreateRequest struct {
 	Label                       string   `json:"label,omitempty"`
 	PxeIPAddressID              int      `json:"pxe_ip_address_id,omitempty"`
 	HypervisorType              string   `json:"hypervisor_type,omitempty"`
+	HypervisorGroupID           int      `json:"hypervisor_group_id,omitempty"`
 	SegregationOsType           string   `json:"segregation_os_type,omitempty"`
 	ServerType                  string   `json:"server_type,omitempty"`
 	Backup                      bool     `json:"backup,bool"`
@@ -72,6 +73,7 @@ type CloudbootComputeResourceCreateRequest struct {
 	PassthroughDisks            bool     `json:"passthrough_disks,bool"`
 	Storage                     *Storage `json:"storage,omitempty"`
 	StorageControllerMemorySize int      `json:"storage_controller_memory_size,omitempty"`
+	StaticIntegratedStorage     bool     `json:"static_integrated_storage,bool"`
 	DisksPerStorageController   int      `json:"disks_per_storage_controller,omitempty"`
 	CloudBootOs                 string   `json:"cloud_boot_os,omitempty"`
 	CustomConfig                string   `json:"custom_config,omitempty"`
@@ -87,6 +89,7 @@ type CloudbootComputeResourceEditRequest struct {
 	PassthroughDisks                 bool     `json:"passthrough_disks,bool"`
 	Storage                          *Storage `json:"storage,omitempty"`
 	StorageControllerMemorySize      int      `json:"storage_controller_memory_size,omitempty"`
+	StaticIntegratedStorage          bool     `json:"static_integrated_storage,bool"`
 	DisksPerStorageController        int      `json:"disks_per_storage_controller,omitempty"`
 	IntegratedStorageDisabled        bool     `json:"integrated_storage_disabled,omitempty"`
 	CustomConfig                     string   `json:"custom_config,omitempty"`
