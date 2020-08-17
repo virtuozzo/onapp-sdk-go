@@ -89,9 +89,10 @@ type Client struct {
 	SSHKeys                   SSHKeysService
 	CloudbootComputeResources CloudbootComputeResourcesService
 	CloudbootIPAddresses      CloudbootIPAddressesService
+	SoftwareLicenses          SoftwareLicensesService
 
-	// Optional function called after every successful request made to the DO APIs
-	onRequestCompleted RequestCompletionCallback
+	// Optional function called after every successful request made to the OnApp APIs
+	onRequestCompleted        RequestCompletionCallback
 }
 
 // RequestCompletionCallback defines the type of the request callback function
@@ -213,6 +214,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.SSHKeys = &SSHKeysServiceOp{client: c}
 	c.CloudbootComputeResources = &CloudbootComputeResourcesServiceOp{client: c}
 	c.CloudbootIPAddresses = &CloudbootIPAddressesServiceOp{client: c}
+	c.SoftwareLicenses = &SoftwareLicensesServiceOp{client: c}
 
 	return c
 }
