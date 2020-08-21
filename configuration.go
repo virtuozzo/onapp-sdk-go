@@ -14,7 +14,8 @@ const configurationEditBasePath string = "settings"
 // See: https://docs.onapp.com/apim/latest/system-configuration
 type ConfigurationsService interface {
 	Get(context.Context) (*Configuration, *Response, error)
-	Edit(context.Context, *Configuration, int) (*Response, error)
+	// Edit(context.Context, *Configuration, int) (*Response, error)
+	Edit(context.Context, *map[string]interface{}, int) (*Response, error)
 }
 
 // ConfigurationsServiceOp handles communication with the Configuration related methods of the
@@ -250,7 +251,8 @@ type Configuration struct {
 }
 
 type configurationEditRequestRoot struct {
-	Configuration *Configuration `json:"configuration"`
+	// Configuration *Configuration `json:"configuration"`
+	Configuration *map[string]interface{} `json:"configuration"`
 }
 
 type configurationRoot struct {
@@ -281,7 +283,8 @@ type restartConfigurationRequest struct {
 }
 
 // Edit individual Configuration.
-func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *Configuration, restart int) (*Response, error) {
+// func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *Configuration, restart int) (*Response, error) {
+func (s *ConfigurationsServiceOp) Edit(ctx context.Context, editRequest *map[string]interface{}, restart int) (*Response, error) {
 	path := configurationEditBasePath + apiFormat
 
 	// Restart OnApp Control Panel server after edit user configuration, must be moved out to the user space

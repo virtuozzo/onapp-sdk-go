@@ -95,7 +95,7 @@ type ImageTemplateEditRequest struct {
 	Version           string `json:"version,omitempty"`
 	MinDiskSize       int    `json:"min_disk_size,omitempty"`
 	MinMemorySize     int    `json:"min_memory_size,omitempty"`
-	AllowedHotMigrate bool   `json:"allowed_hot_migrate,omitempty"`
+	AllowedHotMigrate bool   `json:"allowed_hot_migrate,bool"`
 }
 
 type imageTemplateEditRequestRoot struct {

@@ -42,14 +42,14 @@ type Disk struct {
 	DiskSize                       int                            `json:"disk_size,omitempty"`
 	DiskVMNumber                   int                            `json:"disk_vm_number,omitempty"`
 	FileSystem                     string                         `json:"file_system,omitempty"`
-	HasAutobackups                 bool                           `json:"has_autobackups"`
+	HasAutobackups                 bool                           `json:"has_autobackups,bool"`
 	ID                             int                            `json:"id,omitempty"`
 	Identifier                     string                         `json:"identifier,omitempty"`
 	IntegratedStorageCacheEnabled  bool                           `json:"integrated_storage_cache_enabled,bool"`
 	IntegratedStorageCacheOverride bool                           `json:"integrated_storage_cache_override,bool"`
 	IntegratedStorageCacheSettings IntegratedStorageCacheSettings `json:"integrated_storage_cache_settings,omitempty"`
 	IoLimits                       IoLimits                       `json:"io_limits,omitempty"`
-	IoLimitsOverride               bool                           `json:"io_limits_override"`
+	IoLimitsOverride               bool                           `json:"io_limits_override,bool"`
 	Iqn                            string                         `json:"iqn,omitempty"`
 	IsSwap                         bool                           `json:"is_swap,bool"`
 	Label                          string                         `json:"label,omitempty"`

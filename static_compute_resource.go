@@ -143,6 +143,7 @@ type HypervisorCreateRequest struct {
 	CPUUnits                int    `json:"cpu_units,omitempty"`
 	StaticIntegratedStorage bool   `json:"static_integrated_storage,bool"`
 	PowerCycleCommand       string `json:"power_cycle_command,omitempty"`
+	Dom0MemorySize          int    `json:"dom0_memory_size,omitempty"`
 }
 
 // HypervisorEditRequest represents a request to edit a Hypervisor
