@@ -7,16 +7,12 @@ import (
 	"net/http"
 
 	"github.com/digitalocean/godo"
+	"github.com/google/uuid"
 )
 
 // Xen/KVM, VMware - CRUD
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
 const hypervisorsBasePath string = "settings/hypervisors"
-
-// TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
-// BackupServerJoins objects
-const hypervisorsDataStoreJoins string = hypervisorsBasePath + "/%d/data_store_joins"
-const hypervisorsBackupServerJoins string = hypervisorsBasePath + "/%d/backup_server_joins"
 
 // Used to get data for integrated storage
 const hypervisorHardwareDeviceBasePath string = hypervisorsBasePath + "/%d/hardware_devices"
@@ -35,14 +31,6 @@ type HypervisorsService interface {
 	Edit(context.Context, int, *HypervisorEditRequest) (*Response, error)
 
 	Reboot(context.Context, int, *HypervisorRebootRequest) (*Response, error)
-
-	// TODO: maybe later remove this because will be DataSoreJoins, NetworkJoins
-	// BackupServerJoins objects
-	AddDataStoreJoins(context.Context, int, int) (*Response, error)
-	AddBackupServerJoins(context.Context, int, int) (*Response, error)
-
-	DeleteDataStoreJoins(context.Context, int, int) (*Response, error)
-	DeleteBackupServerJoins(context.Context, int, int) (*Response, error)
 
 	Refresh(context.Context, int) (*HardwareDevices, *Response, error)
 	Attach(context.Context, int, map[string]interface{}) (*Response, error)
@@ -143,7 +131,6 @@ type HypervisorCreateRequest struct {
 	CPUUnits                int    `json:"cpu_units,omitempty"`
 	StaticIntegratedStorage bool   `json:"static_integrated_storage,bool"`
 	PowerCycleCommand       string `json:"power_cycle_command,omitempty"`
-	Dom0MemorySize          int    `json:"dom0_memory_size,omitempty"`
 }
 
 // HypervisorEditRequest represents a request to edit a Hypervisor
@@ -164,16 +151,6 @@ type hypervisorCreateRequestRoot struct {
 
 type hypervisorRoot struct {
 	Hypervisor *Hypervisor `json:"hypervisor"`
-}
-
-// DataStoreJoinCreateRequest -
-type DataStoreJoinCreateRequest struct {
-	DataStoreID int `json:"data_store_id,omitempty"`
-}
-
-// BackupServerJoinCreateRequest -
-type BackupServerJoinCreateRequest struct {
-	BackupServerID int `json:"backup_server_id,omitempty"`
 }
 
 func (d HypervisorCreateRequest) String() string {
@@ -292,88 +269,6 @@ func (s *HypervisorsServiceOp) Edit(ctx context.Context, id int, editRequest *Hy
 	return s.client.Do(ctx, req, nil)
 }
 
-// AddDataStoreJoins - add Data Store Joins to the Hypervisor
-func (s *HypervisorsServiceOp) AddDataStoreJoins(ctx context.Context, hvID int, dsID int) (*Response, error) {
-	if hvID < 1 || dsID < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorsDataStoreJoins, hvID) + apiFormat
-
-	rootRequest := &DataStoreJoinCreateRequest{
-		DataStoreID: dsID,
-	}
-
-	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("DataStoreJoins [Create] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// DeleteDataStoreJoins - delete Data Store Joins from the Hypervisor
-func (s *HypervisorsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvID int, id int) (*Response, error) {
-	if hvID < 1 || id < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorsDataStoreJoins, hvID)
-	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
-
-	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("Delete DataStore Joins from Hypervisor [Delete] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// AddBackupServerJoins - add Backup Server Joins to the Hypervisor
-func (s *HypervisorsServiceOp) AddBackupServerJoins(ctx context.Context, hvID int, bsID int) (*Response, error) {
-	if hvID < 1 || bsID < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorsBackupServerJoins, hvID) + apiFormat
-
-	rootRequest := &BackupServerJoinCreateRequest{
-		BackupServerID: bsID,
-	}
-
-	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("BackupServerJoins [Create] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// DeleteBackupServerJoins - delete Backup Server Joins from the Hypervisor
-func (s *HypervisorsServiceOp) DeleteBackupServerJoins(ctx context.Context, hvID int, id int) (*Response, error) {
-	if hvID < 1 || id < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorsBackupServerJoins, hvID)
-	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
-
-	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("Delete Backup Server Joins from Hypervisor [Delete] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
 type HypervisorRebootRequest struct {
 	SkipPoweredOffVmsMigration int `json:"skip_powered_off_vms_migration,omitempty"`
 	SheduleFailover            int `json:"schedule_failover,omitempty"`
@@ -468,6 +363,10 @@ func (s *HypervisorsServiceOp) Refresh(ctx context.Context, resID int) (*Hardwar
 	if err != nil {
 		return nil, nil, err
 	}
+
+	key, _ := uuid.NewRandom()
+	req.Header.Add("X-Idempotency-Key", key.String())
+
 	log.Println("Hypervisor [Refresh] req: ", req)
 
 	out := &rootHardware{}

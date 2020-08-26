@@ -13,12 +13,6 @@ import (
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
 const hypervisorGroupsBasePath string = "settings/hypervisor_zones"
 
-// TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
-// BackupServerJoins objects
-const hypervisorGroupsDataStoreJoins string = hypervisorGroupsBasePath + "/%d/data_store_joins"
-const hypervisorGroupsNetworkJoins string = hypervisorGroupsBasePath + "/%d/network_joins"
-const hypervisorGroupsBackupServerJoins string = hypervisorGroupsBasePath + "/%d/backup_server_joins"
-
 // HypervisorGroupsService is an interface for interfacing with the Compute Zone
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/compute-zones
@@ -28,16 +22,6 @@ type HypervisorGroupsService interface {
 	Create(context.Context, *HypervisorGroupCreateRequest) (*HypervisorGroup, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *HypervisorGroupEditRequest) (*Response, error)
-
-	// TODO: maybe later remove this because will be DataStoreJoins, NetworkJoins
-	// BackupServerJoins objects
-	AddDataStoreJoins(context.Context, int, int) (*Response, error)
-	AddNetworkJoins(context.Context, int, *NetworkJoinCreateRequest) (*Response, error)
-	AddBackupServerJoins(context.Context, int, int) (*Response, error)
-
-	DeleteDataStoreJoins(context.Context, int, int) (*Response, error)
-	DeleteNetworkJoins(context.Context, int, int) (*Response, error)
-	DeleteBackupServerJoins(context.Context, int, int) (*Response, error)
 }
 
 // HypervisorGroupsServiceOp handles communication with the Compute Zone
@@ -253,129 +237,6 @@ func (s *HypervisorGroupsServiceOp) Edit(ctx context.Context, id int, editReques
 		return nil, err
 	}
 	log.Println("HypervisorGroup [Edit]  req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// AddDataStoreJoins - add Data Store Joins to the HypervisorGroup
-func (s *HypervisorGroupsServiceOp) AddDataStoreJoins(ctx context.Context, hvgID int, dsID int) (*Response, error) {
-	if hvgID < 1 || dsID < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorGroupsDataStoreJoins, hvgID) + apiFormat
-
-	rootRequest := &DataStoreJoinCreateRequest{
-		DataStoreID: dsID,
-	}
-
-	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("Add DataStore Joins to the HypervisorGroup [Create] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// DeleteDataStoreJoins - delete Data Store Joins from the HypervisorGroup
-func (s *HypervisorGroupsServiceOp) DeleteDataStoreJoins(ctx context.Context, hvgID int, id int) (*Response, error) {
-	if hvgID < 1 || id < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorGroupsDataStoreJoins, hvgID)
-	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
-
-	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("Delete DataStore Joins from HypervisorGroup [Delete] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// AddNetworkJoins - add Network Joins to the HypervisorGroup
-func (s *HypervisorGroupsServiceOp) AddNetworkJoins(ctx context.Context, hvgID int, createRequest *NetworkJoinCreateRequest) (*Response, error) {
-	if hvgID < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorGroupsNetworkJoins, hvgID) + apiFormat
-
-	rootRequest := &networkJoinCreateRequestRoot{
-    NetworkJoinCreateRequest: createRequest,
-	}
-
-	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("Add Network Joins to the HypervisorGroup [Create] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// DeleteNetworkJoins - delete Network Joins from the HypervisorGroup
-func (s *HypervisorGroupsServiceOp) DeleteNetworkJoins(ctx context.Context, hvgID int, id int) (*Response, error) {
-	if hvgID < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorGroupsNetworkJoins, hvgID)
-	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
-
-	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("Delete Network Joins from HypervisorGroup [Delete] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// AddBackupServerJoins - add Backup Server Joins to the HypervisorGroup
-func (s *HypervisorGroupsServiceOp) AddBackupServerJoins(ctx context.Context, hvgID int, id int) (*Response, error) {
-	if hvgID < 1 || id < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorGroupsBackupServerJoins, hvgID) + apiFormat
-
-	rootRequest := &BackupServerJoinCreateRequest{
-		BackupServerID: id,
-	}
-
-	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("Add Backup Server Joins to the HypervisorGroup [Create] req: ", req)
-
-	return s.client.Do(ctx, req, nil)
-}
-
-// DeleteBackupServerJoins - delete Backup Server Joins from the HypervisorGroup
-func (s *HypervisorGroupsServiceOp) DeleteBackupServerJoins(ctx context.Context, hvgID int, id int) (*Response, error) {
-	if hvgID < 1 || id < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
-	}
-
-	path := fmt.Sprintf(hypervisorGroupsBackupServerJoins, hvgID)
-	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
-
-	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println("Delete Backup Server Joins from HypervisorGroup [Delete] req: ", req)
 
 	return s.client.Do(ctx, req, nil)
 }

@@ -43,18 +43,15 @@ type NetworkJoin struct {
 
 // NetworkJoinCreateRequest represents a request to create a NetworkJoin
 type NetworkJoinCreateRequest struct {
-	NetworkID int    `json:"network_id,omitempty"`
-	Interface string `json:"interface,omitempty"`
-
-	// helpers
+	NetworkID      int    `json:"network_id,omitempty"`
+	Interface      string `json:"interface,omitempty"`
 	TargetJoinID   int    `json:"-"`
 	TargetJoinType string `json:"-"`
 }
 
 // NetworkJoinDeleteRequest represents a request to delete a NetworkJoin
 type NetworkJoinDeleteRequest struct {
-	ID int
-
+	ID             int
 	TargetJoinID   int
 	TargetJoinType string
 }

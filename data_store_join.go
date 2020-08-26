@@ -55,11 +55,11 @@ type DataStoreJoinDeleteRequest struct {
 }
 
 type dataStoreJoinCreateRequestRoot struct {
-	DataStoreJoinCreateRequest *DataStoreJoinCreateRequest `json:"data_store_joins"`
+	DataStoreID int `json:"data_store_id,omitempty"`
 }
 
 type dataStoreJoinRoot struct {
-	DataStoreJoin *DataStoreJoin `json:"data_store_joins"`
+	DataStoreJoin *DataStoreJoin `json:"data_store_join"`
 }
 
 func (d DataStoreJoinCreateRequest) String() string {
@@ -93,7 +93,7 @@ func (s *DataStoreJoinsServiceOp) List(ctx context.Context, createRequest *DataS
 
 	arr := make([]DataStoreJoin, len(out))
 	for i := range arr {
-		arr[i] = out[i]["backup_server_join"]
+		arr[i] = out[i]["data_store_join"]
 	}
 
 	return arr, resp, err
@@ -141,7 +141,7 @@ func (s *DataStoreJoinsServiceOp) Create(ctx context.Context, createRequest *Dat
 	}
 
 	rootRequest := &dataStoreJoinCreateRequestRoot{
-		DataStoreJoinCreateRequest: createRequest,
+		DataStoreID: createRequest.DataStoreID,
 	}
 
 	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)

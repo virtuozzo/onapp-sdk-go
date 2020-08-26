@@ -61,6 +61,7 @@ type Client struct {
 	Hypervisors               HypervisorsService
 	HypervisorGroups          HypervisorGroupsService
 	DataStores                DataStoresService
+	DataStoreJoins            DataStoreJoinsService
 	DataStoreGroups           DataStoreGroupsService
 	RemoteTemplates           RemoteTemplatesService
 	ImageTemplates            ImageTemplatesService
@@ -73,6 +74,7 @@ type Client struct {
 	IPNets                    IPNetsService
 	IPRanges                  IPRangesService
 	BackupServers             BackupServersService
+	BackupServerJoins         BackupServerJoinsService
 	BackupServerGroups        BackupServerGroupsService
 	BackupResources           BackupResourcesService
 	BackupResourceZones       BackupResourceZonesService
@@ -92,7 +94,7 @@ type Client struct {
 	SoftwareLicenses          SoftwareLicensesService
 
 	// Optional function called after every successful request made to the OnApp APIs
-	onRequestCompleted        RequestCompletionCallback
+	onRequestCompleted RequestCompletionCallback
 }
 
 // RequestCompletionCallback defines the type of the request callback function
@@ -186,6 +188,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Hypervisors = &HypervisorsServiceOp{client: c}
 	c.HypervisorGroups = &HypervisorGroupsServiceOp{client: c}
 	c.DataStores = &DataStoresServiceOp{client: c}
+	c.DataStoreJoins = &DataStoreJoinsServiceOp{client: c}
 	c.DataStoreGroups = &DataStoreGroupsServiceOp{client: c}
 	c.RemoteTemplates = &RemoteTemplatesServiceOp{client: c}
 	c.ImageTemplates = &ImageTemplatesServiceOp{client: c}
@@ -198,6 +201,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.NetworkInterfaces = &NetworkInterfacesServiceOp{client: c}
 	c.NetworkJoins = &NetworkJoinsServiceOp{client: c}
 	c.BackupServers = &BackupServersServiceOp{client: c}
+	c.BackupServerJoins = &BackupServerJoinsServiceOp{client: c}
 	c.BackupServerGroups = &BackupServerGroupsServiceOp{client: c}
 	c.BackupResources = &BackupResourcesServiceOp{client: c}
 	c.BackupResourceZones = &BackupResourceZonesServiceOp{client: c}

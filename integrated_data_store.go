@@ -140,7 +140,7 @@ func (s *IntegratedDataStoresServiceOp) Get(ctx context.Context, resID int, id s
 }
 
 // Create -
-	func (s *IntegratedDataStoresServiceOp) Create(ctx context.Context, resID int, createRequest *IntegratedDataStoreCreateRequest) (*IntegratedDataStores, *Response, error) {
+func (s *IntegratedDataStoresServiceOp) Create(ctx context.Context, resID int, createRequest *IntegratedDataStoreCreateRequest) (*IntegratedDataStores, *Response, error) {
 	if resID < 1 || createRequest == nil {
 		return nil, nil, godo.NewArgError("IntegratedDataStores createRequest", "cannot be nil")
 	}

@@ -43,22 +43,19 @@ type BackupServerJoin struct {
 // BackupServerJoinCreateRequest represents a request to create a BackupServerJoin
 type BackupServerJoinCreateRequest struct {
 	BackupServerID int    `json:"backup_server_id,omitempty"`
-
-	// helpers
 	TargetJoinID   int    `json:"-"`
 	TargetJoinType string `json:"-"`
 }
 
 // BackupServerJoinDeleteRequest represents a request to delete a BackupServerJoin
 type BackupServerJoinDeleteRequest struct {
-	ID int
-
+	ID             int
 	TargetJoinID   int
 	TargetJoinType string
 }
 
 type backupServerJoinCreateRequestRoot struct {
-	BackupServerJoinCreateRequest *BackupServerJoinCreateRequest `json:"backup_server_join"`
+	BackupServerID int `json:"backup_server_id,omitempty"`
 }
 
 type backupServerJoinRoot struct {
@@ -144,7 +141,7 @@ func (s *BackupServerJoinsServiceOp) Create(ctx context.Context, createRequest *
 	}
 
 	rootRequest := &backupServerJoinCreateRequestRoot{
-		BackupServerJoinCreateRequest: createRequest,
+		BackupServerID: createRequest.BackupServerID,
 	}
 
 	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
