@@ -13,26 +13,28 @@ import (
 const cloudBootComputeResourcesBasePath string = "settings/assets/%s/hypervisors"
 const cloudBootAvailableResourcesBasePath string = "settings/assets"
 
-// CloudbootComputeResourcesService is an interface for interfacing with the Hypervisor
+// CloudbootComputeResourcesService is an interface for interfacing with the CloudbootComputeResource
 // endpoints of the OnApp API
 // See: https://docs.onapp.com/apim/latest/compute-resources
 type CloudbootComputeResourcesService interface {
-	List(context.Context, *ListOptions) ([]Hypervisor, *Response, error)
-	Get(context.Context, int) (*Hypervisor, *Response, error)
-	Create(context.Context, *CloudbootComputeResourceCreateRequest) (*Hypervisor, *Response, error)
+	List(context.Context, *ListOptions) ([]CloudbootComputeResource, *Response, error)
+	Get(context.Context, int) (*CloudbootComputeResource, *Response, error)
+	Create(context.Context, *CloudbootComputeResourceCreateRequest) (*CloudbootComputeResource, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *CloudbootComputeResourceEditRequest) (*Response, error)
 
 	CloudbootAvailableResources(context.Context) ([]Asset, *Response, error)
 }
 
-// CloudbootComputeResourcesServiceOp handles communication with the Hypervisor related methods of the
+// CloudbootComputeResourcesServiceOp handles communication with the CloudbootComputeResource related methods of the
 // OnApp API.
 type CloudbootComputeResourcesServiceOp struct {
 	client *Client
 }
 
 var _ CloudbootComputeResourcesService = &CloudbootComputeResourcesServiceOp{}
+
+type CloudbootComputeResource Hypervisor
 
 type Asset struct {
 	Mac string `json:"mac,omitempty"`
@@ -82,7 +84,7 @@ type CloudbootComputeResourceCreateRequest struct {
 	Mac                         string   `json:"mac,omitempty"` // Helper field
 }
 
-// CloudbootComputeResourceEditRequest represents a request to edit a Hypervisor
+// CloudbootComputeResourceEditRequest represents a request to edit a CloudbootComputeResource
 type CloudbootComputeResourceEditRequest struct {
 	CollectStats                     bool     `json:"collect_stats,bool"`
 	DisableFailover                  bool     `json:"disable_failover,bool"`
@@ -100,12 +102,16 @@ type cloudbootComputeResourceCreateRequestRoot struct {
 	CloudbootComputeResourceCreateRequest *CloudbootComputeResourceCreateRequest `json:"hypervisor"`
 }
 
+type cloudbootComputeResourceRoot struct {
+	CloudbootComputeResource *CloudbootComputeResource `json:"hypervisor"`
+}
+
 func (d CloudbootComputeResourceCreateRequest) String() string {
 	return godo.Stringify(d)
 }
 
-// List all Cloudboot Hypervisors
-func (s *CloudbootComputeResourcesServiceOp) List(ctx context.Context, opt *ListOptions) ([]Hypervisor, *Response, error) {
+// List all Cloudboot CloudbootComputeResources
+func (s *CloudbootComputeResourcesServiceOp) List(ctx context.Context, opt *ListOptions) ([]CloudbootComputeResource, *Response, error) {
 	path := hypervisorsBasePath + apiFormat
 	path, err := addOptions(path, opt)
 	if err != nil {
@@ -117,13 +123,13 @@ func (s *CloudbootComputeResourcesServiceOp) List(ctx context.Context, opt *List
 		return nil, nil, err
 	}
 
-	var out []map[string]Hypervisor
+	var out []map[string]CloudbootComputeResource
 	resp, err := s.client.Do(ctx, req, &out)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	arr := make([]Hypervisor, len(out))
+	arr := make([]CloudbootComputeResource, len(out))
 	for i := range arr {
 		arr[i] = out[i]["hypervisor"]
 	}
@@ -131,8 +137,8 @@ func (s *CloudbootComputeResourcesServiceOp) List(ctx context.Context, opt *List
 	return arr, resp, err
 }
 
-// Get individual Cloudboot Hypervisor
-func (s *CloudbootComputeResourcesServiceOp) Get(ctx context.Context, id int) (*Hypervisor, *Response, error) {
+// Get individual Cloudboot CloudbootComputeResource
+func (s *CloudbootComputeResourcesServiceOp) Get(ctx context.Context, id int) (*CloudbootComputeResource, *Response, error) {
 	if id < 1 {
 		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
 	}
@@ -143,17 +149,17 @@ func (s *CloudbootComputeResourcesServiceOp) Get(ctx context.Context, id int) (*
 		return nil, nil, err
 	}
 
-	root := new(hypervisorRoot)
+	root := new(cloudbootComputeResourceRoot)
 	resp, err := s.client.Do(ctx, req, root)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return root.Hypervisor, resp, err
+	return root.CloudbootComputeResource, resp, err
 }
 
-// Create Cloudboot Hypervisor
-func (s *CloudbootComputeResourcesServiceOp) Create(ctx context.Context, createRequest *CloudbootComputeResourceCreateRequest) (*Hypervisor, *Response, error) {
+// Create Cloudboot CloudbootComputeResource
+func (s *CloudbootComputeResourcesServiceOp) Create(ctx context.Context, createRequest *CloudbootComputeResourceCreateRequest) (*CloudbootComputeResource, *Response, error) {
 	if createRequest == nil {
 		return nil, nil, godo.NewArgError("CloudbootComputeResource createRequest", "cannot be nil")
 	}
@@ -169,16 +175,16 @@ func (s *CloudbootComputeResourcesServiceOp) Create(ctx context.Context, createR
 	}
 	log.Println("CloudbootComputeResource [Create] req: ", req)
 
-	root := new(hypervisorRoot)
+	root := new(cloudbootComputeResourceRoot)
 	resp, err := s.client.Do(ctx, req, root)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return root.Hypervisor, resp, err
+	return root.CloudbootComputeResource, resp, err
 }
 
-// Delete Cloudboot Hypervisor
+// Delete Cloudboot CloudbootComputeResource
 func (s *CloudbootComputeResourcesServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Response, error) {
 	if id < 1 {
 		return nil, godo.NewArgError("id", "cannot be less than 1")
@@ -199,7 +205,7 @@ func (s *CloudbootComputeResourcesServiceOp) Delete(ctx context.Context, id int,
 	return s.client.Do(ctx, req, nil)
 }
 
-// Edit Cloudboot Hypervisor
+// Edit Cloudboot CloudbootComputeResource
 func (s *CloudbootComputeResourcesServiceOp) Edit(ctx context.Context, id int, editRequest *CloudbootComputeResourceEditRequest) (*Response, error) {
 	if editRequest == nil || id < 1 {
 		return nil, godo.NewArgError("editRequest || id", "cannot be nil or less than 1")
