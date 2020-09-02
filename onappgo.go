@@ -23,16 +23,14 @@ import (
 var userAgent = "onappgo/" + sdk.String()
 
 const (
-	defaultBaseURL = "https://69.168.239.52"
-	mediaType      = "application/json"
-	apiFormat      = ".json"
-
+	defaultBaseURL     = "https://69.168.239.52"
+	mediaType          = "application/json"
+	apiFormat          = ".json"
 	searchTransactions = 100
-
-	headerPerPage   = "X-Limit"
-	headerPage      = "X-Page"
-	headerTotal     = "X-Total"
-	headerRequestID = "X-Request-Id"
+	headerPerPage      = "X-Limit"
+	headerPage         = "X-Page"
+	headerTotal        = "X-Total"
+	headerRequestID    = "X-Request-Id"
 )
 
 // Client manages communication with OnApp API.

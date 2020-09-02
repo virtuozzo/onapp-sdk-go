@@ -1,7 +1,6 @@
 package onappgo
 
 import (
-	"container/list"
 	"context"
 	"fmt"
 	"net/http"
@@ -36,7 +35,7 @@ type TransactionsService interface {
 	Get(context.Context, int) (*Transaction, *Response, error)
 
 	GetByFilter(context.Context, interface{}, *ListOptions) (*Transaction, *Response, error)
-	ListByGroup(context.Context, interface{}, *ListOptions) (*list.List, *Response, error)
+	ListByGroup(context.Context, interface{}, *ListOptions) ([]Transaction, *Response, error)
 }
 
 // TransactionsServiceOp handles communition with the image action related methods of the
@@ -126,7 +125,7 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, 
 }
 
 // ListByGroup return group of transactions depended by action
-func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{}, opt *ListOptions) (*list.List, *Response, error) {
+func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{}, opt *ListOptions) ([]Transaction, *Response, error) {
 	var associatedObjectID, parentID int
 	var associatedObjectType, parentType string
 
@@ -162,18 +161,17 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 		parentType = v2.String()
 	}
 
-	trx, resp, err := s.client.Transactions.List(ctx, opt)
+	lst, resp, err := s.client.Transactions.List(ctx, opt)
 	if err != nil {
-		return nil, resp, fmt.Errorf("ListByGroup.trx: %s", err)
+		return nil, resp, fmt.Errorf("ListByGroup.lst: %s", err)
 	}
 
 	var next *Transaction
 
-	len := len(trx)
-	groupList := list.New()
+	len := len(lst)
+	var groupList []Transaction
 
-	for i := range trx {
-		cur := trx[i]
+	for i, cur := range lst {
 		if associatedObjectType != "" {
 			// fmt.Printf("cur.AssociatedObjectID: <%d> -> associatedObjectID: <%d>\n", cur.AssociatedObjectID, associatedObjectID)
 			// fmt.Printf("cur.AssociatedObjectType: <%s> -> associatedObjectType: <%s>\n", cur.AssociatedObjectType, associatedObjectType)
@@ -191,12 +189,12 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 		}
 
 		if cur.DependentTransactionID == 0 {
-			groupList.PushBack(cur)
+			groupList = append(groupList, cur)
 			break
 		}
 
 		if i+1 < len {
-			next = &trx[i+1]
+			next = &lst[i+1]
 		}
 
 		if next != nil {
@@ -204,7 +202,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 				if cur.AssociatedObjectID == next.AssociatedObjectID &&
 					cur.AssociatedObjectType == next.AssociatedObjectType &&
 					cur.ChainID == next.ChainID {
-					groupList.PushBack(cur)
+					groupList = append(groupList, cur)
 				}
 			}
 
@@ -212,7 +210,7 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 				if cur.ParentID == next.ParentID &&
 					cur.ParentType == next.ParentType &&
 					cur.ChainID == next.ChainID {
-					groupList.PushBack(cur)
+					groupList = append(groupList, cur)
 				}
 			}
 		}
@@ -223,12 +221,12 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 
 // GetByFilter find transaction with specified fields.
 func (s *TransactionsServiceOp) GetByFilter(ctx context.Context, filter interface{}, opts *ListOptions) (*Transaction, *Response, error) {
-	trx, resp, err := s.client.Transactions.List(ctx, opts)
+	lst, resp, err := s.client.Transactions.List(ctx, opts)
 	if err != nil {
-		return nil, resp, fmt.Errorf("GetByFilter.trx: %s", err)
+		return nil, resp, fmt.Errorf("GetByFilter.lst: %s", err)
 	}
 
-	for _, v := range trx {
+	for _, v := range lst {
 		if v.equal(filter) {
 			return &v, resp, err
 		}
@@ -269,17 +267,12 @@ func lastTransaction(ctx context.Context, client *Client, filter interface{}) (*
 		PerPage: searchTransactions,
 	}
 
-	trx, resp, err := client.Transactions.ListByGroup(ctx, filter, opt)
-
-	var root *Transaction
-	e := trx.Front()
-	if e != nil {
-		val := e.Value.(Transaction)
-		root = &val
-		return root, resp, err
+	lst, resp, err := client.Transactions.ListByGroup(ctx, filter, opt)
+	if lst == nil || err != nil {
+		return nil, nil, err
 	}
 
-	return nil, nil, err
+	return &lst[0], resp, err
 }
 
 func (trx Transaction) String() string {
