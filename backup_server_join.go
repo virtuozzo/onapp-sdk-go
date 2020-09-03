@@ -173,7 +173,7 @@ func (s *BackupServerJoinsServiceOp) Delete(ctx context.Context, deleteRequest *
 	if val, ok := backupServerJoinPaths[deleteRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, deleteRequest.TargetJoinID)
 	} else {
-		return nil, godo.NewArgError("BackupServerJoin Delete: map key not found", deleteRequest.TargetJoinType)
+		return nil, godo.NewArgError("BackupServerJoin Delete: wrong TargetJoinType", deleteRequest.TargetJoinType)
 	}
 
 	path = fmt.Sprintf("%s/%d%s", path, deleteRequest.ID, apiFormat)

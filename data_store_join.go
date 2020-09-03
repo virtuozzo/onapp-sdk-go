@@ -173,7 +173,7 @@ func (s *DataStoreJoinsServiceOp) Delete(ctx context.Context, deleteRequest *Dat
 	if val, ok := dataStoreJoinPaths[deleteRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, deleteRequest.TargetJoinID)
 	} else {
-		return nil, godo.NewArgError("DataStoreJoin Delete: map key not found", deleteRequest.TargetJoinType)
+		return nil, godo.NewArgError("DataStoreJoin Delete: wrong TargetJoinType", deleteRequest.TargetJoinType)
 	}
 
 	path = fmt.Sprintf("%s/%d%s", path, deleteRequest.ID, apiFormat)
