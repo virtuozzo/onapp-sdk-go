@@ -37,7 +37,6 @@ type DataStoreJoin struct {
 	UpdatedAt      string `json:"updated_at,omitempty"`
 	TargetJoinID   int    `json:"target_join_id,omitempty"`
 	TargetJoinType string `json:"target_join_type,omitempty"`
-	Identifier     string `json:"identifier,omitempty"`
 }
 
 // DataStoreJoinCreateRequest represents a request to create a DataStoreJoin
