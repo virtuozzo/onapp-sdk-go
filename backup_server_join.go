@@ -71,7 +71,7 @@ func (s *BackupServerJoinsServiceOp) List(ctx context.Context, createRequest *Ba
 	if val, ok := backupServerJoinPaths[createRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, createRequest.TargetJoinID) + apiFormat
 	} else {
-		return nil, nil, godo.NewArgError("BackupServerJoin List: map key not found", createRequest.TargetJoinType)
+		return nil, nil, godo.NewArgError("BackupServerJoin List: wrong TargetJoinType", createRequest.TargetJoinType)
 	}
 
 	path, err := addOptions(path, opt)
@@ -108,7 +108,7 @@ func (s *BackupServerJoinsServiceOp) Get(ctx context.Context, targetJoinType str
 	if val, ok := backupServerJoinPaths[targetJoinType]; ok {
 		path = fmt.Sprintf(val, targetJoinID)
 	} else {
-		return nil, nil, godo.NewArgError("BackupServerJoin Get: map key not found", targetJoinType)
+		return nil, nil, godo.NewArgError("BackupServerJoin Get: wrong TargetJoinType", targetJoinType)
 	}
 
 	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
@@ -136,7 +136,7 @@ func (s *BackupServerJoinsServiceOp) Create(ctx context.Context, createRequest *
 	if val, ok := backupServerJoinPaths[createRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, createRequest.TargetJoinID) + apiFormat
 	} else {
-		return nil, nil, godo.NewArgError("BackupServerJoin Create: map key not found", createRequest.TargetJoinType)
+		return nil, nil, godo.NewArgError("BackupServerJoin Create: wrong TargetJoinType", createRequest.TargetJoinType)
 	}
 
 	rootRequest := &backupServerJoinCreateRequestRoot{

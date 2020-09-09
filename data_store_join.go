@@ -71,7 +71,7 @@ func (s *DataStoreJoinsServiceOp) List(ctx context.Context, createRequest *DataS
 	if val, ok := dataStoreJoinPaths[createRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, createRequest.TargetJoinID) + apiFormat
 	} else {
-		return nil, nil, godo.NewArgError("DataStoreJoin List: map key not found", createRequest.TargetJoinType)
+		return nil, nil, godo.NewArgError("DataStoreJoin List: wrong TargetJoinType", createRequest.TargetJoinType)
 	}
 
 	path, err := addOptions(path, opt)
@@ -108,7 +108,7 @@ func (s *DataStoreJoinsServiceOp) Get(ctx context.Context, targetJoinType string
 	if val, ok := dataStoreJoinPaths[targetJoinType]; ok {
 		path = fmt.Sprintf(val, targetJoinID)
 	} else {
-		return nil, nil, godo.NewArgError("DataStoreJoin Get: map key not found", targetJoinType)
+		return nil, nil, godo.NewArgError("DataStoreJoin Get: wrong TargetJoinType", targetJoinType)
 	}
 
 	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
@@ -136,7 +136,7 @@ func (s *DataStoreJoinsServiceOp) Create(ctx context.Context, createRequest *Dat
 	if val, ok := dataStoreJoinPaths[createRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, createRequest.TargetJoinID) + apiFormat
 	} else {
-		return nil, nil, godo.NewArgError("DataStoreJoin Create: map key not found", createRequest.TargetJoinType)
+		return nil, nil, godo.NewArgError("DataStoreJoin Create: wrong TargetJoinType", createRequest.TargetJoinType)
 	}
 
 	rootRequest := &dataStoreJoinCreateRequestRoot{

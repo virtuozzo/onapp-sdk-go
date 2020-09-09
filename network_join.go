@@ -74,7 +74,7 @@ func (s *NetworkJoinsServiceOp) List(ctx context.Context, createRequest *Network
 	if val, ok := networkJoinPaths[createRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, createRequest.TargetJoinID) + apiFormat
 	} else {
-		return nil, nil, godo.NewArgError("NetworkJoin List: map key not found", createRequest.TargetJoinType)
+		return nil, nil, godo.NewArgError("NetworkJoin List: wrong TargetJoinType", createRequest.TargetJoinType)
 	}
 
 	path, err := addOptions(path, opt)
@@ -111,7 +111,7 @@ func (s *NetworkJoinsServiceOp) Get(ctx context.Context, targetJoinType string, 
 	if val, ok := networkJoinPaths[targetJoinType]; ok {
 		path = fmt.Sprintf(val, targetJoinID)
 	} else {
-		return nil, nil, godo.NewArgError("NetworkJoin Get: map key not found", targetJoinType)
+		return nil, nil, godo.NewArgError("NetworkJoin Get: wrong TargetJoinType", targetJoinType)
 	}
 
 	path = fmt.Sprintf("%s/%d%s", path, id, apiFormat)
@@ -139,7 +139,7 @@ func (s *NetworkJoinsServiceOp) Create(ctx context.Context, createRequest *Netwo
 	if val, ok := networkJoinPaths[createRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, createRequest.TargetJoinID) + apiFormat
 	} else {
-		return nil, nil, godo.NewArgError("NetworkJoin Create: map key not found", createRequest.TargetJoinType)
+		return nil, nil, godo.NewArgError("NetworkJoin Create: wrong TargetJoinType", createRequest.TargetJoinType)
 	}
 
 	rootRequest := &networkJoinCreateRequestRoot{
@@ -175,7 +175,7 @@ func (s *NetworkJoinsServiceOp) Delete(ctx context.Context, deleteRequest *Netwo
 	if val, ok := networkJoinPaths[deleteRequest.TargetJoinType]; ok {
 		path = fmt.Sprintf(val, deleteRequest.TargetJoinID)
 	} else {
-		return nil, godo.NewArgError("NetworkJoin Delete: map key not found", deleteRequest.TargetJoinType)
+		return nil, godo.NewArgError("NetworkJoin Delete: wrong TargetJoinType", deleteRequest.TargetJoinType)
 	}
 
 	path = fmt.Sprintf("%s/%d%s", path, deleteRequest.ID, apiFormat)
