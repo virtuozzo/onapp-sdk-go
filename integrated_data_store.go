@@ -11,6 +11,7 @@ import (
 
 const integratedDataStoresBasePath string = "storage/%d/data_stores"
 const integratedDataStoreStorageNodesBasePath string = "storage/%d/nodes"
+const integratedDataStoreComputeResourcesBasePath string = "storage/%d/hypervisors"
 
 // IntegratedDataStoresService is an interface for interfacing with the IntegrateDataStores
 // endpoints of the OnApp API
@@ -23,6 +24,7 @@ type IntegratedDataStoresService interface {
 	Edit(context.Context, int, string, *IntegratedDataStoresEditRequest) (*Response, error)
 
 	StorageNodes(context.Context, int) (*StorageNodes, *Response, error)
+	BackendNodes(context.Context, int) (*BackendNodes, *Response, error)
 }
 
 // IntegratedDataStoresServiceOp handles communication with the Data Store related methods of the
@@ -57,6 +59,15 @@ type IntegratedDataStores struct {
 
 type StorageNodes []struct {
 	Node Node
+}
+
+type BackendNodes []struct {
+	Hypervisor BackendNode `json:"hypervisor,omitempty"`
+}
+
+type BackendNode struct {
+	ID    string  `json:"id,omitempty"`
+	Nodes []Nodes `json:"nodes,omitempty"`
 }
 
 // IntegratedDataStoreCreateRequest represents a request to create a IntegrateDataStores
@@ -211,13 +222,13 @@ func (s *IntegratedDataStoresServiceOp) Edit(ctx context.Context, resID int, id 
 	return s.client.Do(ctx, req, nil)
 }
 
-// StorageNodes get list of storage nodes from hypervisor
-func (s *IntegratedDataStoresServiceOp) StorageNodes(ctx context.Context, id int) (*StorageNodes, *Response, error) {
-	if id < 1 {
+// StorageNodes - get list of storage nodes from computer zone
+func (s *IntegratedDataStoresServiceOp) StorageNodes(ctx context.Context, hvgID int) (*StorageNodes, *Response, error) {
+	if hvgID < 1 {
 		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(integratedDataStoreStorageNodesBasePath, id) + apiFormat
+	path := fmt.Sprintf(integratedDataStoreStorageNodesBasePath, hvgID) + apiFormat
 	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
 		return nil, nil, err
@@ -226,6 +237,29 @@ func (s *IntegratedDataStoresServiceOp) StorageNodes(ctx context.Context, id int
 	log.Println("IntegratedDataStores [StorageNodes]  req: ", req)
 
 	root := &StorageNodes{}
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return root, resp, err
+}
+
+// BackendNodes - get list of computer resources backend nodes from computer zone
+func (s *IntegratedDataStoresServiceOp) BackendNodes(ctx context.Context, hvgID int) (*BackendNodes, *Response, error) {
+	if hvgID < 1 {
+		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(integratedDataStoreComputeResourcesBasePath, hvgID) + apiFormat
+	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	log.Println("IntegratedDataStores [BackendNodes]  req: ", req)
+
+	root := &BackendNodes{}
 	resp, err := s.client.Do(ctx, req, root)
 	if err != nil {
 		return nil, resp, err
