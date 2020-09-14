@@ -91,6 +91,7 @@ type Client struct {
 	CloudbootIPAddresses      CloudbootIPAddressesService
 	SoftwareLicenses          SoftwareLicensesService
 	Resolvers                 ResolversService
+	Backups                   BackupsService
 
 	// Optional function called after every successful request made to the OnApp APIs
 	onRequestCompleted RequestCompletionCallback
@@ -219,6 +220,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.CloudbootIPAddresses = &CloudbootIPAddressesServiceOp{client: c}
 	c.SoftwareLicenses = &SoftwareLicensesServiceOp{client: c}
 	c.Resolvers = &ResolversServiceOp{client: c}
+	c.Backups = &BackupsServiceOp{client: c}
 
 	return c
 }
