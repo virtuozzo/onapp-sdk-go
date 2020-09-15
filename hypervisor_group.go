@@ -12,6 +12,7 @@ import (
 // Xen/KVM, VMware - CRUD
 // CloudBoot, Smart CloudBoot, Baremetal CloudBoot - Get, Delete
 const hypervisorGroupsBasePath string = "settings/hypervisor_zones"
+const listOfAttachedComputeResources string = "settings/hypervisor_zones/%d/hypervisors"
 
 // HypervisorGroupsService is an interface for interfacing with the Compute Zone
 // endpoints of the OnApp API
@@ -22,6 +23,8 @@ type HypervisorGroupsService interface {
 	Create(context.Context, *HypervisorGroupCreateRequest) (*HypervisorGroup, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *HypervisorGroupEditRequest) (*Response, error)
+
+	ListOfAttachedComputeResources(context.Context, int) ([]Hypervisor, *Response, error)
 }
 
 // HypervisorGroupsServiceOp handles communication with the Compute Zone
@@ -220,7 +223,7 @@ func (s *HypervisorGroupsServiceOp) Delete(ctx context.Context, id int, meta int
 	return s.client.Do(ctx, req, nil)
 }
 
-// Edit HypervisorGroup.
+// Edit HypervisorGroup
 func (s *HypervisorGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *HypervisorGroupEditRequest) (*Response, error) {
 	if id < 1 {
 		return nil, godo.NewArgError("id", "cannot be less than 1")
@@ -239,4 +242,31 @@ func (s *HypervisorGroupsServiceOp) Edit(ctx context.Context, id int, editReques
 	log.Println("HypervisorGroup [Edit]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// ListOfAttachedComputeResources -
+func (s *HypervisorGroupsServiceOp) ListOfAttachedComputeResources(ctx context.Context, hvgID int) ([]Hypervisor, *Response, error) {
+	if hvgID < 1 {
+		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(listOfAttachedComputeResources, hvgID) + apiFormat
+	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	log.Println("HypervisorGroup [ListOfAttachedComputeResources]  req: ", req)
+
+	var out []map[string]Hypervisor
+	resp, err := s.client.Do(ctx, req, &out)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	arr := make([]Hypervisor, len(out))
+	for i := range arr {
+		arr[i] = out[i]["hypervisor"]
+	}
+
+	return arr, resp, err
 }
