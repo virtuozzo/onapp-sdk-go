@@ -69,6 +69,7 @@ type ImageTemplateGroupCreateRequest struct {
 
 // ImageTemplateGroupEditRequest represents a request to edit a ImageTemplateGroup
 type ImageTemplateGroupEditRequest struct {
+	Kms            bool   `json:"kms,bool"`
 	KmsHost        string `json:"kms_host,omitempty"`
 	KmsPort        string `json:"kms_port,omitempty"`
 	KmsServerLabel string `json:"kms_server_label,omitempty"`

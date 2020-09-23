@@ -79,9 +79,8 @@ type ImageTemplate struct {
 
 // ImageTemplateCreateRequest represents a request to install template
 type ImageTemplateCreateRequest struct {
-	ManagerID string `json:"manager_id,omitempty"`
-	// don't use omitempty because BackupServerID can be empty
-	BackupServerID string `json:"backup_server_id"`
+	ManagerID      string `json:"manager_id,omitempty"`
+	BackupServerID string `json:"backup_server_id"` // don't use omitempty because BackupServerID can be empty
 }
 
 type imageTemplateCreateRequestRoot struct {
