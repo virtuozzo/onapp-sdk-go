@@ -35,7 +35,7 @@ type SoftwareLicense struct {
 	ID        int      `json:"id,omitempty"`
 	Arch      string   `json:"arch,omitempty"`
 	Edition   []string `json:"edition,omitempty"`
-	Tail      string   `json:"tail,omitempty"`
+	Tail      string   `json:"tail"` // should be without omitempty
 	Distro    string   `json:"distro,omitempty"`
 	License   string   `json:"license,omitempty"`
 	Total     int      `json:"total,omitempty"`
@@ -48,7 +48,7 @@ type SoftwareLicense struct {
 type SoftwareLicenseCreateRequest struct {
 	Arch      string   `json:"arch,omitempty"`
 	Edition   []string `json:"edition,omitempty"`
-	Tail      string   `json:"tail,omitempty"`
+	Tail      string   `json:"tail"` // should be without omitempty
 	Distro    string   `json:"distro,omitempty"`
 	License   string   `json:"license,omitempty"`
 	Total     int      `json:"total,omitempty"`
