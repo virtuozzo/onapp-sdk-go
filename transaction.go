@@ -35,7 +35,7 @@ type TransactionsService interface {
 	Get(context.Context, int) (*Transaction, *Response, error)
 
 	GetByFilter(context.Context, interface{}, *ListOptions) (*Transaction, *Response, error)
-	ListByGroup(context.Context, interface{}, *ListOptions) ([]Transaction, *Response, error)
+	ListByGroup(context.Context, interface{}, bool, *ListOptions) ([]Transaction, *Response, error)
 }
 
 // TransactionsServiceOp handles communition with the image action related methods of the
@@ -125,7 +125,7 @@ func (s *TransactionsServiceOp) Get(ctx context.Context, id int) (*Transaction, 
 }
 
 // ListByGroup return group of transactions depended by action
-func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{}, opt *ListOptions) ([]Transaction, *Response, error) {
+func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{}, revers bool, opt *ListOptions) ([]Transaction, *Response, error) {
 	var associatedObjectID, parentID int
 	var associatedObjectType, parentType string
 
@@ -189,7 +189,11 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 		}
 
 		if cur.DependentTransactionID == 0 {
-			groupList = append(groupList, cur)
+			if revers == false {
+				groupList = append(groupList, cur)
+			} else {
+				groupList = append([]Transaction{cur}, groupList...) // prepend
+			}
 			break
 		}
 
@@ -202,7 +206,11 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 				if cur.AssociatedObjectID == next.AssociatedObjectID &&
 					cur.AssociatedObjectType == next.AssociatedObjectType &&
 					cur.ChainID == next.ChainID {
-					groupList = append(groupList, cur)
+					if revers == false {
+						groupList = append(groupList, cur)
+					} else {
+						groupList = append([]Transaction{cur}, groupList...) // prepend
+					}
 				}
 			}
 
@@ -210,7 +218,11 @@ func (s *TransactionsServiceOp) ListByGroup(ctx context.Context, meta interface{
 				if cur.ParentID == next.ParentID &&
 					cur.ParentType == next.ParentType &&
 					cur.ChainID == next.ChainID {
-					groupList = append(groupList, cur)
+					if revers == false {
+						groupList = append(groupList, cur)
+					} else {
+						groupList = append([]Transaction{cur}, groupList...) // prepend
+					}
 				}
 			}
 		}
@@ -267,7 +279,7 @@ func lastTransaction(ctx context.Context, client *Client, filter interface{}) (*
 		PerPage: searchTransactions,
 	}
 
-	lst, resp, err := client.Transactions.ListByGroup(ctx, filter, opt)
+	lst, resp, err := client.Transactions.ListByGroup(ctx, filter, false, opt)
 	if lst == nil || err != nil {
 		return nil, nil, err
 	}
