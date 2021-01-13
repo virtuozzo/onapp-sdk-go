@@ -70,16 +70,15 @@ type UserGroup struct {
 
 // UserGroupCreateRequest -
 type UserGroupCreateRequest struct {
-	Label     string `json:"label,omitempty"`
-	BucketIDs []int  `json:"bucket_ids,omitempty"`
+	Label          string `json:"label,omitempty"`
+	BillingPlanIDs []int  `json:"billing_plan_ids,omitempty"`
 }
 
 // UserGroupEditRequest -
 type UserGroupEditRequest struct {
-	Label string `json:"label,omitempty"`
-
-	RoleIDs   []string `json:"role_ids,omitempty"`
-	BucketIDs []int    `json:"bucket_ids,omitempty"`
+	Label          string   `json:"label,omitempty"`
+	RoleIDs        []string `json:"role_ids,omitempty"`
+	BillingPlanIDs []int    `json:"billing_plan_ids,omitempty"`
 }
 
 type userGroupCreateRequestRoot struct {
