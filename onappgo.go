@@ -92,6 +92,7 @@ type Client struct {
 	SoftwareLicenses          SoftwareLicensesService
 	Resolvers                 ResolversService
 	Backups                   BackupsService
+	Engines                   EnginesService
 
 	// Optional function called after every successful request made to the OnApp APIs
 	onRequestCompleted RequestCompletionCallback
@@ -221,6 +222,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.SoftwareLicenses = &SoftwareLicensesServiceOp{client: c}
 	c.Resolvers = &ResolversServiceOp{client: c}
 	c.Backups = &BackupsServiceOp{client: c}
+	c.Engines = &EnginesServiceOp{client: c}
 
 	return c
 }
