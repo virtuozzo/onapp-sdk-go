@@ -29,6 +29,7 @@ var _ LicensesService = &LicensesServiceOp{}
 
 type License struct {
 	IntegratedStorageLimit string `json:"integrated_storage_limit,omitempty"`
+	IsolatedLicense        bool   `json:"isolated_license,bool"`
 	Key                    string `json:"key,omitempty"`
 	KvmXenCoreLimit        string `json:"kvm_xen_core_limit,omitempty"`
 	KvmXenHvLimit          string `json:"kvm_xen_hv_limit,omitempty"`
@@ -40,15 +41,13 @@ type License struct {
 	TraderStatus           string `json:"trader_status,omitempty"`
 	Type                   string `json:"type,omitempty"`
 	Valid                  bool   `json:"valid,bool"`
-	IsolatedLicense        bool   `json:"isolated_license,bool"`
 	VcenterCoreLimit       string `json:"vcenter_core_limit,omitempty"`
 	VcenterVMLimit         string `json:"vcenter_vm_limit,omitempty"`
-	LicenseKey             string `json:"license_key,omitempty"`
 }
 
 type LicenseEditRequest struct {
 	IsolatedLicense bool   `json:"isolated_license,bool"`
-	LicenseKey      string `json:"license_key,omitempty"`
+	Key             string `json:"license_key,omitempty"`
 }
 
 type licenseEditRequestRoot struct {
