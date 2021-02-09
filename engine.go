@@ -113,3 +113,13 @@ func (s *EnginesServiceOp) Reload(ctx context.Context) (*Engine, *Response, erro
 
 	return root, resp, err
 }
+
+// IsOnline check if status of engine is 'online'
+func (res Engine) IsOnline() bool {
+	return res.Status == "Online"
+}
+
+// IsOffline check if status of engine is 'offline'
+func (res Engine) IsOffline() bool {
+	return res.Status == "Offline"
+}
