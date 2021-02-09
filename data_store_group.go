@@ -12,6 +12,7 @@ import (
 const dataStoreGroupsBasePath string = "settings/data_store_zones"
 const dataStoreAttachBasePath string = dataStoreGroupsBasePath + "/%d/data_stores/%d/attach"
 const dataStoreDetachBasePath string = dataStoreGroupsBasePath + "/%d/data_stores/%d/detach"
+const dataStoreAttachedToDataStoreZone string = dataStoreGroupsBasePath + "/%d/data_stores"
 
 // DataStoreGroupsService is an interface for interfacing with the Data Store Zones
 // endpoints of the OnApp API
@@ -25,6 +26,8 @@ type DataStoreGroupsService interface {
 
 	Attach(context.Context, int, int) (*Response, error)
 	Detach(context.Context, int, int) (*Response, error)
+
+	AttachedDataStores(context.Context, int) ([]DataStore, *Response, error)
 }
 
 // DataStoreGroupsServiceOp handles communication with the Data Store Groups related methods of the
@@ -234,4 +237,28 @@ func (s *DataStoreGroupsServiceOp) Detach(ctx context.Context, resID int, id int
 	log.Println("DataStoreGroup [Detach]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// AttachedDataStores return all DataStores attached to DataStoreGroup.
+func (s *DataStoreGroupsServiceOp) AttachedDataStores(ctx context.Context, resID int) ([]DataStore, *Response, error) {
+	path := fmt.Sprintf(dataStoreAttachedToDataStoreZone, resID) + apiFormat
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	log.Println("DataStoreGroup [AttachedDataStores]  req: ", req)
+
+	var out []map[string]DataStore
+	resp, err := s.client.Do(ctx, req, &out)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	arr := make([]DataStore, len(out))
+	for i := range arr {
+		arr[i] = out[i]["data_store"]
+	}
+
+	return arr, resp, err
 }
