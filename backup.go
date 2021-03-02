@@ -26,9 +26,10 @@ type BackupsService interface {
 	Create(context.Context, *BackupCreateRequest) (*Backup, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 
+	// TODO !!!
+	// Move next functions to the BackupActionsService
 	AllComputeResourceBackups(context.Context, int) ([]Backup, *Response, error)
 	ListOfDiskBackups(context.Context, int, int) ([]Backup, *Response, error)
-
 	BackupNote(context.Context, int, *BackupNoteRequest) (*Response, error)
 	ConvertBackupToTemplate(context.Context, int, *ConvertBackupToTemplateRequest) (*Response, error)
 }

@@ -24,6 +24,8 @@ type HypervisorGroupsService interface {
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *HypervisorGroupEditRequest) (*Response, error)
 
+	// TODO !!!
+	// Move next functions to the HypervisorGroupActionsService
 	ListOfAttachedComputeResources(context.Context, int) ([]Hypervisor, *Response, error)
 }
 

@@ -17,20 +17,19 @@ import (
 	sdk "github.com/OnApp/onapp-sdk-go/version"
 
 	"github.com/google/go-querystring/query"
-	"github.com/hashicorp/go-version"
 )
 
 var userAgent = "onappgo/" + sdk.String()
 
 const (
-	defaultBaseURL     = "https://69.168.239.52"
-	mediaType          = "application/json"
 	apiFormat          = ".json"
-	searchTransactions = 100
-	headerPerPage      = "X-Limit"
+	defaultBaseURL     = "https://69.168.239.52"
 	headerPage         = "X-Page"
-	headerTotal        = "X-Total"
+	headerPerPage      = "X-Limit"
 	headerRequestID    = "X-Request-Id"
+	headerTotal        = "X-Total"
+	mediaType          = "application/json"
+	searchTransactions = 100
 )
 
 // Client manages communication with OnApp API.
@@ -49,50 +48,51 @@ type Client struct {
 	apiPassword string
 
 	// Services used for communicating with the API
-	Buckets                   BucketsService
 	AccessControls            AccessControlsService
-	RateCards                 RateCardsService
-	Transactions              TransactionsService
-	InstancePackages          InstancePackagesService
-	VirtualMachines           VirtualMachinesService
-	VirtualMachineActions     VirtualMachineActionsService
-	Hypervisors               HypervisorsService
-	HypervisorGroups          HypervisorGroupsService
-	DataStores                DataStoresService
-	DataStoreJoins            DataStoreJoinsService
-	DataStoreGroups           DataStoreGroupsService
-	RemoteTemplates           RemoteTemplatesService
-	ImageTemplates            ImageTemplatesService
-	ImageTemplateGroups       ImageTemplateGroupsService
-	Disks                     DisksService
-	Networks                  NetworksService
-	NetworkInterfaces         NetworkInterfacesService
-	NetworkJoins              NetworkJoinsService
-	NetworkGroups             NetworkGroupsService
-	IPNets                    IPNetsService
-	IPRanges                  IPRangesService
-	BackupServers             BackupServersService
-	BackupServerJoins         BackupServerJoinsService
-	BackupServerGroups        BackupServerGroupsService
 	BackupResources           BackupResourcesService
 	BackupResourceZones       BackupResourceZonesService
-	Users                     UsersService
-	HypervisorZones           HypervisorZonesService
-	Licenses                  LicensesService
-	Roles                     RolesService
-	Configurations            ConfigurationsService
-	UserGroups                UserGroupsService
-	FirewallRules             FirewallRulesService
-	UserWhiteLists            UserWhiteListsService
-	IntegratedDataStores      IntegratedDataStoresService
-	LocationGroups            LocationGroupsService
-	SSHKeys                   SSHKeysService
+	Backups                   BackupsService
+	BackupServerGroups        BackupServerGroupsService
+	BackupServerJoins         BackupServerJoinsService
+	BackupServers             BackupServersService
+	Buckets                   BucketsService
 	CloudbootComputeResources CloudbootComputeResourcesService
 	CloudbootIPAddresses      CloudbootIPAddressesService
-	SoftwareLicenses          SoftwareLicensesService
-	Resolvers                 ResolversService
-	Backups                   BackupsService
+	Configurations            ConfigurationsService
+	DataStoreGroups           DataStoreGroupsService
+	DataStoreJoins            DataStoreJoinsService
+	DataStores                DataStoresService
+	Disks                     DisksService
 	Engines                   EnginesService
+	FirewallRules             FirewallRulesService
+	HypervisorGroups          HypervisorGroupsService
+	Hypervisors               HypervisorsService
+	HypervisorZones           HypervisorZonesService
+	ImageTemplateGroups       ImageTemplateGroupsService
+	ImageTemplates            ImageTemplatesService
+	InstancePackages          InstancePackagesService
+	IntegratedDataStores      IntegratedDataStoresService
+	IPAddresses               IPAddressesService
+	IPNets                    IPNetsService
+	IPRanges                  IPRangesService
+	Licenses                  LicensesService
+	LocationGroups            LocationGroupsService
+	NetworkGroups             NetworkGroupsService
+	NetworkInterfaces         NetworkInterfacesService
+	NetworkJoins              NetworkJoinsService
+	Networks                  NetworksService
+	RateCards                 RateCardsService
+	RemoteTemplates           RemoteTemplatesService
+	Resolvers                 ResolversService
+	Roles                     RolesService
+	SoftwareLicenses          SoftwareLicensesService
+	SSHKeys                   SSHKeysService
+	Transactions              TransactionsService
+	UserGroups                UserGroupsService
+	Users                     UsersService
+	UserWhiteLists            UserWhiteListsService
+	VirtualMachineActions     VirtualMachineActionsService
+	VirtualMachines           VirtualMachinesService
 
 	// Optional function called after every successful request made to the OnApp APIs
 	onRequestCompleted RequestCompletionCallback
@@ -168,61 +168,62 @@ func NewClient(httpClient *http.Client) *Client {
 
 	if t, ok := http.DefaultTransport.(*http.Transport); ok {
 		c.transport = &http.Transport{
-			Proxy:                 t.Proxy,
 			DialContext:           t.DialContext,
-			MaxIdleConns:          t.MaxIdleConns,
-			IdleConnTimeout:       t.IdleConnTimeout,
-			TLSHandshakeTimeout:   t.TLSHandshakeTimeout,
 			ExpectContinueTimeout: t.ExpectContinueTimeout,
+			IdleConnTimeout:       t.IdleConnTimeout,
+			MaxIdleConns:          t.MaxIdleConns,
+			Proxy:                 t.Proxy,
+			TLSHandshakeTimeout:   t.TLSHandshakeTimeout,
 		}
 	} else {
 		c.transport = new(http.Transport)
 	}
 
-	c.Buckets = &BucketsServiceOp{client: c}
 	c.AccessControls = &AccessControlsServiceOp{client: c}
-	c.RateCards = &RateCardsServiceOp{client: c}
-	c.Transactions = &TransactionsServiceOp{client: c}
-	c.InstancePackages = &InstancePackagesServiceOp{client: c}
-	c.VirtualMachines = &VirtualMachinesServiceOp{client: c}
-	c.VirtualMachineActions = &VirtualMachineActionsServiceOp{client: c}
-	c.Hypervisors = &HypervisorsServiceOp{client: c}
-	c.HypervisorGroups = &HypervisorGroupsServiceOp{client: c}
-	c.DataStores = &DataStoresServiceOp{client: c}
-	c.DataStoreJoins = &DataStoreJoinsServiceOp{client: c}
+	c.BackupResources = &BackupResourcesServiceOp{client: c}
+	c.BackupResourceZones = &BackupResourceZonesServiceOp{client: c}
+	c.Backups = &BackupsServiceOp{client: c}
+	c.BackupServerGroups = &BackupServerGroupsServiceOp{client: c}
+	c.BackupServerJoins = &BackupServerJoinsServiceOp{client: c}
+	c.BackupServers = &BackupServersServiceOp{client: c}
+	c.Buckets = &BucketsServiceOp{client: c}
+	c.CloudbootComputeResources = &CloudbootComputeResourcesServiceOp{client: c}
+	c.CloudbootIPAddresses = &CloudbootIPAddressesServiceOp{client: c}
+	c.Configurations = &ConfigurationsServiceOp{client: c}
 	c.DataStoreGroups = &DataStoreGroupsServiceOp{client: c}
-	c.RemoteTemplates = &RemoteTemplatesServiceOp{client: c}
-	c.ImageTemplates = &ImageTemplatesServiceOp{client: c}
-	c.ImageTemplateGroups = &ImageTemplateGroupsServiceOp{client: c}
+	c.DataStoreJoins = &DataStoreJoinsServiceOp{client: c}
+	c.DataStores = &DataStoresServiceOp{client: c}
 	c.Disks = &DisksServiceOp{client: c}
-	c.Networks = &NetworksServiceOp{client: c}
+	c.Engines = &EnginesServiceOp{client: c}
+	c.FirewallRules = &FirewallRulesServiceOp{client: c}
+	c.HypervisorGroups = &HypervisorGroupsServiceOp{client: c}
+	c.Hypervisors = &HypervisorsServiceOp{client: c}
+	c.HypervisorZones = &HypervisorZonesServiceOp{client: c}
+	c.ImageTemplateGroups = &ImageTemplateGroupsServiceOp{client: c}
+	c.ImageTemplates = &ImageTemplatesServiceOp{client: c}
+	c.InstancePackages = &InstancePackagesServiceOp{client: c}
+	c.IntegratedDataStores = &IntegratedDataStoresServiceOp{client: c}
+	c.IPAddresses = &IPAddressesServiceOp{client: c}
 	c.IPNets = &IPNetsServiceOp{client: c}
 	c.IPRanges = &IPRangesServiceOp{client: c}
+	c.Licenses = &LicensesServiceOp{client: c}
+	c.LocationGroups = &LocationGroupsServiceOp{client: c}
 	c.NetworkGroups = &NetworkGroupsServiceOp{client: c}
 	c.NetworkInterfaces = &NetworkInterfacesServiceOp{client: c}
 	c.NetworkJoins = &NetworkJoinsServiceOp{client: c}
-	c.BackupServers = &BackupServersServiceOp{client: c}
-	c.BackupServerJoins = &BackupServerJoinsServiceOp{client: c}
-	c.BackupServerGroups = &BackupServerGroupsServiceOp{client: c}
-	c.BackupResources = &BackupResourcesServiceOp{client: c}
-	c.BackupResourceZones = &BackupResourceZonesServiceOp{client: c}
-	c.Users = &UsersServiceOp{client: c}
-	c.HypervisorZones = &HypervisorZonesServiceOp{client: c}
-	c.Licenses = &LicensesServiceOp{client: c}
-	c.Roles = &RolesServiceOp{client: c}
-	c.Configurations = &ConfigurationsServiceOp{client: c}
-	c.UserGroups = &UserGroupsServiceOp{client: c}
-	c.FirewallRules = &FirewallRulesServiceOp{client: c}
-	c.UserWhiteLists = &UserWhiteListsServiceOp{client: c}
-	c.IntegratedDataStores = &IntegratedDataStoresServiceOp{client: c}
-	c.LocationGroups = &LocationGroupsServiceOp{client: c}
-	c.SSHKeys = &SSHKeysServiceOp{client: c}
-	c.CloudbootComputeResources = &CloudbootComputeResourcesServiceOp{client: c}
-	c.CloudbootIPAddresses = &CloudbootIPAddressesServiceOp{client: c}
-	c.SoftwareLicenses = &SoftwareLicensesServiceOp{client: c}
+	c.Networks = &NetworksServiceOp{client: c}
+	c.RateCards = &RateCardsServiceOp{client: c}
+	c.RemoteTemplates = &RemoteTemplatesServiceOp{client: c}
 	c.Resolvers = &ResolversServiceOp{client: c}
-	c.Backups = &BackupsServiceOp{client: c}
-	c.Engines = &EnginesServiceOp{client: c}
+	c.Roles = &RolesServiceOp{client: c}
+	c.SoftwareLicenses = &SoftwareLicensesServiceOp{client: c}
+	c.SSHKeys = &SSHKeysServiceOp{client: c}
+	c.Transactions = &TransactionsServiceOp{client: c}
+	c.UserGroups = &UserGroupsServiceOp{client: c}
+	c.Users = &UsersServiceOp{client: c}
+	c.UserWhiteLists = &UserWhiteListsServiceOp{client: c}
+	c.VirtualMachineActions = &VirtualMachineActionsServiceOp{client: c}
+	c.VirtualMachines = &VirtualMachinesServiceOp{client: c}
 
 	return c
 }
@@ -450,26 +451,21 @@ func CheckResponse(r *http.Response) error {
 }
 
 // Version return OnApp endpoint version
-func (c *Client) Version() (*version.Version, *Response, error) {
+func (c *Client) Version() (string, *Response, error) {
 	path := fmt.Sprintf("version%s", apiFormat)
 
 	req, err := c.NewRequest(context.TODO(), http.MethodGet, path, nil)
 	if err != nil {
-		return nil, nil, err
+		return "", nil, err
 	}
 
 	var res map[string]string
 	resp, err := c.Do(context.TODO(), req, &res)
 	if err != nil {
-		return nil, resp, err
+		return "", resp, err
 	}
 
-	ver, err := version.NewSemver(res["version"])
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return ver, resp, err
+	return res["version"], resp, err
 }
 
 // String - convert ErrorResponse to the string

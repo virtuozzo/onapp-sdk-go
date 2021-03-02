@@ -23,6 +23,8 @@ type IntegratedDataStoresService interface {
 	Delete(context.Context, int, string, interface{}) (*Response, error)
 	Edit(context.Context, int, string, *IntegratedDataStoresEditRequest) (*Response, error)
 
+	// TODO !!!
+	// Move next functions to the IntegratedDataStoreActionsService
 	StorageNodes(context.Context, int) (*StorageNodes, *Response, error)
 	BackendNodes(context.Context, int) (*BackendNodes, *Response, error)
 }

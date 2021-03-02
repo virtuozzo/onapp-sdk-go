@@ -22,6 +22,8 @@ type DataStoresService interface {
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *DataStoreEditRequest) (*Response, error)
 
+	// TODO !!!
+	// Move next functions to the DataStoreActionsService
 	IoLimits(context.Context, int, *IoLimits) (*Response, error)
 }
 

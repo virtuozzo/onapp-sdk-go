@@ -21,10 +21,11 @@ type VirtualMachinesService interface {
 	Delete(context.Context, int, interface{}) (*Transaction, *Response, error)
 	// Edit(context.Context, int, *ListOptions) ([]VirtualMachine, *Response, error)
 
+	// TODO !!!
+	// Move next functions to the VirtualMachineActionsService
 	Backups(context.Context, int, *ListOptions) ([]Backup, *Response, error)
 	Transactions(context.Context, int, *ListOptions) ([]Transaction, *Response, error)
 	Disks(context.Context, int, *ListOptions) ([]Disk, *Response, error)
-
 	ListNetworkInterfaces(context.Context, int, *ListOptions) ([]NetworkInterface, *Response, error)
 	ListFirewallRules(context.Context, int, *ListOptions) ([]FirewallRule, *Response, error)
 }

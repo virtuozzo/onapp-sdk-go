@@ -22,8 +22,12 @@ type UsersService interface {
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *UserEditRequest) (*Response, error)
 
-	// Later move to the UserActionsService
+	// TODO !!!
+	// Move next functions to the UserActionsService
 	MakeNewAPIKey(context.Context, int) (string, *Response, error)
+	// Need to create next function
+	// AssignIPAddress(context.Context, int, interface{}) (*Transaction, *Response, error)
+	// UnAssignIPAddress(context.Context, int, int, interface{}) (*Transaction, *Response, error)
 }
 
 // UsersServiceOp handles communication with the User related methods of the

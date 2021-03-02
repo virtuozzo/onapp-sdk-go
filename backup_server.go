@@ -26,9 +26,10 @@ type BackupServersService interface {
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *BackupServerEditRequest) (*Response, error)
 
+	// TODO !!!
+	// Move next functions to the BackupServerActionsService
 	Refresh(context.Context, int) (*HardwareDevices, *Response, error)
 	Attach(context.Context, int, map[string]interface{}) (*Response, error)
-
 	EditIntegratedStorageSettings(context.Context, int, *IntegratedStorageSettings) (*Response, error)
 }
 
@@ -270,12 +271,12 @@ func (s *BackupServersServiceOp) Attach(ctx context.Context, resID int, attachRe
 // EditIntegratedStorageSettings -
 func (s *BackupServersServiceOp) EditIntegratedStorageSettings(ctx context.Context, id int, editRequest *IntegratedStorageSettings) (*Response, error) {
 	if editRequest == nil || id < 1 {
-		return nil, godo.NewArgError("editRequest || id", "cannot be nill or less than 1")
+		return nil, godo.NewArgError("editRequest || id", "cannot be nil or less than 1")
 	}
 
 	path := fmt.Sprintf(backupServerIntegratedStorageSettingBasePath, id) + apiFormat
 
-	rootRequest := &integratedStorageSettingCreateRequestRoot{
+	rootRequest := &integratedStorageSettingRequestRoot{
 		IntegratedStorageSettings: editRequest,
 	}
 

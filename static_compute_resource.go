@@ -35,6 +35,7 @@ type HypervisorsService interface {
 	Refresh(context.Context, int) (*HardwareDevices, *Response, error)
 	Attach(context.Context, int, map[string]interface{}) (*Response, error)
 
+	GetIntegratedStorageSettings(context.Context, int) (*IntegratedStorageSettings, *Response, error)
 	EditIntegratedStorageSettings(context.Context, int, *IntegratedStorageSettings) (*Response, error)
 }
 
@@ -119,30 +120,30 @@ type Hypervisor struct {
 
 // HypervisorCreateRequest represents a request to create a Hypervisor
 type HypervisorCreateRequest struct {
-	Label                   string `json:"label,omitempty"`
-	IPAddress               string `json:"ip_address,omitempty"`
 	BackupIPAddress         string `json:"backup_ip_address,omitempty"`
+	CPUUnits                int    `json:"cpu_units,omitempty"`
 	DisableFailover         bool   `json:"disable_failover,bool"`
-	HypervisorType          string `json:"hypervisor_type,omitempty"`
-	SegregationOsType       string `json:"segregation_os_type,omitempty"`
 	Enabled                 bool   `json:"enabled,bool"`
 	FailoverRecipeID        int    `json:"failover_recipe_id,omitempty"`
 	HypervisorGroupID       int    `json:"hypervisor_group_id,omitempty"`
-	CPUUnits                int    `json:"cpu_units,omitempty"`
-	StaticIntegratedStorage bool   `json:"static_integrated_storage,bool"`
+	HypervisorType          string `json:"hypervisor_type,omitempty"`
+	IPAddress               string `json:"ip_address,omitempty"`
+	Label                   string `json:"label,omitempty"`
 	PowerCycleCommand       string `json:"power_cycle_command,omitempty"`
+	SegregationOsType       string `json:"segregation_os_type,omitempty"`
+	StaticIntegratedStorage bool   `json:"static_integrated_storage,bool"`
 }
 
 // HypervisorEditRequest represents a request to edit a Hypervisor
 type HypervisorEditRequest struct {
-	Label             string `json:"label,omitempty"`
-	IPAddress         string `json:"ip_address,omitempty"`
 	BackupIPAddress   string `json:"backup_ip_address,omitempty"`
-	SegregationOsType string `json:"segregation_os_type,omitempty"`
+	CPUUnits          int    `json:"cpu_units,omitempty"`
 	Enabled           bool   `json:"enabled,bool"`
 	FailoverRecipeID  int    `json:"failover_recipe_id,omitempty"`
 	HypervisorGroupID int    `json:"hypervisor_group_id,omitempty"`
-	CPUUnits          int    `json:"cpu_units,omitempty"`
+	IPAddress         string `json:"ip_address,omitempty"`
+	Label             string `json:"label,omitempty"`
+	SegregationOsType string `json:"segregation_os_type,omitempty"`
 }
 
 type hypervisorCreateRequestRoot struct {
@@ -157,7 +158,7 @@ func (d HypervisorCreateRequest) String() string {
 	return godo.Stringify(d)
 }
 
-// List all Hypervisors.
+// List all Hypervisors
 func (s *HypervisorsServiceOp) List(ctx context.Context, opt *ListOptions) ([]Hypervisor, *Response, error) {
 	path := hypervisorsBasePath + apiFormat
 	path, err := addOptions(path, opt)
@@ -184,7 +185,7 @@ func (s *HypervisorsServiceOp) List(ctx context.Context, opt *ListOptions) ([]Hy
 	return arr, resp, err
 }
 
-// Get individual Hypervisor.
+// Get individual Hypervisor
 func (s *HypervisorsServiceOp) Get(ctx context.Context, id int) (*Hypervisor, *Response, error) {
 	if id < 1 {
 		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
@@ -205,7 +206,7 @@ func (s *HypervisorsServiceOp) Get(ctx context.Context, id int) (*Hypervisor, *R
 	return root.Hypervisor, resp, err
 }
 
-// Create Hypervisor.
+// Create Hypervisor
 func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *HypervisorCreateRequest) (*Hypervisor, *Response, error) {
 	if createRequest == nil {
 		return nil, nil, godo.NewArgError("Hypervisor createRequest", "cannot be nil")
@@ -231,7 +232,7 @@ func (s *HypervisorsServiceOp) Create(ctx context.Context, createRequest *Hyperv
 	return root.Hypervisor, resp, err
 }
 
-// Delete Hypervisor.
+// Delete Hypervisor
 func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interface{}) (*Response, error) {
 	if id < 1 {
 		return nil, godo.NewArgError("id", "cannot be less than 1")
@@ -252,7 +253,7 @@ func (s *HypervisorsServiceOp) Delete(ctx context.Context, id int, meta interfac
 	return s.client.Do(ctx, req, nil)
 }
 
-// Edit Hypervisor.
+// Edit Hypervisor
 func (s *HypervisorsServiceOp) Edit(ctx context.Context, id int, editRequest *HypervisorEditRequest) (*Response, error) {
 	if editRequest == nil || id < 1 {
 		return nil, godo.NewArgError("editRequest || id", "cannot be nil or less than 1")
@@ -269,6 +270,7 @@ func (s *HypervisorsServiceOp) Edit(ctx context.Context, id int, editRequest *Hy
 	return s.client.Do(ctx, req, nil)
 }
 
+// HypervisorRebootRequest -
 type HypervisorRebootRequest struct {
 	SkipPoweredOffVmsMigration int `json:"skip_powered_off_vms_migration,omitempty"`
 	SheduleFailover            int `json:"schedule_failover,omitempty"`
@@ -292,6 +294,7 @@ func (s *HypervisorsServiceOp) Reboot(ctx context.Context, id int, rebootRequest
 	return s.client.Do(ctx, req, nil)
 }
 
+// HardwareDevices -
 type HardwareDevices struct {
 	HardwareCustomDevice           []*HardwareCustomDevice           `json:"hardware_custom_device,omitempty"`
 	HardwareDiskDevice             []*HardwareDiskDevice             `json:"hardware_disk_device,omitempty"`
@@ -306,50 +309,54 @@ type rootHardware []struct {
 	HardwareNetworkInterfaceDevice *HardwareNetworkInterfaceDevice `json:"hardware_network_interface_device,omitempty"`
 }
 
+// HardwareDiskDevice -
 type HardwareDiskDevice struct {
-	ID         int    `json:"id,omitempty"`
-	ParentID   int    `json:"parent_id,omitempty"`
-	Status     string `json:"status,omitempty"`
 	CreatedAt  string `json:"created_at,omitempty"`
-	UpdatedAt  string `json:"updated_at,omitempty"`
-	ParentType string `json:"parent_type,omitempty"`
+	ID         int    `json:"id,omitempty"`
 	Name       string `json:"name,omitempty"`
+	ParentID   int    `json:"parent_id,omitempty"`
+	ParentType string `json:"parent_type,omitempty"`
 	Scsi       string `json:"scsi,omitempty"`
+	Status     string `json:"status,omitempty"`
+	UpdatedAt  string `json:"updated_at,omitempty"`
 }
 
+// HardwareNetworkInterfaceDevice -
 type HardwareNetworkInterfaceDevice struct {
-	ID            int    `json:"id,omitempty"`
-	ParentID      int    `json:"parent_id,omitempty"`
-	Status        string `json:"status,omitempty"`
 	CreatedAt     string `json:"created_at,omitempty"`
-	UpdatedAt     string `json:"updated_at,omitempty"`
-	ParentType    string `json:"parent_type,omitempty"`
-	Name          string `json:"name,omitempty"`
-	Pci           string `json:"pci,omitempty"`
-	Mac           string `json:"mac,omitempty"`
+	ID            int    `json:"id,omitempty"`
 	InterfaceType string `json:"interface_type,omitempty"`
+	Mac           string `json:"mac,omitempty"`
+	Name          string `json:"name,omitempty"`
+	ParentID      int    `json:"parent_id,omitempty"`
+	ParentType    string `json:"parent_type,omitempty"`
+	Pci           string `json:"pci,omitempty"`
+	Status        string `json:"status,omitempty"`
+	UpdatedAt     string `json:"updated_at,omitempty"`
 }
 
+// HardwareCustomDevice -
 type HardwareCustomDevice struct {
-	ID         int    `json:"id,omitempty"`
-	ParentID   int    `json:"parent_id,omitempty"`
-	Status     string `json:"status,omitempty"`
-	CreatedAt  string `json:"created_at,omitempty"`
-	UpdatedAt  string `json:"updated_at,omitempty"`
-	ParentType string `json:"parent_type,omitempty"`
-	Name       string `json:"name,omitempty"`
-	Pci        string `json:"pci,omitempty"`
 	Code       string `json:"code,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+	ID         int    `json:"id,omitempty"`
+	Name       string `json:"name,omitempty"`
+	ParentID   int    `json:"parent_id,omitempty"`
+	ParentType string `json:"parent_type,omitempty"`
+	Pci        string `json:"pci,omitempty"`
+	Status     string `json:"status,omitempty"`
+	UpdatedAt  string `json:"updated_at,omitempty"`
 }
 
+// HardwareDiskPciDevice -
 type HardwareDiskPciDevice struct {
+	CreatedAt  string `json:"created_at,omitempty"`
 	ID         int    `json:"id,omitempty"`
 	ParentID   int    `json:"parent_id,omitempty"`
-	Status     string `json:"status,omitempty"`
-	CreatedAt  string `json:"created_at,omitempty"`
-	UpdatedAt  string `json:"updated_at,omitempty"`
 	ParentType string `json:"parent_type,omitempty"`
 	Pci        string `json:"pci,omitempty"`
+	Status     string `json:"status,omitempty"`
+	UpdatedAt  string `json:"updated_at,omitempty"`
 }
 
 // Refresh - get list of hardware devices (disks, network interfaces) from hypervisor with enabled integrated storage
@@ -413,8 +420,8 @@ type hardwareDevicesRoot struct {
 }
 
 const AssignedToCache string = "assigned_to_cache"
-const AssignedToStorage string = "assigned_to_storage"
 const AssignedToSAN string = "assigned_to_san"
+const AssignedToStorage string = "assigned_to_storage"
 const Unassigned string = "unassigned"
 
 // Attach - attach disks, network interfaces of hypervisor to the integrated data store
@@ -444,46 +451,55 @@ func (s *HypervisorsServiceOp) Attach(ctx context.Context, resID int, attachRequ
 }
 
 // IntegratedStorageSettings -
-// TODO: we must change all fields to the type 'int' only skip 'bonding_mode' this field must be string
-// because we got normal structure, but for editing we must send string so there is some data inconsistency
 type IntegratedStorageSettings struct {
 	BondingMode          string `json:"bonding_mode,omitempty"`
-	CacheMirrors         string `json:"cache_mirrors,omitempty"`
-	CacheStripes         string `json:"cache_stripes,omitempty"`
-	ControllerDbSize     string `json:"controller_db_size,omitempty"`
-	ControllerMemorySize string `json:"controller_memory_size,omitempty"`
-	DisksPerController   string `json:"disks_per_controller,omitempty"`
-	Mtu                  string `json:"mtu,omitempty"`
+	BondName             string `json:"bond_name,omitempty"`
+	BridgeName           string `json:"bridge_name,omitempty"`
+	CacheMirrors         int    `json:"cache_mirrors,omitempty"`
+	CacheStripes         int    `json:"cache_stripes,omitempty"`
+	ControllerMemorySize int    `json:"controller_memory_size,omitempty"`
+	DbSize               int    `json:"db_size,omitempty"`
+	DisksPerController   int    `json:"disks_per_controller,omitempty"`
+	Mtu                  int    `json:"mtu,omitempty"`
 	Vlan                 string `json:"vlan,omitempty"`
 }
 
-// From cloudboot
-// type IntegratedStorageSettings struct {
-// 	BondingMode          string `json:"bonding_mode,omitempty"`
-// 	BondName             string `json:"bond_name,omitempty"`
-// 	BridgeName           string `json:"bridge_name,omitempty"`
-// 	CacheMirrors         int    `json:"cache_mirrors,omitempty"`
-// 	CacheStripes         int    `json:"cache_stripes,omitempty"`
-// 	ControllerMemorySize int    `json:"controller_memory_size,omitempty"`
-// 	DbSize               int    `json:"db_size,omitempty"`
-// 	DisksPerController   int    `json:"disks_per_controller,omitempty"`
-// 	Mtu                  int    `json:"mtu,omitempty"`
-// 	Vlan                 string `json:"vlan,omitempty"`
-// }
-
-type integratedStorageSettingCreateRequestRoot struct {
+type integratedStorageSettingRequestRoot struct {
 	IntegratedStorageSettings *IntegratedStorageSettings `json:"integrated_storage_settings,omitempty"`
+}
+
+// GetIntegratedStorageSettings -
+func (s *HypervisorsServiceOp) GetIntegratedStorageSettings(ctx context.Context, id int) (*IntegratedStorageSettings, *Response, error) {
+	if id < 1 {
+		return nil, nil, godo.NewArgError("id", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(hypervisorIntegratedStorageSettingBasePath, id) + apiFormat
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	root := new(integratedStorageSettingRequestRoot)
+	resp, err := s.client.Do(ctx, req, root)
+	if err != nil {
+		return nil, resp, err
+	}
+	log.Println("Hypervisor [GetIntegratedStorageSettings]  req: ", req)
+
+	return root.IntegratedStorageSettings, resp, err
 }
 
 // EditIntegratedStorageSettings -
 func (s *HypervisorsServiceOp) EditIntegratedStorageSettings(ctx context.Context, id int, editRequest *IntegratedStorageSettings) (*Response, error) {
 	if editRequest == nil || id < 1 {
-		return nil, godo.NewArgError("editRequest || id", "cannot be nill or less than 1")
+		return nil, godo.NewArgError("editRequest || id", "cannot be nil or less than 1")
 	}
 
 	path := fmt.Sprintf(hypervisorIntegratedStorageSettingBasePath, id) + apiFormat
 
-	rootRequest := &integratedStorageSettingCreateRequestRoot{
+	rootRequest := &integratedStorageSettingRequestRoot{
 		IntegratedStorageSettings: editRequest,
 	}
 

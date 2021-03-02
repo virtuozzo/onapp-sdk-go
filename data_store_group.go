@@ -222,7 +222,7 @@ func (s *DataStoreGroupsServiceOp) Attach(ctx context.Context, resID int, id int
 	return s.client.Do(ctx, req, nil)
 }
 
-// Detach data store to the DataStoreGroup.
+// Detach data store from the DataStoreGroup.
 func (s *DataStoreGroupsServiceOp) Detach(ctx context.Context, resID int, id int) (*Response, error) {
 	if resID < 1 || id < 1 {
 		return nil, godo.NewArgError("resID || id", "cannot be less than 1")
@@ -239,7 +239,7 @@ func (s *DataStoreGroupsServiceOp) Detach(ctx context.Context, resID int, id int
 	return s.client.Do(ctx, req, nil)
 }
 
-// AttachedDataStores return all DataStores attached to DataStoreGroup.
+// AttachedDataStores return all DataStores attached to the DataStoreGroup.
 func (s *DataStoreGroupsServiceOp) AttachedDataStores(ctx context.Context, resID int) ([]DataStore, *Response, error) {
 	path := fmt.Sprintf(dataStoreAttachedToDataStoreZone, resID) + apiFormat
 
