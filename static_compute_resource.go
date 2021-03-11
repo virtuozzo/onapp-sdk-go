@@ -460,6 +460,7 @@ type IntegratedStorageSettings struct {
 	ControllerMemorySize int    `json:"controller_memory_size,omitempty"`
 	DbSize               int    `json:"db_size,omitempty"`
 	DisksPerController   int    `json:"disks_per_controller,omitempty"`
+	HostID               int    `json:"host_id,omitempty"`
 	Mtu                  int    `json:"mtu,omitempty"`
 	Vlan                 string `json:"vlan,omitempty"`
 }

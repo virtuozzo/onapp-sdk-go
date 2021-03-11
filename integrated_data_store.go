@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/digitalocean/godo"
 )
@@ -268,4 +269,15 @@ func (s *IntegratedDataStoresServiceOp) BackendNodes(ctx context.Context, hvgID 
 	}
 
 	return root, resp, err
+}
+
+// GetNodesByHostID - return computer resources backend nodes with integrated storage
+func (b *BackendNodes) GetNodesByHostID(hostID int) []Nodes {
+	for _, v := range *b {
+		if v.Hypervisor.ID == strconv.Itoa(hostID) {
+			return v.Hypervisor.Nodes
+		}
+	}
+
+	return nil
 }
