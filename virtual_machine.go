@@ -155,7 +155,6 @@ type VirtualMachineCreateRequest struct {
 	RateLimit                        int                              `json:"rate_limit,omitempty"`
 	RecipeJoinsAttributes            []string                         `json:"recipe_joins_attributes,omitempty"`
 	RequiredAutomaticBackup          int                              `json:"required_automatic_backup,omitempty"`
-	RequiredIPAddressAssignment      bool                             `json:"required_ip_address_assignment,bool"`
 	RequiredVirtualMachineBuild      bool                             `json:"required_virtual_machine_build,bool"`
 	RequiredVirtualMachineStartup    bool                             `json:"required_virtual_machine_startup,bool"`
 	SelectedIPAddress                string                           `json:"selected_ip_address,omitempty"`
