@@ -13,6 +13,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	sdk "github.com/OnApp/onapp-sdk-go/version"
 
@@ -392,6 +393,25 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 			err = rerr
 		}
 	}()
+
+	// If we got response code 422 we trying todo some count of requests to trying avoid this
+	// If count is out and we continue getting 422 then we exit with error
+	if resp.StatusCode == 422 {
+		count := 3
+		sleep := 5 * time.Second
+		for i := 0; i < count; i++ {
+			time.Sleep(sleep)
+
+			resp, err = DoRequestWithClient(ctx, c.client, req)
+			if err != nil {
+				return nil, err
+			}
+
+			if resp.StatusCode != 422 {
+				break
+			}
+		}
+	}
 
 	response := newResponse(resp)
 
