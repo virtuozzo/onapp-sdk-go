@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -397,6 +398,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 			break
 		}
 
+		log.Printf("Got status code 422, waiting %d sec and trying again [%d of %d]", sleep, i+1, count)
 		time.Sleep(sleep)
 	}
 
