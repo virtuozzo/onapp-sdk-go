@@ -380,10 +380,26 @@ func (r *Response) populateLinks() {
 // pointed to by v, or returned as an error if an API error has occurred. If v implements the io.Writer interface,
 // the raw response will be written to v, without attempting to decode it.
 func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Response, error) {
-	resp, err := DoRequestWithClient(ctx, c.client, req)
-	if err != nil {
-		return nil, err
+	resp := &http.Response{}
+	err := *new(error)
+
+	// If we got response code 422 we trying todo some count of requests to trying avoid this
+	// If count is out and we continue getting 422 then we exit with error
+	count := 3
+	sleep := 5 * time.Second
+	for i := 0; i < count; i++ {
+		resp, err = DoRequestWithClient(ctx, c.client, req)
+		if err != nil {
+			return nil, err
+		}
+
+		if resp.StatusCode != 422 {
+			break
+		}
+
+		time.Sleep(sleep)
 	}
+
 	if c.onRequestCompleted != nil {
 		c.onRequestCompleted(req, resp)
 	}
@@ -393,25 +409,6 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 			err = rerr
 		}
 	}()
-
-	// If we got response code 422 we trying todo some count of requests to trying avoid this
-	// If count is out and we continue getting 422 then we exit with error
-	if resp.StatusCode == 422 {
-		count := 3
-		sleep := 5 * time.Second
-		for i := 0; i < count; i++ {
-			time.Sleep(sleep)
-
-			resp, err = DoRequestWithClient(ctx, c.client, req)
-			if err != nil {
-				return nil, err
-			}
-
-			if resp.StatusCode != 422 {
-				break
-			}
-		}
-	}
 
 	response := newResponse(resp)
 
