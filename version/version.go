@@ -5,13 +5,13 @@
 package version
 
 import (
-  "fmt"
+	"fmt"
 
-  version "github.com/hashicorp/go-version"
+	version "github.com/hashicorp/go-version"
 )
 
 // Version - The main version number that is being run at the moment.
-var Version = "0.1.55"
+var Version = "0.1.56"
 
 // Prerelease - A pre-release marker for the version. If this is "" (empty string)
 // then it means that it is a final release. Otherwise, this is a pre-release
@@ -24,7 +24,7 @@ var Prerelease = "dev"
 var SemVer *version.Version
 
 func init() {
-  SemVer = version.Must(version.NewVersion(Version))
+	SemVer = version.Must(version.NewVersion(Version))
 }
 
 // Header is the header name used to send the current OnApp Go version
@@ -33,8 +33,8 @@ const Header = "OnAppGo-Version"
 
 // String returns the complete version string, including prerelease
 func String() string {
-  if Prerelease != "" {
-    return fmt.Sprintf("%s-%s", Version, Prerelease)
-  }
-  return Version
+	if Prerelease != "" {
+		return fmt.Sprintf("%s-%s", Version, Prerelease)
+	}
+	return Version
 }
