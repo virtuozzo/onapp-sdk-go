@@ -398,7 +398,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 			break
 		}
 
-		log.Printf("Got status code 422, waiting %d sec and trying again [%d of %d]", sleep, i+1, count)
+		log.Printf("Got status code 422, waiting %d sec and trying again [%d of %d]", sleep/1000000000, i+1, count)
 		time.Sleep(sleep)
 	}
 
