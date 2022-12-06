@@ -84,6 +84,8 @@ type Client struct {
 	NetworkJoins              NetworkJoinsService
 	Networks                  NetworksService
 	RateCards                 RateCardsService
+	RecipeGroups              RecipeGroupsService
+	Recipes                   RecipesService
 	RemoteTemplates           RemoteTemplatesService
 	Resolvers                 ResolversService
 	Roles                     RolesService
@@ -215,6 +217,8 @@ func NewClient(httpClient *http.Client) *Client {
 	c.NetworkJoins = &NetworkJoinsServiceOp{client: c}
 	c.Networks = &NetworksServiceOp{client: c}
 	c.RateCards = &RateCardsServiceOp{client: c}
+	c.RecipeGroups = &RecipeGroupsServiceOp{client: c}
+	c.Recipes = &RecipesServiceOp{client: c}
 	c.RemoteTemplates = &RemoteTemplatesServiceOp{client: c}
 	c.Resolvers = &ResolversServiceOp{client: c}
 	c.Roles = &RolesServiceOp{client: c}
@@ -297,7 +301,7 @@ func SetAllowUnverifiedSSL(isv bool) ClientOpt {
 
 		// Don't bother setting DialTLS if InsecureSkipVerify=true
 		if !isv {
-			c.transport.DialTLS = nil
+			c.transport.DialTLSContext = nil
 		}
 
 		c.client.Transport = c.transport
@@ -398,7 +402,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 			break
 		}
 
-		log.Printf("Got status code 422, waiting %d sec and trying again [%d of %d]", sleep/1000000000, i+1, count)
+		log.Printf("Got status code 422, waiting %f sec and trying again [%d of %d]", sleep.Seconds(), i+1, count)
 		time.Sleep(sleep)
 	}
 
@@ -533,7 +537,7 @@ func StreamToString(stream io.Reader) string {
 // StringInSlice -
 func StringInSlice(valid []string, k string, ignoreCase bool) bool {
 	for _, str := range valid {
-		if k == str || (ignoreCase && strings.ToLower(k) == strings.ToLower(str)) {
+		if k == str || (ignoreCase && strings.EqualFold(strings.ToLower(k), strings.ToLower(str))) {
 			return true
 		}
 	}
