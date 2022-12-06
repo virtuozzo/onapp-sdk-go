@@ -40,7 +40,7 @@ type BackupResource struct {
 	Plugin          string            `json:"plugin,omitempty"`
 	PrimaryHost     string            `json:"primary_host,omitempty"`
 	SecondaryHost   string            `json:"secondary_host,omitempty"`
-	UpdatedAt       string            `json:"updated_at,omitempty,omitempty"`
+	UpdatedAt       string            `json:"updated_at,omitempty"`
 	Username        string            `json:"username,omitempty"`
 	Password        string            `json:"password,omitempty"`
 	ResourceZoneID  int               `json:"resource_zone_id,omitempty"`
