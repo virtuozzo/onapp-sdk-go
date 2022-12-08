@@ -31,6 +31,16 @@ type RecipeGroupsServiceOp struct {
 var _ RecipeGroupsService = &RecipeGroupsServiceOp{}
 
 type Children struct {
+	ID        int        `json:"id,omitempty"`
+	Label     string     `json:"label,omitempty"`
+	ParentID  int        `json:"parent_id,omitempty"`
+	Lft       int        `json:"lft,omitempty"`
+	Rgt       int        `json:"rgt,omitempty"`
+	Depth     int        `json:"depth,omitempty"`
+	CreatedAt string     `json:"created_at,omitempty"`
+	UpdatedAt string     `json:"updated_at,omitempty"`
+	Childrens []Children `json:"children,omitempty"` // rename filed but JSON leave as is
+	Relations []Relation `json:"relations,omitempty"`
 }
 
 type Relation struct {
@@ -44,16 +54,16 @@ type Relation struct {
 
 // RecipeGroup represents a RecipeGroup
 type RecipeGroup struct {
-	ID        int         `json:"id,omitempty"`
-	Label     string      `json:"label,omitempty"`
-	ParentID  interface{} `json:"parent_id,omitempty"`
-	Lft       int         `json:"lft,omitempty"`
-	Rgt       int         `json:"rgt,omitempty"`
-	Depth     int         `json:"depth,omitempty"`
-	CreatedAt string      `json:"created_at,omitempty"`
-	UpdatedAt string      `json:"updated_at,omitempty"`
-	Children  []Children  `json:"children,omitempty"`
-	Relations []Relation  `json:"relations,omitempty"`
+	ID        int        `json:"id,omitempty"`
+	Label     string     `json:"label,omitempty"`
+	ParentID  int        `json:"parent_id,omitempty"`
+	Lft       int        `json:"lft,omitempty"`
+	Rgt       int        `json:"rgt,omitempty"`
+	Depth     int        `json:"depth,omitempty"`
+	CreatedAt string     `json:"created_at,omitempty"`
+	UpdatedAt string     `json:"updated_at,omitempty"`
+	Childrens []Children `json:"children,omitempty"` // rename filed but JSON leave as is
+	Relations []Relation `json:"relations,omitempty"`
 }
 
 // RecipeGroupCreateRequest represents a request to create a RecipeGroup
@@ -113,6 +123,20 @@ func (s *RecipeGroupsServiceOp) Get(ctx context.Context, id int) (*RecipeGroup, 
 		return nil, nil, err
 	}
 
+	// OnApp 6.8 - /recipe_groups/1.json
+	// {
+	//   "recipe_group":{
+	//     "id":1,
+	//     "label":"recipe_group1",
+	//     "parent_id":null,
+	//     "lft":1,
+	//     "rgt":10,
+	//     "depth":0,
+	//     "created_at":"2022-12-08T12:11:40.000Z",
+	//     "updated_at":"2022-12-08T12:35:02.000Z"
+	//   }
+	// }
+	// BUG of OnApp the JSON for RecipeGroup didn't return fields 'children' and 'relations'
 	root := new(recipeGroupRoot)
 	resp, err := s.client.Do(ctx, req, root)
 	if err != nil {

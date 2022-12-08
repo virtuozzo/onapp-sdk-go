@@ -42,9 +42,23 @@ type RecipeStep struct {
 	UpdatedAt        string `json:"updated_at,omitempty"`
 	ResultSource     string `json:"result_source,omitempty"`
 	PassValues       string `json:"pass_values,omitempty"`
-	PassAnythingElse bool   `json:"pass_anything_else,omitempty"`
+	PassAnythingElse bool   `json:"pass_anything_else"`
 	FailValues       string `json:"fail_values,omitempty"`
-	FailAnythingElse bool   `json:"fail_anything_else,omitempty"`
+	FailAnythingElse bool   `json:"fail_anything_else"`
+	FailureGotoStep  int    `json:"failure_goto_step,omitempty"`
+}
+
+// RecipeStepCreateRequest represents a request to create a Recipe Step
+type RecipeStepCreateRequest struct {
+	Script           string `json:"script,omitempty"`
+	ResultSource     string `json:"result_source,omitempty"`
+	PassAnythingElse bool   `json:"pass_anything_else"`
+	PassValues       string `json:"pass_values,omitempty"`
+	OnSuccess        string `json:"on_success,omitempty"`
+	SuccessGotoStep  int    `json:"success_goto_step,omitempty"`
+	FailAnythingElse bool   `json:"fail_anything_else"`
+	FailValues       int    `json:"fail_values,omitempty"`
+	OnFailure        string `json:"on_failure,omitempty"`
 	FailureGotoStep  int    `json:"failure_goto_step,omitempty"`
 }
 
@@ -60,7 +74,7 @@ type Recipe struct {
 	UpdatedAt      string        `json:"updated_at,omitempty"`
 	Label          string        `json:"label,omitempty"`
 	Description    string        `json:"description,omitempty"`
-	ScriptType     string        `json:"script_type,omitempty"`
+	ScriptType     string        `json:"script_type"`
 	CompatibleWith string        `json:"compatible_with,omitempty"`
 	RecipeSteps    []RecipeSteps `json:"recipe_steps,omitempty"`
 }
@@ -70,7 +84,7 @@ type RecipeCreateRequest struct {
 	Label          string `json:"label,omitempty"`
 	Description    string `json:"description,omitempty"`
 	CompatibleWith string `json:"ip,omitempty"`
-	ScriptType     string `json:"script_type,omitempty"`
+	ScriptType     string `json:"script_type"`
 }
 
 // RecipeEditRequest represents a request to edit a Recipe
@@ -78,7 +92,7 @@ type RecipeEditRequest struct {
 	Label          string `json:"label,omitempty"`
 	Description    string `json:"description,omitempty"`
 	CompatibleWith string `json:"ip,omitempty"`
-	ScriptType     string `json:"script_type,omitempty"`
+	ScriptType     string `json:"script_type"`
 }
 
 type recipeCreateRequestRoot struct {
