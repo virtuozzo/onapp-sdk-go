@@ -86,6 +86,7 @@ type Client struct {
 	RateCards                 RateCardsService
 	RecipeGroups              RecipeGroupsService
 	Recipes                   RecipesService
+	RecipeSteps               RecipeStepsService
 	RemoteTemplates           RemoteTemplatesService
 	Resolvers                 ResolversService
 	Roles                     RolesService
@@ -219,6 +220,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.RateCards = &RateCardsServiceOp{client: c}
 	c.RecipeGroups = &RecipeGroupsServiceOp{client: c}
 	c.Recipes = &RecipesServiceOp{client: c}
+	c.RecipeSteps = &RecipeStepsServiceOp{client: c}
 	c.RemoteTemplates = &RemoteTemplatesServiceOp{client: c}
 	c.Resolvers = &ResolversServiceOp{client: c}
 	c.Roles = &RolesServiceOp{client: c}

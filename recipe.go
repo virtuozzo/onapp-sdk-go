@@ -30,42 +30,6 @@ type RecipesServiceOp struct {
 
 var _ RecipesService = &RecipesServiceOp{}
 
-type RecipeStep struct {
-	ID               int    `json:"id,omitempty"`
-	RecipeID         int    `json:"recipe_id,omitempty"`
-	Number           int    `json:"number,omitempty"`
-	Script           string `json:"script,omitempty"`
-	OnSuccess        string `json:"on_success,omitempty"`
-	OnFailure        string `json:"on_failure,omitempty"`
-	SuccessGotoStep  int    `json:"success_goto_step,omitempty"`
-	CreatedAt        string `json:"created_at,omitempty"`
-	UpdatedAt        string `json:"updated_at,omitempty"`
-	ResultSource     string `json:"result_source,omitempty"`
-	PassValues       string `json:"pass_values,omitempty"`
-	PassAnythingElse bool   `json:"pass_anything_else"`
-	FailValues       string `json:"fail_values,omitempty"`
-	FailAnythingElse bool   `json:"fail_anything_else"`
-	FailureGotoStep  int    `json:"failure_goto_step,omitempty"`
-}
-
-// RecipeStepCreateRequest represents a request to create a Recipe Step
-type RecipeStepCreateRequest struct {
-	Script           string `json:"script,omitempty"`
-	ResultSource     string `json:"result_source,omitempty"`
-	PassAnythingElse bool   `json:"pass_anything_else"`
-	PassValues       string `json:"pass_values,omitempty"`
-	OnSuccess        string `json:"on_success,omitempty"`
-	SuccessGotoStep  int    `json:"success_goto_step,omitempty"`
-	FailAnythingElse bool   `json:"fail_anything_else"`
-	FailValues       int    `json:"fail_values,omitempty"`
-	OnFailure        string `json:"on_failure,omitempty"`
-	FailureGotoStep  int    `json:"failure_goto_step,omitempty"`
-}
-
-type RecipeSteps struct {
-	RecipeStep RecipeStep `json:"recipe_step,omitempty"`
-}
-
 // Recipe represents a Recipe
 type Recipe struct {
 	ID             int           `json:"id,omitempty"`
@@ -83,7 +47,7 @@ type Recipe struct {
 type RecipeCreateRequest struct {
 	Label          string `json:"label,omitempty"`
 	Description    string `json:"description,omitempty"`
-	CompatibleWith string `json:"ip,omitempty"`
+	CompatibleWith string `json:"compatible_with,omitempty"`
 	ScriptType     string `json:"script_type"`
 }
 
@@ -91,7 +55,7 @@ type RecipeCreateRequest struct {
 type RecipeEditRequest struct {
 	Label          string `json:"label,omitempty"`
 	Description    string `json:"description,omitempty"`
-	CompatibleWith string `json:"ip,omitempty"`
+	CompatibleWith string `json:"compatible_with,omitempty"`
 	ScriptType     string `json:"script_type"`
 }
 
