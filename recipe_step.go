@@ -10,7 +10,7 @@ import (
 )
 
 const recipeStepsBasePath string = recipesBasePath + "/%d/recipe_steps"
-const recipeStepsSwapBasePath string = "/%d/move_to/%d"
+const recipeStepsSwapPath string = "%d/move_to/%d"
 
 // RecipeStepsService is an interface for interfacing with the RecipeStep
 // endpoints of the OnApp API
@@ -20,7 +20,6 @@ type RecipeStepsService interface {
 	Get(context.Context, int, int) (*RecipeStep, *Response, error)
 	Create(context.Context, int, *RecipeStepCreateRequest) (*RecipeStep, *Response, error)
 	Delete(context.Context, int, int, interface{}) (*Response, error)
-
 	Swap(context.Context, int, int, int, interface{}) (*Response, error)
 }
 
@@ -101,7 +100,7 @@ func (s *RecipeStepsServiceOp) List(ctx context.Context, recipeID int, opt *List
 
 	arr := make([]RecipeStep, len(out))
 	for i := range arr {
-		arr[i] = out[i]["recipe"]
+		arr[i] = out[i]["recipe_step"]
 	}
 
 	return arr, resp, err
@@ -187,9 +186,9 @@ func (s *RecipeStepsServiceOp) Swap(ctx context.Context, recipeID int, recipeSte
 		return nil, godo.NewArgError("recipeID or recipeStepIDFrom or recipeStepIDTo ", "cannot be less than 1")
 	}
 
-	recipeSteps := fmt.Sprintf(recipeStepsBasePath, recipeID)
-	swapPath := fmt.Sprintf(recipeStepsSwapBasePath, recipeStepIDFrom, recipeStepIDTo)
-	path := fmt.Sprintf("%s/%s%s", recipeSteps, swapPath, apiFormat)
+	recipeStepPath := fmt.Sprintf(recipeStepsBasePath, recipeID)
+	swapPath := fmt.Sprintf(recipeStepsSwapPath, recipeStepIDFrom, recipeStepIDTo)
+	path := fmt.Sprintf("%s/%s%s", recipeStepPath, swapPath, apiFormat)
 	path, err := addOptions(path, meta)
 	if err != nil {
 		return nil, err
