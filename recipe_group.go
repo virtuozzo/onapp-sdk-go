@@ -10,6 +10,7 @@ import (
 )
 
 const recipeGroupsBasePath string = "recipe_groups"
+const recipeAttachBasePath string = recipeGroupsBasePath + "/%d/recipe_group_relations"
 
 // RecipeGroupsService is an interface for interfacing with the RecipeGroup
 // endpoints of the OnApp API
@@ -20,6 +21,9 @@ type RecipeGroupsService interface {
 	Create(context.Context, *RecipeGroupCreateRequest) (*RecipeGroup, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
 	Edit(context.Context, int, *RecipeGroupEditRequest) (*Response, error)
+
+	Attach(context.Context, int, *RecipeGroupAttachRequest) (*Response, error)
+	Detach(context.Context, int, int) (*Response, error)
 }
 
 // RecipeGroupsServiceOp handles communication with the RecipeGroups related methods of the
@@ -78,6 +82,14 @@ type RecipeGroupEditRequest struct {
 
 type recipeGroupCreateRequestRoot struct {
 	RecipeGroupCreateRequest *RecipeGroupCreateRequest `json:"recipe_group"`
+}
+
+type RecipeGroupAttachRequest struct {
+	RecipeID int `json:"recipe_id"`
+}
+
+type recipeGroupRelationRequestRoot struct {
+	RecipeGroupAttachRequest *RecipeGroupAttachRequest `json:"recipe_group_relation"`
 }
 
 // recipeGroupRoot - used to get one RecipeGroup
@@ -210,6 +222,44 @@ func (s *RecipeGroupsServiceOp) Edit(ctx context.Context, id int, editRequest *R
 		return nil, err
 	}
 	log.Println("RecipeGroup [Edit]  req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// Attach - attach recipe to the RecipeGroup.
+func (s *RecipeGroupsServiceOp) Attach(ctx context.Context, recipeGroupID int, attachRequest *RecipeGroupAttachRequest) (*Response, error) {
+	if recipeGroupID < 1 || attachRequest.RecipeID < 1 {
+		return nil, godo.NewArgError("recipeGroupID or recipeID", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(recipeAttachBasePath, recipeGroupID) + apiFormat
+	rootRequest := &recipeGroupRelationRequestRoot{
+		RecipeGroupAttachRequest: attachRequest,
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodPost, path, rootRequest)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("RecipeGroup [Attach]  req: ", req)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// Detach - detach recipe from the RecipeGroup.
+func (s *RecipeGroupsServiceOp) Detach(ctx context.Context, recipeGroupID, recipeID int) (*Response, error) {
+	if recipeGroupID < 1 || recipeID < 1 {
+		return nil, godo.NewArgError("recipeGroupID or recipeID", "cannot be less than 1")
+	}
+
+	path := fmt.Sprintf(recipeAttachBasePath, recipeGroupID)
+	path = fmt.Sprintf("%s/%d%s", path, recipeID, apiFormat)
+
+	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("RecipeGroup [Detach]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
 }
