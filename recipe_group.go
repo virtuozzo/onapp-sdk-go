@@ -10,7 +10,7 @@ import (
 )
 
 const recipeGroupsBasePath string = "recipe_groups"
-const recipeAttachBasePath string = recipeGroupsBasePath + "/%d/recipe_group_relations"
+const recipeGroupRelationsBasePath string = recipeGroupsBasePath + "/%d/recipe_group_relations"
 
 // RecipeGroupsService is an interface for interfacing with the RecipeGroup
 // endpoints of the OnApp API
@@ -24,6 +24,7 @@ type RecipeGroupsService interface {
 
 	Attach(context.Context, int, *RecipeGroupAttachRequest) (*Response, error)
 	Detach(context.Context, int, int) (*Response, error)
+	Recipes(context.Context, int, *ListOptions) ([]Recipe, *Response, error)
 }
 
 // RecipeGroupsServiceOp handles communication with the RecipeGroups related methods of the
@@ -232,7 +233,7 @@ func (s *RecipeGroupsServiceOp) Attach(ctx context.Context, recipeGroupID int, a
 		return nil, godo.NewArgError("recipeGroupID or recipeID", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(recipeAttachBasePath, recipeGroupID) + apiFormat
+	path := fmt.Sprintf(recipeGroupRelationsBasePath, recipeGroupID) + apiFormat
 	rootRequest := &recipeGroupRelationRequestRoot{
 		RecipeGroupAttachRequest: attachRequest,
 	}
@@ -252,7 +253,7 @@ func (s *RecipeGroupsServiceOp) Detach(ctx context.Context, recipeGroupID, recip
 		return nil, godo.NewArgError("recipeGroupID or recipeID", "cannot be less than 1")
 	}
 
-	path := fmt.Sprintf(recipeAttachBasePath, recipeGroupID)
+	path := fmt.Sprintf(recipeGroupRelationsBasePath, recipeGroupID)
 	path = fmt.Sprintf("%s/%d%s", path, recipeID, apiFormat)
 
 	req, err := s.client.NewRequest(ctx, http.MethodDelete, path, nil)
@@ -262,4 +263,32 @@ func (s *RecipeGroupsServiceOp) Detach(ctx context.Context, recipeGroupID, recip
 	log.Println("RecipeGroup [Detach]  req: ", req)
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// List all Recipe attached to the RecipeGroups.
+func (s *RecipeGroupsServiceOp) Recipes(ctx context.Context, recipeGroupID int, opt *ListOptions) ([]Recipe, *Response, error) {
+	path := fmt.Sprintf(recipeGroupRelationsBasePath, recipeGroupID)
+	path, err := addOptions(path, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	log.Println("RecipeGroup [Recipes]  req: ", req)
+
+	var out []map[string]Recipe
+	resp, err := s.client.Do(ctx, req, &out)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	arr := make([]Recipe, len(out))
+	for i := range arr {
+		arr[i] = out[i]["recipe"]
+	}
+
+	return arr, resp, err
 }
