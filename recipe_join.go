@@ -14,7 +14,7 @@ const controlPanel string = "ControlPanel"
 var recipeJoinPaths = map[string]string{
 	controlPanel:        "settings/control_panel/recipe_joins",
 	"HypervisorGroup":   "settings/hypervisor_zones/%d/recipe_joins",
-	"VirtualServer":     "virtual_machines/%d/recipe_joins",
+	"VirtualMachine":    "virtual_machines/%d/recipe_joins",
 	"ImageTemplateBase": "templates/%d/recipe_joins",
 	"SmartServer":       "smart_servers/%d/recipe_joins",
 }
@@ -71,7 +71,7 @@ func (d RecipeJoinCreateRequest) String() string {
 	return godo.Stringify(d)
 }
 
-// List all ControlPanelRecipeJoins.
+// List all RecipeJoins
 func (s *RecipeJoinsServiceOp) List(ctx context.Context, createRequest *RecipeJoinCreateRequest, opt *ListOptions) (map[string]interface{}, *Response, error) {
 	if createRequest == nil {
 		return nil, nil, godo.NewArgError("RecipeJoin createRequest [List]", "cannot be nil")
@@ -107,12 +107,10 @@ func (s *RecipeJoinsServiceOp) List(ctx context.Context, createRequest *RecipeJo
 		return nil, resp, err
 	}
 
-	// log.Println("RecipeJoin [List] response: ", out)
-
 	return out, resp, err
 }
 
-// Create ComputeZoneRecipeJoin.
+// Create RecipeJoin
 func (s *RecipeJoinsServiceOp) Create(ctx context.Context, createRequest *RecipeJoinCreateRequest) (*RecipeJoin, *Response, error) {
 	if createRequest == nil {
 		return nil, nil, godo.NewArgError("RecipeJoin createRequest [Create]", "cannot be nil")
@@ -151,7 +149,7 @@ func (s *RecipeJoinsServiceOp) Create(ctx context.Context, createRequest *Recipe
 	return root.RecipeJoin, resp, err
 }
 
-// Delete ComputeZoneRecipeJoin.
+// Delete RecipeJoin
 func (s *RecipeJoinsServiceOp) Delete(ctx context.Context, deleteRequest *RecipeJoinDeleteRequest, meta interface{}) (*Response, error) {
 	if deleteRequest == nil {
 		return nil, godo.NewArgError("RecipeJoin deleteRequest", "cannot be nil")
