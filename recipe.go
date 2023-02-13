@@ -19,7 +19,7 @@ type RecipesService interface {
 	Get(context.Context, int) (*Recipe, *Response, error)
 	Create(context.Context, *RecipeCreateRequest) (*Recipe, *Response, error)
 	Delete(context.Context, int, interface{}) (*Response, error)
-	Edit(context.Context, int, *RecipeEditRequest) (*Response, error)
+	Edit(context.Context, int, *RecipeCreateRequest) (*Response, error)
 }
 
 // RecipesServiceOp handles communication with the Data Store related methods of the
@@ -38,24 +38,16 @@ type Recipe struct {
 	UpdatedAt      string        `json:"updated_at,omitempty"`
 	Label          string        `json:"label,omitempty"`
 	Description    string        `json:"description,omitempty"`
-	ScriptType     string        `json:"script_type"`
+	ScriptType     string        `json:"script_type,omitempty"`
 	CompatibleWith string        `json:"compatible_with,omitempty"`
 	RecipeSteps    []RecipeSteps `json:"recipe_steps,omitempty"`
 }
 
 // RecipeCreateRequest represents a request to create a Recipe
 type RecipeCreateRequest struct {
-	Label          string `json:"label,omitempty"`
-	Description    string `json:"description,omitempty"`
-	CompatibleWith string `json:"compatible_with,omitempty"`
-	ScriptType     string `json:"script_type"`
-}
-
-// RecipeEditRequest represents a request to edit a Recipe
-type RecipeEditRequest struct {
-	Label          string `json:"label,omitempty"`
-	Description    string `json:"description,omitempty"`
-	CompatibleWith string `json:"compatible_with,omitempty"`
+	Label          string `json:"label"`
+	Description    string `json:"description"`
+	CompatibleWith string `json:"compatible_with"`
 	ScriptType     string `json:"script_type"`
 }
 
@@ -167,7 +159,7 @@ func (s *RecipesServiceOp) Delete(ctx context.Context, id int, meta interface{})
 }
 
 // Edit Recipe.
-func (s *RecipesServiceOp) Edit(ctx context.Context, id int, editRequest *RecipeEditRequest) (*Response, error) {
+func (s *RecipesServiceOp) Edit(ctx context.Context, id int, editRequest *RecipeCreateRequest) (*Response, error) {
 	if id < 1 {
 		return nil, godo.NewArgError("id", "cannot be less than 1")
 	}
