@@ -167,8 +167,8 @@ func (s *NetworkJoinsServiceOp) Delete(ctx context.Context, deleteRequest *Netwo
 		return nil, godo.NewArgError("NetworkJoin deleteRequest", "cannot be nil")
 	}
 
-	if deleteRequest.ID < 1 {
-		return nil, godo.NewArgError("id", "cannot be less than 1")
+	if deleteRequest.ID < 1 || deleteRequest.TargetJoinID < 1 {
+		return nil, godo.NewArgError("id or target_join_id", "cannot be less than 1")
 	}
 
 	path := ""
