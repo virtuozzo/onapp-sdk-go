@@ -32,8 +32,8 @@ type RecipeStepsServiceOp struct {
 var _ RecipeStepsService = &RecipeStepsServiceOp{}
 
 type RecipeStep struct {
-	ID               int    `json:"id,omitempty"`
-	RecipeID         int    `json:"recipe_id,omitempty"`
+	ID               int    `json:"id"`
+	RecipeID         int    `json:"recipe_id"`
 	Number           int    `json:"number,omitempty"`
 	Script           string `json:"script,omitempty"`
 	OnSuccess        string `json:"on_success,omitempty"`
@@ -49,17 +49,17 @@ type RecipeStep struct {
 	FailureGotoStep  int    `json:"failure_goto_step"`
 }
 
-// RecipeStepCreateRequest represents a request to create a RecipeStep Step
+// RecipeStepCreateRequest represents a request to create a RecipeStep
 type RecipeStepCreateRequest struct {
-	Script           string `json:"script,omitempty"`
-	ResultSource     string `json:"result_source,omitempty"`
+	Script           string `json:"script"`
+	ResultSource     string `json:"result_source"`
 	PassAnythingElse bool   `json:"pass_anything_else"`
-	PassValues       string `json:"pass_values,omitempty"`
-	OnSuccess        string `json:"on_success,omitempty"`
+	PassValues       string `json:"pass_values"`
+	OnSuccess        string `json:"on_success"`
 	SuccessGotoStep  int    `json:"success_goto_step"`
 	FailAnythingElse bool   `json:"fail_anything_else"`
-	FailValues       int    `json:"fail_values,omitempty"`
-	OnFailure        string `json:"on_failure,omitempty"`
+	FailValues       string `json:"fail_values"`
+	OnFailure        string `json:"on_failure"`
 	FailureGotoStep  int    `json:"failure_goto_step"`
 }
 
