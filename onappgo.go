@@ -8,13 +8,11 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
-	"time"
 
 	sdk "github.com/OnApp/onapp-sdk-go/version"
 
@@ -392,22 +390,9 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 	resp := &http.Response{}
 	err := *new(error)
 
-	// If we got response code 422 we trying todo some count of requests to trying avoid this
-	// If count is out and we continue getting 422 then we exit with error
-	count := 3
-	sleep := 5 * time.Second
-	for i := 0; i < count; i++ {
-		resp, err = DoRequestWithClient(ctx, c.client, req)
-		if err != nil {
-			return nil, err
-		}
-
-		if resp.StatusCode != 422 {
-			break
-		}
-
-		log.Printf("Got status code 422, waiting %f sec and trying again [%d of %d]", sleep.Seconds(), i+1, count)
-		time.Sleep(sleep)
+	resp, err = DoRequestWithClient(ctx, c.client, req)
+	if err != nil {
+		return nil, err
 	}
 
 	if c.onRequestCompleted != nil {
